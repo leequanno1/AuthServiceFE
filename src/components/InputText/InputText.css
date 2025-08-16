@@ -1,0 +1,52 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.input-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: start;
+}
+
+.input-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.input-text-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 10px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.input-text-container:focus-within {
+  border-color: var(--primary-color);
+}
+
+.input-icon {
+  margin-right: 8px;
+  color: var(--muted-text);
+}
+
+.input-text {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+}
+
+.input-text-container.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}

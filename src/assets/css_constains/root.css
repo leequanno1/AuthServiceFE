@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'Istok Web';
+    src: url('../fonts/Istok_Web/IstokWeb-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --primary-color: #007BFF;
+    --primary-light: #E6F0FF;
+    --primary-dark: #0056b3;
+    --background-color: #FFFFFF;
+    --background-alt: #F8FAFC;
+    --text-color: #212529;
+    --muted-text: #6C757D;
+    --disabled-text: #ADB5BD;
+    --accent-color: #17A2B8;
+    --accent-disabled: #B1E5EC;
+    --border-color: #DEE2E6;
+    --divider-color: #E9ECEF;
+    --success-color: #28A745;
+    --success-disabled: #A8DAB5;
+    --warning-color: #FFC107;
+    --warning-disabled: #FFE8A1;
+    --danger-color: #DC3545;
+    --danger-disabled: #F5AEB6;
+    --highlight-color: #EFF6FF;
+    --table-header-bg: #F8F9FA;
+    --add-new-color: #F5BF1E;
+    --web-font: "Istok Web";
+}

@@ -1,0 +1,51 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.button {
+    font-family: var(--web-font);
+    font-size: 16px;
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+button:active {
+    opacity: 0.9;
+}
+
+.button.primary {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border-radius: 100px;
+}
+
+.button.secondary {
+    background-color: var(--muted-text);
+    color: var(--background-color);
+    border: 1px solid var(--muted-text);
+}
+
+button.tertiary {
+    background-color: var(--add-new-color);
+    color: var(--text-color);
+    border: 1px solid transparent;
+}
+

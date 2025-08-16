@@ -1,0 +1,7 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
