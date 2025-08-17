@@ -24,14 +24,14 @@ const InputText: React.FC<InputTextProps> = ({
   type = "text",
   width = 300,
   lable,
-  textSize = 16,
+  textSize = 14,
   Icon,
   IconSize = 20,
   IconWeight = "regular"
 }) => {
   return ( 
     <div className="input-text-wrapper">
-      {lable && <label className="input-label" style={{ fontSize: `${textSize + 4}px` }}>{lable}</label>}
+      {lable && <label className="input-label" style={{ fontSize: `${textSize + 2}px` }}>{lable}</label>}
       <div className={`input-text-container ${disabled ? "disabled" : ""}`}>
         {Icon && <Icon className="input-icon" size={IconSize} weight={IconWeight} />}
         <input

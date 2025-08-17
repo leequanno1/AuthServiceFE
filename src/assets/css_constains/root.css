@@ -27,5 +27,19 @@
     --highlight-color: #EFF6FF;
     --table-header-bg: #F8F9FA;
     --add-new-color: #F5BF1E;
-    --web-font: "Istok Web";
+    --web-font: "Istok Web", sans-serif;
+    --web-font-secondary: 'Inter', sans-serif;
+    --box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.spacer-10 {
+    height: 10px;
+}
+
+.spacer-20 {
+    height: 20px;
+}
+
+.spacer-30 {
+    height: 30px;
 }

@@ -1,0 +1,71 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 55px 35px;
+    background-color: var(--background-alt);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    font-weight: bold;
+    font-size: 30px;
+    font-family: var(--web-font-secondary);
+    color: var(--text-color);
+}
+
+.login-form h3 {
+    font-weight: normal;
+    font-size: 22px;
+    font-family: var(--web-font-secondary);
+    color: var(--muted-text);
+    margin-block: 25px;
+}
+
+.login-form-actions {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.forgot-password-link {
+    color: var(--muted-text);
+    text-decoration: none;
+    font-size: 16px;
+    font-family: var(--web-font-secondary);
+}
+
+.forgot-password-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.login-form-divider {
+    color: var(--muted-text);
+    font-size: 16px;
+    width: 100%;
+}
+
+.login-form-divider a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.login-form-divider a:hover {
+    text-decoration: underline;
+}

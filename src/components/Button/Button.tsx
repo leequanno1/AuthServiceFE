@@ -6,14 +6,22 @@ interface ButtonProps {
   onClick: () => void;
   disabled?: boolean;
   tyle?: "primary" | "secondary" | "tertiary";
+  borderRadius?: number | "default";
 }
 
-const Button: React.FC<ButtonProps> = ({ label, onClick, disabled = false, tyle = "primary" }) => {
+const Button: React.FC<ButtonProps> = ({ 
+  label, 
+  onClick, 
+  disabled = false, 
+  tyle = "primary",
+  borderRadius =  "default"
+}) => {
   return (
     <button
       className={`button ${tyle}`}
       onClick={onClick}
       disabled={disabled}
+      style={{ borderRadius: borderRadius === 'default' ? '100px' : `${borderRadius}px` }}
     >
       {label}
     </button>

@@ -1,0 +1,28 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.name-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--name-tag-bg);
+    color: var(--text-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-family: var(--web-font);
+    font-weight: 500;
+    min-width: 80px;
+    background-color: var(--primary-light);
+    cursor: pointer;
+}
+
+.name-tag:hover {
+    opacity: 0.8;
+}

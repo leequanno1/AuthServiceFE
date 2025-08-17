@@ -1,0 +1,113 @@
+import "./SignUpForm.css";
+import React, { use } from "react";
+import InputText from "../../components/InputText/InputText";
+import Button from "../../components/Button/Button";
+import CountDownButton from "../../components/CountDownButton/CountDownButton";
+import { ArrowClockwise } from "phosphor-react";
+
+const SignUpForm: React.FC = () => {
+
+  const [step, setStep] = React.useState(1);
+  
+  React.useEffect(() => {
+    // Logic to handle step changes can be added here
+    
+  }, [step]);
+
+  return (
+    <div className="sign-up-form">
+      {/*  
+        SignUpForm step 1
+      */}
+      {step === 1 && (
+        <div className="sign-up-form-1">
+          <h2>Sign up</h2>
+          <h3>Feel free to make a account</h3>
+          <InputText
+            type="text"
+            onChange={() => {}}
+            lable="Username"
+            value=""
+            placeholder="your_username"/>
+          <span className="spacer-10"></span>
+          <div className="password-inputs">
+            <InputText 
+              onChange={() => {}}
+              value=""
+              lable="Password"
+              placeholder="••••••••"/>
+            <InputText 
+              onChange={() => {}}
+              value=""
+              lable="Repeat Password"
+              placeholder="••••••••"/>
+          </div>
+          <span className="spacer-10"></span>
+          <div className="email-input-group">
+            <InputText 
+              onChange={() => {}}
+              type="email"
+              value=""
+              lable="Email"
+              placeholder="you@examle.com"/>
+            <Button label="Next" onClick={() => {setStep(2)}}/>
+          </div>
+          <span className="spacer-30"></span>
+          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+        </div>
+      )}
+      
+      {/*  
+        SignUpForm step 2
+      */}
+      {step === 2 && (
+        <div className="sign-up-form-1">
+          <h2>Sign up</h2>
+          <h3>Feel free to make a account</h3>
+          <div className="form-2-group"> 
+            <InputText 
+              onChange={() => {}}
+              value=""
+              lable="Verify code"
+              placeholder="XXX XXX XXX"
+              type="text"/>
+            <CountDownButton 
+              onClick={() => {}}
+              timeLeft={10}
+              Icon={ArrowClockwise}/>
+          </div>
+          <small className="form-2-small">We have send a verification code to your email.</small>
+          <div>
+            <Button 
+              label="Back"
+              tyle="secondary"
+              onClick={() => {setStep(1)}}/> 
+            <Button 
+              label="Verify"
+              tyle="primary"
+              onClick={() => {setStep(3)}}/> 
+          </div>
+          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+        </div>
+      )}
+      
+      {/*  
+        SignUpForm step 3
+      */}
+      {step === 3 && (
+        <div className="sign-up-form-1">
+          <h2>Congratulation!</h2>
+          <h3>Your registration is complete</h3>
+          <span className="form-3-message">Start your own experience with our service.</span>
+          <Button 
+            label="Go to Login"
+            tyle="primary"
+            onClick={() => {setStep(1)}}/>
+          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default SignUpForm;

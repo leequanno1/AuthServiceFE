@@ -1,0 +1,88 @@
+@import url('../../assets/css_constains/root.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.sign-up-form {
+    display: flex;
+    border: 1px solid var(--divider-color);
+    box-shadow: var(--box-shadow);
+    background: var(--background-color);
+    padding: 55px 35px;
+    border-radius: 10px;
+}
+
+.sign-up-form-1, .sign-up-form-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+}
+
+.sign-up-form-1 h2, .sign-up-form-2 h2 {
+    font-weight: bold;
+    font-size: 30px;
+    font-family: var(--web-font-secondary);
+    color: var(--text-color);
+}
+
+.sign-up-form-1 h3, .sign-up-form-2 h3 {
+    font-weight: normal;
+    font-size: 22px;
+    font-family: var(--web-font-secondary);
+    color: var(--muted-text);
+    margin-block: 25px;
+}
+
+.sign-up-form-1 .password-inputs {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.sign-up-form-1 .password-inputs > .input-text-wrapper {
+    width: calc(50% - 5px);
+}
+
+.sign-up-form-1 .email-input-group {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    align-items: end;
+}
+
+.sign-up-form-1 .email-input-group > .input-text-wrapper {
+    width: calc(75% - 5px);
+}
+
+.sign-up-form-1 .email-input-group > .button {
+    width: calc(25% - 5px);
+    min-width: 0;
+    height: 50%;
+}
+
+.sign-up-form-3 {
+    
+}
+
+.form-consider {
+    color: var(--muted-text);
+    font-size: 16px;
+    width: 100%;
+}
+
+.form-consider a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.form-consider a:hover {
+    text-decoration: underline;
+}

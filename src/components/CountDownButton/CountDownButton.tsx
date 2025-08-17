@@ -1,5 +1,5 @@
 import React from "react";
-import "./CountDownButton.css"
+import "./CountDownButton.css";
 import { IconProps } from "phosphor-react";
 
 interface CountDownButtonProps {
@@ -10,7 +10,8 @@ interface CountDownButtonProps {
     IconWeight?: "thin" | "light" | "regular" | "bold";
     disabled?: boolean;
     timeLeft: number; // Time left in seconds
-    timeTotal: number; 
+    step?: number; 
+    width?: number | "auto";
 }
 
 const CountDownButton: React.FC<CountDownButtonProps> = ({ 
@@ -20,18 +21,43 @@ const CountDownButton: React.FC<CountDownButtonProps> = ({
     IconSize = 20, 
     disabled = false, 
     timeLeft, 
-    timeTotal, 
+    step = 1, 
+    width = "auto",
     onClick 
 }) => {
+  const [timeTotal, setTimeTotal] = React.useState(timeLeft);
+  const [isCounting, setIsCounting] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isCounting) return;
+    if (timeTotal <= 0) {
+      setIsCounting(false);
+      setTimeTotal(timeLeft); // Reset
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTimeTotal(t => t - step);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [isCounting, timeTotal, timeLeft, step]);
+
+  const handleClick = async () => {
+    if (!isCounting && timeTotal === timeLeft && timeLeft > 0) {
+      await onClick();
+      setIsCounting(true);
+    }
+  };
+
   return (
     <button
       className="countdown-button"
-      onClick={onClick}
-      disabled={disabled || (timeLeft !== timeTotal && timeLeft > 0)}
+      onClick={handleClick}
+      disabled={disabled || isCounting}
+      style={{ width: typeof width === "number" ? `${width}px` : width }}
     >
-        {(timeLeft !== timeTotal && timeLeft > 0) && <span className="countdown-timer"> ({timeLeft}s)</span>}
-        {Icon && <Icon size={IconSize} weight={IconWeight} />}
-        {label && <span className="countdown-label">{label}</span>}
+      {isCounting && <span className="countdown-timer"> ({timeTotal}s)</span>}
+      {label && <span className="countdown-label">{label}</span>}
+      {Icon && <Icon size={IconSize} weight={IconWeight} />}
     </button>
   );
 };
