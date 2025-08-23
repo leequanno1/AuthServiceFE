@@ -1,5 +1,5 @@
 import "./SignUpForm.css";
-import React, { use } from "react";
+import React from "react";
 import InputText from "../../components/InputText/InputText";
 import Button from "../../components/Button/Button";
 import CountDownButton from "../../components/CountDownButton/CountDownButton";
@@ -50,9 +50,12 @@ const SignUpForm: React.FC = () => {
               value=""
               lable="Email"
               placeholder="you@examle.com"/>
-            <Button label="Next" onClick={() => {setStep(2)}}/>
+            <Button 
+              borderRadius={15}
+              label="Next" 
+              onClick={() => {setStep(2)}}/>
           </div>
-          <span className="spacer-30"></span>
+          <span className="flex-1"></span>
           <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
         </div>
       )}
@@ -61,7 +64,7 @@ const SignUpForm: React.FC = () => {
         SignUpForm step 2
       */}
       {step === 2 && (
-        <div className="sign-up-form-1">
+        <div className="sign-up-form-2">
           <h2>Sign up</h2>
           <h3>Feel free to make a account</h3>
           <div className="form-2-group"> 
@@ -77,16 +80,19 @@ const SignUpForm: React.FC = () => {
               Icon={ArrowClockwise}/>
           </div>
           <small className="form-2-small">We have send a verification code to your email.</small>
-          <div>
+          <div className="form-2-buttons">
             <Button 
+              borderRadius={15}
               label="Back"
               tyle="secondary"
               onClick={() => {setStep(1)}}/> 
             <Button 
+              borderRadius={15}
               label="Verify"
               tyle="primary"
               onClick={() => {setStep(3)}}/> 
           </div>
+          <span className="flex-1"></span>
           <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
         </div>
       )}
@@ -95,14 +101,18 @@ const SignUpForm: React.FC = () => {
         SignUpForm step 3
       */}
       {step === 3 && (
-        <div className="sign-up-form-1">
+        <div className="sign-up-form-3">
           <h2>Congratulation!</h2>
           <h3>Your registration is complete</h3>
           <span className="form-3-message">Start your own experience with our service.</span>
-          <Button 
-            label="Go to Login"
-            tyle="primary"
-            onClick={() => {setStep(1)}}/>
+          <div className="form-3-buttons">
+            <Button 
+              borderRadius={15}
+              label="Go to Login"
+              tyle="primary"
+              onClick={() => {setStep(1)}}/>
+          </div>
+          <span className="flex-1"></span>
           <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
         </div>
       )}

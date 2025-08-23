@@ -43,3 +43,7 @@
 .spacer-30 {
     height: 30px;
 }
+
+.flex-1 {
+    flex: 1;
+}

@@ -16,6 +16,7 @@ const LoginForm: React.FC = () => {
     <div className="login-form">
       <h2>Welcome Back</h2>
       <h3>Please login to your account</h3>
+      <span className="spacer-10"></span>
       <InputText type="text" lable="Email Address/Username" placeholder="you@example.com" value={username} onChange={setUsername}/>
       <span className="spacer-10"></span>
       <InputText type="password" lable="Password" placeholder="••••••••" value={password} onChange={setPassword}/>
@@ -24,7 +25,7 @@ const LoginForm: React.FC = () => {
         <Button tyle="primary" label="Sign In" onClick={handleLogin}/>
         <a href="/forgot-password" className="forgot-password-link">Forgot Password?</a>
       </div>
-      <span className="spacer-30"></span>
+      <span className="flex-1"></span>
       <span className="login-form-divider">Don't have an account? <a href="/sign-up">Sign up</a></span>
     </div>
   );

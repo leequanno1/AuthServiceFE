@@ -12,7 +12,8 @@
     align-items: start;
     justify-content: start;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
+    min-height: 500px;
     margin: auto;
     padding: 55px 35px;
     background-color: var(--background-alt);

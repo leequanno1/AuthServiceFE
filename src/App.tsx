@@ -29,7 +29,7 @@ function App() {
         <NameTag name={"NIGA"} />
         <CountDownButton Icon={ArrowClockwise} timeLeft={10} label={"niga"} onClick={() => {}}/> */}
         {/* <LoginForm /> */}
-        <SignUpForm />
+        {/* <SignUpForm /> */}
       </header>
     </div>
   );
