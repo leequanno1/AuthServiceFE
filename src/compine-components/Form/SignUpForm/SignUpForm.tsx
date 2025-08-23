@@ -1,17 +1,21 @@
 import "./SignUpForm.css";
 import React from "react";
-import InputText from "../../components/InputText/InputText";
-import Button from "../../components/Button/Button";
-import CountDownButton from "../../components/CountDownButton/CountDownButton";
+import InputText from "../../../components/InputText/InputText";
+import Button from "../../../components/Button/Button";
+import CountDownButton from "../../../components/CountDownButton/CountDownButton";
 import { ArrowClockwise } from "phosphor-react";
 
 const SignUpForm: React.FC = () => {
 
   const [step, setStep] = React.useState(1);
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [repeatPassword, setRepeatPassword] = React.useState('');
+  const [email, setEmail] = React.useState(''); 
+  const [verificationCode, setVerificationCode] = React.useState('');
   
   React.useEffect(() => {
     // Logic to handle step changes can be added here
-    
   }, [step]);
 
   return (
@@ -25,29 +29,31 @@ const SignUpForm: React.FC = () => {
           <h3>Feel free to make a account</h3>
           <InputText
             type="text"
-            onChange={() => {}}
+            onChange={setUsername}
             lable="Username"
-            value=""
+            value={username}
             placeholder="your_username"/>
           <span className="spacer-10"></span>
           <div className="password-inputs">
             <InputText 
-              onChange={() => {}}
-              value=""
+              onChange={setPassword}
+              value={password}
               lable="Password"
-              placeholder="••••••••"/>
+              placeholder="••••••••"
+              type="password"/>
             <InputText 
-              onChange={() => {}}
-              value=""
+              onChange={setRepeatPassword}
+              value={repeatPassword}
               lable="Repeat Password"
-              placeholder="••••••••"/>
+              placeholder="••••••••"
+              type="password"/>
           </div>
           <span className="spacer-10"></span>
           <div className="email-input-group">
             <InputText 
-              onChange={() => {}}
+              onChange={setEmail}
               type="email"
-              value=""
+              value={email}
               lable="Email"
               placeholder="you@examle.com"/>
             <Button 
@@ -69,8 +75,8 @@ const SignUpForm: React.FC = () => {
           <h3>Feel free to make a account</h3>
           <div className="form-2-group"> 
             <InputText 
-              onChange={() => {}}
-              value=""
+              onChange={setVerificationCode}
+              value={verificationCode}
               lable="Verify code"
               placeholder="XXX XXX XXX"
               type="text"/>

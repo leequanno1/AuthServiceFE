@@ -24,8 +24,8 @@
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 20px;
-  padding: 10px 10px;
-  padding-left: 18px;
+  /* padding: 0px 10px; */
+  /* padding-left: 18px; */
   background-color: #fff;
   transition: border-color 0.3s ease;
   width: 100%;
@@ -46,6 +46,8 @@
   flex: 1;
   font-size: 14px;
   background: transparent;
+  padding-block: 10px;
+  padding-left: 18px;
 }
 
 .input-text-container.disabled {

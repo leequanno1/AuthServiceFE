@@ -1,7 +1,7 @@
 import React from "react";
 import "./LoginForm.css";
-import InputText from "../../components/InputText/InputText";
-import Button from "../../components/Button/Button";
+import InputText from "../../../components/InputText/InputText";
+import Button from "../../../components/Button/Button";
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = React.useState("");

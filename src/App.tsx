@@ -6,8 +6,10 @@ import { ArrowClockwise, MagnifyingGlass } from 'phosphor-react';
 import PoolAccessLabel from './components/PoolAccessLable/PoolAccessLable';
 import CountDownButton from './components/CountDownButton/CountDownButton';
 import NameTag from './components/NameTag/NameTag';
-import LoginForm from './compine-components/LoginForm/LoginForm';
-import SignUpForm from './compine-components/SignUpForm/SignUpForm';
+import LoginForm from './compine-components/Form/LoginForm/LoginForm';
+import SignUpForm from './compine-components/Form/SignUpForm/SignUpForm';
+import ForgotPasswordForm from './compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm';
+import UserTable from './compine-components/Table/UserTable/UserTable';
 
 function App() {
   const [text, setText] = React.useState('');
@@ -30,6 +32,8 @@ function App() {
         <CountDownButton Icon={ArrowClockwise} timeLeft={10} label={"niga"} onClick={() => {}}/> */}
         {/* <LoginForm /> */}
         {/* <SignUpForm /> */}
+        {/* <ForgotPasswordForm /> */}
+        <UserTable />
       </header>
     </div>
   );
