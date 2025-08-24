@@ -24,14 +24,20 @@
     flex: 0 0 30px;
 }
 
-.row-column-2 {
+.row-column-2,
+.row-column-3 {
     flex: 1;
     text-align: left;
 }
 
-.row-column-3 {
-    flex: 0 0 36%;
+.row-column-4 {
+    flex: 0 0 30%;
     display: flex;
+}
+
+.row-column-3 {
+    display: flex;
+    gap: 5px;
 }
 
 .dropdown-icon-btn {
@@ -50,18 +56,49 @@
     transform: rotate(180deg);
 }
 
-.sub-rows-container {
+.description-container {
     padding-inline: 20px;
     background-color: var(--divider-color);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+    display: flex;
+    border-bottom: 1px solid var(--divider-color);
 }
 
-.sub-rows-container.expanded {
+.description-container.expanded {
     max-height: 500px;
 }
 
 .padding-left {
     padding-left: 10px;
+}
+
+.user-fields, .authorize-fields {
+    background-color: var(--background-color);
+    width: 100%;
+    padding: 10px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-fields {
+    border-right: 1px solid var(--divider-color);
+}
+
+.description-container > div > span {
+    text-decoration: underline;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+    text-align: left;
+    text-justify: top;
+}
+
+.user-fields-list, .authorize-fields-list {
+    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }

@@ -1,6 +1,6 @@
 @import url('../../../assets/css_constains/root.css');
 
-.tatle-container {
+.pool-table-container {
     display: flex;
     width: 100%;
     max-width: 900px;
@@ -15,7 +15,7 @@
     overflow: hidden;
 }
 
-.table-name-box {
+.pool-table-name-box {
     display: flex;
     align-items: start;
     justify-content: start;
@@ -34,7 +34,7 @@
     margin-left: auto;
 }
 
-.table-name {
+.pool-table-name {
     font-weight: bold;
     font-size: 25px;
     font-family: var(--web-font);
@@ -51,12 +51,12 @@
     overflow: auto;
 }
 
-.table-head {
+.pool-table-head {
     display: flex;
     align-items: center;
     justify-content: start;
     width: 100%;
-    background-color: var(--table-header-bg);
+    background-color: var(--pool-table-header-bg);
     border-bottom: 1px solid var(--divider-color);
     padding: 7px 10px;
     font-weight: 600;
@@ -65,16 +65,21 @@
     color: var(--muted-text);
 }
 
-.table-head-item:nth-child(1) {
+.pool-table-head-item:nth-child(1) {
     flex: 0 0 30px;
 }
 
-.table-head-item:nth-child(2) {
+.pool-table-head-item:nth-child(2) {
     flex: 1;
     text-align: left;
 }
 
-.table-head-item:nth-child(3) {
-    flex: 0 0 36%;
+.pool-table-head-item:nth-child(3) {
+    flex: 1;
+    text-align: left;
+}
+
+.pool-table-head-item:nth-child(4) {
+    flex: 0 0 30%;
     text-align: left;
 }

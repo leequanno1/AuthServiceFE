@@ -1,11 +1,5 @@
 @import url('../../assets/css_constains/root.css');
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 .name-tag {
     display: flex;
     align-items: center;
@@ -14,7 +8,7 @@
     color: var(--text-color);
     border: 2px solid var(--primary-color);
     border-radius: 25px;
-    padding: 5px 10px;
+    padding: 3px 10px;
     font-size: 14px;
     font-family: var(--web-font);
     font-weight: 500;

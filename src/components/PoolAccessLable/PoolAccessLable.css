@@ -1,18 +1,12 @@
 @import url("../../assets/css_constains/root.css");
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 .pool-access-label {
   display: flex;
   justify-content: center;
   align-items: center; 
   width: 50px;
   height: 25px;
-  font-size: 15px;
+  font-size: 13px;
   border-radius: 13px;
   cursor: pointer;
   font-weight: 600;

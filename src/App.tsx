@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import InputText from './components/InputText/InputText';
 import { ArrowClockwise, MagnifyingGlass } from 'phosphor-react';
@@ -10,6 +9,7 @@ import LoginForm from './compine-components/Form/LoginForm/LoginForm';
 import SignUpForm from './compine-components/Form/SignUpForm/SignUpForm';
 import ForgotPasswordForm from './compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm';
 import UserTable from './compine-components/Table/UserTable/UserTable';
+import UserPoolTable from './compine-components/Table/UserPoolTable/UserPoolTable';
 
 function App() {
   const [text, setText] = React.useState('');
@@ -25,15 +25,16 @@ function App() {
         >
           Learn React
         </a>
-        {/* <InputText lable='Nigani' placeholder='Niagnas' value={text} onChange={setText} Icon={MagnifyingGlass} />
+        <InputText lable='Nigani' placeholder='Niagnas' value={text} onChange={setText} Icon={MagnifyingGlass} />
         <PoolAccessLabel accessLevel="edit" />
         <PoolAccessLabel accessLevel="view" />
         <NameTag name={"NIGA"} />
-        <CountDownButton Icon={ArrowClockwise} timeLeft={10} label={"niga"} onClick={() => {}}/> */}
-        {/* <LoginForm /> */}
-        {/* <SignUpForm /> */}
-        {/* <ForgotPasswordForm /> */}
+        <CountDownButton Icon={ArrowClockwise} timeLeft={10} label={"niga"} onClick={() => {}}/>
+        <LoginForm />
+        <SignUpForm />
+        <ForgotPasswordForm />
         <UserTable />
+        <UserPoolTable/>
       </header>
     </div>
   );
