@@ -1,0 +1,56 @@
+@import url('../../assets/css_constains/root.css');
+
+.app-drawer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 55px;
+    justify-content: start;
+    align-items: start;
+    position: relative;
+    transition: 0.3s ease;
+    box-shadow: var(--box-shadow);
+}
+
+.app-drawer.open {
+    width: var(--drawer-width);
+}
+
+.app-drawer.close .dw-name  {
+    opacity: 0;
+}
+
+.app-drawer.close .dw-menu-items {
+    opacity: 0;
+}
+
+.button-container {
+    margin: 10px;
+}
+
+.dw-name {
+    text-align: start;
+    position: absolute;
+    height: 33px;
+    display: flex;
+    align-items: center;
+    top: 10px;
+    width: calc(100% - 50px);
+    right: 0px;
+    font-size: 20px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.dw-menu-items {
+    padding-left: 20px;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: var(--drawer-width);
+    min-height: 50px;
+    transition: 0.3s ease;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+    text-align: start;
+}

@@ -1,0 +1,32 @@
+.console-home-container {
+    width: 100%;
+    height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    padding-inline: 10px;
+}
+
+.cs-header-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-block: 30px;
+}
+
+.cs-header {
+    flex: 1;
+    text-align: start;
+}
+
+.cs-header-container button {
+    font-size: 16px;
+    padding: 5px 10px;
+    height: fit-content;
+}
+
+.cs-table-container {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    padding-bottom: 10px;
+}

@@ -1,34 +1,12 @@
-import React from "react";
 import "./App.css";
-import InputText from "./components/InputText/InputText";
-import { ArrowClockwise, MagnifyingGlass } from "phosphor-react";
-import PoolAccessLabel from "./components/PoolAccessLable/PoolAccessLable";
-import CountDownButton from "./components/CountDownButton/CountDownButton";
-import NameTag from "./components/NameTag/NameTag";
-import LoginForm from "./compine-components/Form/LoginForm/LoginForm";
-import SignUpForm from "./compine-components/Form/SignUpForm/SignUpForm";
-import ForgotPasswordForm from "./compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm";
-import UserTable from "./compine-components/Table/UserTable/UserTable";
-import UserPoolTable from "./compine-components/Table/UserPoolTable/UserPoolTable";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Header1 from "./components/Header1/Header1";
-import StartScreen from "./sceens/StartScreen/StartScreen";
+import AppRoute from "./AppRoute";
 
 function App() {
   // const [text, setText] = React.useState("");
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>{
-          <Route path="/" element={<StartScreen/>} >
-            <Route index element={<LoginForm/>}/>
-            <Route path="/login" element={<LoginForm/>}/>
-            <Route path="/sign-up" element={<SignUpForm/>}/>
-            <Route path="/forgot" element={<ForgotPasswordForm/>}/>
-          </Route>
-        }</Routes>
-      </BrowserRouter>
+      <AppRoute/>
       {/* <header className="App-header">
         <a
           className="App-link"
