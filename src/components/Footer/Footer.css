@@ -1,0 +1,28 @@
+@import url('../../assets/css_constains/root.css');
+
+footer {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    padding-inline: 90px;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    background: var(--background-alt);
+    gap: 50px;
+}
+
+.ft-block {
+    text-align: left;
+    width: 360px;
+}
+
+.ft-block h3 {
+    color: var(--primary-dark);
+    font-size: 25px;
+    margin-bottom: 20px;
+}
+
+.ft-block ul {
+    list-style-type: none;
+}

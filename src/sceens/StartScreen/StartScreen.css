@@ -1,0 +1,80 @@
+.start-screen-container {
+    position: relative;
+    display: flex;
+    min-height: calc(100vh - 120px);
+    box-shadow: var(--box-shadow);
+}
+
+.panel {
+    background: var(--primary-light);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    padding-left: 90px;
+    gap: 20px;
+}
+
+.form-container {
+    background: var(--background-alt);
+    height: 100%;
+    width: 655px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    place-items: center;
+}
+
+.pn-logo {
+    font-size: 55px;
+    font-weight: bold;
+    font-family: var(--web-font-secondary);
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.pn-bold {
+    font-size: 25px;
+}
+
+.pn-text {
+    font-size: 23px;
+    color: var(--muted-text);
+    max-width: 600px;
+    text-align: left;
+}
+
+.pn-shapes {
+    height: 200px;
+    display: flex;
+    align-items: end;
+    gap: 20px;
+}
+
+.pn-shape {
+    height: 110px;
+    width: 110px;
+    background: var(--background-alt);
+    opacity: 0.3;
+}
+
+.pn-circle {
+    border-radius: 50%;
+    background: var(--accent-color);
+}
+
+.pn-triangle {
+    width: 120px;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    background: var(--danger-color);
+}
+
+.pn-square {
+    background: var(--primary-color);
+}

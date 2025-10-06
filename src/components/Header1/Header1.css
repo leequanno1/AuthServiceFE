@@ -1,0 +1,41 @@
+@import url('../../assets/css_constains/root.css');
+
+header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--box-shadow);
+    background: var(--background-alt);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.app-logo {
+    font-size: 30px;
+    margin-left: 90px;
+    font-weight: bold;
+    font-family: var(--web-font-secondary);
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.header-nav-links {
+    display: flex;
+    margin-right: 90px;
+    align-items: center;
+    gap: 40px;
+}
+
+.link-item {
+    font-size: 20px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.link-item:hover {
+    text-decoration: underline;
+}

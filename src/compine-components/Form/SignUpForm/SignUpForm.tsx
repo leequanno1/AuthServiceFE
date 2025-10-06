@@ -4,6 +4,8 @@ import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import CountDownButton from "../../../components/CountDownButton/CountDownButton";
 import { ArrowClockwise } from "phosphor-react";
+import { Link } from "react-router-dom";
+import LinkButton from "../../../components/LinkButton/LinkButton";
 
 const SignUpForm: React.FC = () => {
 
@@ -62,7 +64,7 @@ const SignUpForm: React.FC = () => {
               onClick={() => {setStep(2)}}/>
           </div>
           <span className="flex-1"></span>
-          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+          <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
         </div>
       )}
       
@@ -99,7 +101,7 @@ const SignUpForm: React.FC = () => {
               onClick={() => {setStep(3)}}/> 
           </div>
           <span className="flex-1"></span>
-          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+          <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
         </div>
       )}
       
@@ -112,14 +114,10 @@ const SignUpForm: React.FC = () => {
           <h3>Your registration is complete</h3>
           <span className="form-3-message">Start your own experience with our service.</span>
           <div className="form-3-buttons">
-            <Button 
-              borderRadius={15}
-              label="Go to Login"
-              tyle="primary"
-              onClick={() => {setStep(1)}}/>
+            <LinkButton label={"Go to Login"} to={"/login"} type="primary"/>
           </div>
           <span className="flex-1"></span>
-          <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
+          <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
         </div>
       )}
     </div>

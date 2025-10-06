@@ -1,22 +1,35 @@
-import React from 'react';
-import './App.css';
-import InputText from './components/InputText/InputText';
-import { ArrowClockwise, MagnifyingGlass } from 'phosphor-react';
-import PoolAccessLabel from './components/PoolAccessLable/PoolAccessLable';
-import CountDownButton from './components/CountDownButton/CountDownButton';
-import NameTag from './components/NameTag/NameTag';
-import LoginForm from './compine-components/Form/LoginForm/LoginForm';
-import SignUpForm from './compine-components/Form/SignUpForm/SignUpForm';
-import ForgotPasswordForm from './compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm';
-import UserTable from './compine-components/Table/UserTable/UserTable';
-import UserPoolTable from './compine-components/Table/UserPoolTable/UserPoolTable';
+import React from "react";
+import "./App.css";
+import InputText from "./components/InputText/InputText";
+import { ArrowClockwise, MagnifyingGlass } from "phosphor-react";
+import PoolAccessLabel from "./components/PoolAccessLable/PoolAccessLable";
+import CountDownButton from "./components/CountDownButton/CountDownButton";
+import NameTag from "./components/NameTag/NameTag";
+import LoginForm from "./compine-components/Form/LoginForm/LoginForm";
+import SignUpForm from "./compine-components/Form/SignUpForm/SignUpForm";
+import ForgotPasswordForm from "./compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm";
+import UserTable from "./compine-components/Table/UserTable/UserTable";
+import UserPoolTable from "./compine-components/Table/UserPoolTable/UserPoolTable";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Header1 from "./components/Header1/Header1";
+import StartScreen from "./sceens/StartScreen/StartScreen";
 
 function App() {
-  const [text, setText] = React.useState('');
+  // const [text, setText] = React.useState("");
 
   return (
     <div className="App">
-      <header className="App-header">
+      <BrowserRouter>
+        <Routes>{
+          <Route path="/" element={<StartScreen/>} >
+            <Route index element={<LoginForm/>}/>
+            <Route path="/login" element={<LoginForm/>}/>
+            <Route path="/sign-up" element={<SignUpForm/>}/>
+            <Route path="/forgot" element={<ForgotPasswordForm/>}/>
+          </Route>
+        }</Routes>
+      </BrowserRouter>
+      {/* <header className="App-header">
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -25,17 +38,28 @@ function App() {
         >
           Learn React
         </a>
-        <InputText lable='Nigani' placeholder='Niagnas' value={text} onChange={setText} Icon={MagnifyingGlass} />
+        <InputText
+          lable="Nigani"
+          placeholder="Niagnas"
+          value={text}
+          onChange={setText}
+          Icon={MagnifyingGlass}
+        />
         <PoolAccessLabel accessLevel="edit" />
         <PoolAccessLabel accessLevel="view" />
         <NameTag name={"NIGA"} />
-        <CountDownButton Icon={ArrowClockwise} timeLeft={10} label={"niga"} onClick={() => {}}/>
+        <CountDownButton
+          Icon={ArrowClockwise}
+          timeLeft={10}
+          label={"niga"}
+          onClick={() => {}}
+        />
         <LoginForm />
         <SignUpForm />
         <ForgotPasswordForm />
         <UserTable />
-        <UserPoolTable/>
-      </header>
+        <UserPoolTable />
+      </header> */}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import CountDownButton from "../../../components/CountDownButton/CountDownButton";
 import { ArrowClockwise } from "phosphor-react";
+import { Link } from "react-router-dom";
+import LinkButton from "../../../components/LinkButton/LinkButton";
 
 const ForgotPasswordForm: React.FC = () => {
 
@@ -31,8 +33,8 @@ const ForgotPasswordForm: React.FC = () => {
                     <small className="input-hint">We will send a verification code to your registered email.</small>
                     <Button label="Next" onClick={() => setStep(2)} />
                     <span className="flex-1"></span>
-                    <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
-                    <span className="form-consider">or <a href="/signup">Sign Up</a></span>
+                    <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
+                    <span className="form-consider">or <Link to="/sign-up">Sign up</Link></span>
                 </div>
             )}
 
@@ -55,8 +57,8 @@ const ForgotPasswordForm: React.FC = () => {
                     <small className="input-hint">We have send a verification code to your email.</small>
                     <Button label="Verify" onClick={() => setStep(3)} />
                     <span className="flex-1"></span>
-                    <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
-                    <span className="form-consider">or <a href="/signup">Sign Up</a></span>
+                    <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
+                    <span className="form-consider">or <Link to="/sign-up">Sign up</Link></span>
                 </div>
             )}
 
@@ -83,8 +85,8 @@ const ForgotPasswordForm: React.FC = () => {
                     <span className="spacer-20"></span>
                     <Button label="Verify" onClick={() => setStep(4)} />
                     <span className="flex-1"></span>
-                    <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
-                    <span className="form-consider">or <a href="/signup">Sign Up</a></span>
+                    <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
+                    <span className="form-consider">or <Link to="/sign-up">Sign up</Link></span>
                 </div>
             )}
 
@@ -97,15 +99,11 @@ const ForgotPasswordForm: React.FC = () => {
                     <h3>Your password has been restored</h3>
                     <span className="form-4-message">Start your own experience with our service.</span>
                     <div className="form-4-buttons">
-                        <Button
-                            borderRadius={15}
-                            label="Go to Login"
-                            tyle="primary"
-                            onClick={() => { setStep(1) }} />
+                        <LinkButton label={"Go to Login"} to={"/login"} type="primary"/>
                     </div>
                     <span className="flex-1"></span>
-                    <span className="form-consider">Already have an account? <a href="/login">Login</a></span>
-                    <span className="form-consider">or <a href="/signup">Sign Up</a></span>
+                    <span className="form-consider">Already have an account? <Link to="/login">Login</Link></span>
+                    <span className="form-consider">or <Link to="/sign-up">Sign up</Link></span>
                 </div>
             )}
         </div>

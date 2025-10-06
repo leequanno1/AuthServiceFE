@@ -2,6 +2,7 @@ import React from "react";
 import "./LoginForm.css";
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
+import { Link } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = React.useState("");
@@ -23,10 +24,10 @@ const LoginForm: React.FC = () => {
       <span className="spacer-10"></span>
       <div className="login-form-actions">
         <Button tyle="primary" label="Sign In" onClick={handleLogin}/>
-        <a href="/forgot-password" className="forgot-password-link">Forgot Password?</a>
+        <Link to="/forgot" className="forgot-password-link">Forgot Password?</Link>
       </div>
       <span className="flex-1"></span>
-      <span className="login-form-divider">Don't have an account? <a href="/sign-up">Sign up</a></span>
+      <span className="login-form-divider">Don't have an account? <Link to="/sign-up">Sign up</Link></span>
     </div>
   );
 };
