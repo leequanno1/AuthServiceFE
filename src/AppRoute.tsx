@@ -6,6 +6,7 @@ import SignUpForm from "./compine-components/Form/SignUpForm/SignUpForm";
 import ForgotPasswordForm from "./compine-components/Form/ForgotPasswrodForm/ForgotPasswordForm";
 import Frame from "./sceens/Frame/Frame";
 import ConsoleHome from "./sceens/ConsoleHome/ConsoleHome";
+import AccountAccessControl from "./sceens/AccountAccessControl/AccountAccessControl";
 
 const AppRoute: React.FC = () => {
   return (
@@ -22,6 +23,8 @@ const AppRoute: React.FC = () => {
         <Route path="/dash-board" element={<Frame />}>
           <Route index element={<ConsoleHome/>} />
           <Route path="console-home" element={<ConsoleHome/>} />
+          <Route path="account-control" element={<AccountAccessControl/>} />
+
         </Route>
       </Routes>
     </BrowserRouter>

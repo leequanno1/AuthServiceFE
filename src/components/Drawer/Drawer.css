@@ -54,3 +54,14 @@
     overflow-wrap: break-word;
     text-align: start;
 }
+
+.app-drawer .horizontal-line {
+    width: 100%;
+    height: 1px;
+    background: var(--divider-color);
+    transition: 0.3s ease;
+}
+
+.app-drawer.close .horizontal-line {
+    opacity: 0;
+}

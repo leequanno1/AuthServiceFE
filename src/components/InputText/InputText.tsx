@@ -33,7 +33,7 @@ const InputText: React.FC<InputTextProps> = ({
     <div className="input-text-wrapper">
       {lable && <label className="input-label" style={{ fontSize: `${textSize + 2}px` }}>{lable}</label>}
       <div className={`input-text-container ${disabled ? "disabled" : ""}`}>
-        {Icon && <Icon className="input-icon" size={IconSize} weight={IconWeight} />}
+        {Icon && <Icon className="input-icon" size={IconSize} weight={IconWeight} color="var(--muted-text)" />}
         <input
           className="input-text"
           type={type}

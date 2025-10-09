@@ -14,8 +14,8 @@ const ConsoleHome: React.FC = () => {
                 <Button label="+ Add new pool" tyle="tertiary" borderRadius={3} onClick={() => {}}/>
             </div>
             <div className="cs-table-container">
-                <UserPoolTable tableName="Account Access Control"/>
-                <UserTable tableTitle="User Pools Control"/>
+                <UserTable tableTitle="Account Access Control"/>
+                <UserPoolTable tableName="User Pools Control"/>
             </div>
         </div>
     );

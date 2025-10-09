@@ -1,0 +1,19 @@
+.aac-container {
+    display: flex;
+    width: 100%;
+    margin: 10px;
+    gap: 10px
+}
+
+.aac-right-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 500px;
+}
+
+.mn-pf-header-name {
+    flex: 1;
+    text-align: start;
+}
