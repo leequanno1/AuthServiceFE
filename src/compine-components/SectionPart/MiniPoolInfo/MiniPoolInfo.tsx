@@ -4,7 +4,9 @@ import "./MiniPoolInfo.css";
 const MiniPoolInfo: React.FC = () => {
 
     return (
-        <></>
+        <div>
+            
+        </div>
     );
 }
 

@@ -1,19 +1,41 @@
 .aac-container {
     display: flex;
+    flex-direction: column;
     width: 100%;
     margin: 10px;
-    gap: 10px
+    max-height: calc(100vh - 50px);
+    flex: 1;
+    gap: 10px;
+}
+
+.acc-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-block: 20px;
+}
+
+.acc-header button {
+    padding: 5px 10px;
+    height: fit-content;
+}
+
+.aac-container .acc-body {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    flex: 1;
+    height: calc(100vh - 163px);
 }
 
 .aac-right-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     min-width: 500px;
 }
 
-.mn-pf-header-name {
+.aac-right-container > div {
     flex: 1;
-    text-align: start;
 }

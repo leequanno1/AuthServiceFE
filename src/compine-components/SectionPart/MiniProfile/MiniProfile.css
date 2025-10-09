@@ -17,7 +17,7 @@
     background: var(--highlight-color);
     width: 100%;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     padding-block: 10px;
     border-bottom: 1px solid var(--divider-color);
