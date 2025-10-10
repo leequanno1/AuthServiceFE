@@ -26,8 +26,28 @@
     font-size: 20px;
 }
 
+.mini-pool-policy-body {
+    width: 100%;
+    padding: 10px;
+    overflow: auto;
+}
+
 .mn-policy-info-container .mnpc-search-box {
     display: flex;
     gap: 10px;
-    padding-inline: 10px;
+    margin-bottom: 10px;
+}
+
+.session-sub-info {
+    text-align: start;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.nmpc-horizontal-line {
+    height: 1px;
+    width: 100%;
+    background-color: var(--divider-color);
+    margin-top: 15px;
+    margin-bottom: 10px;
 }

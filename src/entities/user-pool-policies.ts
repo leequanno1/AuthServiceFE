@@ -20,4 +20,5 @@ export interface UserPoolPolicies {
     updatedAt?: Date;
     
     delFlag?: boolean;
+
 }

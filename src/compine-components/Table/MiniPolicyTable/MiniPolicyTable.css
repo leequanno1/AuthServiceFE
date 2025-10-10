@@ -1,0 +1,41 @@
+.mini-policy-table-wrapper {
+    background: var(--background-alt);
+    border-radius: 10px;
+    border: 1px solid var(--divider-color);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    min-height: 200px;
+}
+
+.mini-policy-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mini-policy-table thead {
+    background: var(--table-header-bg);
+}
+
+.mini-policy-table thead tr, 
+.mini-policy-table tbody tr
+{
+    height: 35px;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.mini-policy-table thead th {
+    font-weight: 600;
+}
+
+.mini-policy-table thead th:nth-child(2),
+.mini-policy-table tbody td:nth-child(2) {
+    text-align: start;
+}
+
+.pool-access-label {
+    margin-inline: auto;
+}
+
+.mini-policy-table tbody tr {
+    background: var(--background-color);
+}
