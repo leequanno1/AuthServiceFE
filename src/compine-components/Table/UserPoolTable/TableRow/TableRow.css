@@ -38,6 +38,7 @@
 .row-column-3 {
     display: flex;
     gap: 5px;
+    justify-content: start;
 }
 
 .dropdown-icon-btn {

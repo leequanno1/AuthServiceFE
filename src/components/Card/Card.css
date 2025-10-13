@@ -1,0 +1,40 @@
+.qa-card {
+    border-radius: 10px;
+    border: 1px solid var(--divider-color);
+    display: flex;
+    box-shadow: var(--box-shadow);
+    flex-direction: column;
+    background: var(--background-color);
+    overflow-x: hidden;
+}
+
+.qa-card-header {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    width: 100%;
+    margin-inline: auto;
+    background-color: var(--highlight-color);
+    border-bottom: 1px solid var(--divider-color);
+    gap: 20px;
+}
+
+.qa-card-header > h2 {
+    font-size: 20px;
+    font-family: var(--web-font);
+    color: var(--text-color);
+    margin-block: 10px;
+    margin-left: 20px;
+    font-weight: 600;
+}
+
+.qa-card-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    height: 100%;
+}
+
+.qa-card-buttons:nth-last-child {
+    margin-right: 10px;
+}

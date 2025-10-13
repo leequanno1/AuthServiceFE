@@ -7,6 +7,7 @@ import ForgotPasswordForm from "./compine-components/Form/ForgotPasswrodForm/For
 import Frame from "./sceens/Frame/Frame";
 import ConsoleHome from "./sceens/ConsoleHome/ConsoleHome";
 import AccountAccessControl from "./sceens/AccountAccessControl/AccountAccessControl";
+import CreateSubUser from "./sceens/CreateSubUser/CreateSubUser";
 
 const AppRoute: React.FC = () => {
   return (
@@ -19,12 +20,14 @@ const AppRoute: React.FC = () => {
           <Route path="/sign-up" element={<SignUpForm />} />
           <Route path="/forgot" element={<ForgotPasswordForm />} />
         </Route>
-        {/* Path = "/dash-board" */}
-        <Route path="/dash-board" element={<Frame />}>
+        {/* Path = /dash-board */}
+        <Route path="/console-home" element={<Frame />}>
           <Route index element={<ConsoleHome/>} />
-          <Route path="console-home" element={<ConsoleHome/>} />
-          <Route path="account-control" element={<AccountAccessControl/>} />
-
+        </Route>
+        {/* Path = /account-control */}
+        <Route path="/account-control" element={<Frame />}>
+          <Route index element={<AccountAccessControl/>} />
+          <Route path="create" element={<CreateSubUser/>} />
         </Route>
       </Routes>
     </BrowserRouter>

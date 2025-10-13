@@ -13,7 +13,8 @@ interface InputTextProps{
   textSize?: number;
   Icon?: React.ComponentType<IconProps>;
   IconSize?: number;
-  IconWeight?: "thin" | "light" | "regular" | "bold"
+  IconWeight?: "thin" | "light" | "regular" | "bold";
+  stretch?: boolean;
 }
 
 const InputText: React.FC<InputTextProps> = ({
@@ -27,12 +28,13 @@ const InputText: React.FC<InputTextProps> = ({
   textSize = 14,
   Icon,
   IconSize = 20,
-  IconWeight = "regular"
+  IconWeight = "regular",
+  stretch = true,
 }) => {
   return ( 
-    <div className="input-text-wrapper">
+    <div className="input-text-wrapper" style={{width:stretch?"100%":"auto"}}>
       {lable && <label className="input-label" style={{ fontSize: `${textSize + 2}px` }}>{lable}</label>}
-      <div className={`input-text-container ${disabled ? "disabled" : ""}`}>
+      <div className={`input-text-container ${disabled ? "disabled" : ""}`} style={{width:stretch?"100%":"auto"}}>
         {Icon && <Icon className="input-icon" size={IconSize} weight={IconWeight} color="var(--muted-text)" />}
         <input
           className="input-text"

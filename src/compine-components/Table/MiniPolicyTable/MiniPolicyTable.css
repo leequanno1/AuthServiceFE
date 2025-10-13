@@ -31,10 +31,10 @@
 .mini-policy-table tbody td:nth-child(2) {
     text-align: start;
 }
-
+/* 
 .pool-access-label {
     margin-inline: auto;
-}
+} */
 
 .mini-policy-table tbody tr {
     background: var(--background-color);

@@ -1,0 +1,83 @@
+.create-sub-account-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    justify-content: start;
+    padding: 10px;
+}
+
+.create-sub-account-container h1 {
+    text-align: start;
+    margin-block: 20px;
+}
+
+.content-scrollable {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.auth-info-content {
+    padding-left: 20px;
+    padding-block: 20px;
+    padding-right: 10px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+
+}
+
+.input-pare {
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    gap: 10px
+}
+
+.input-pare > small {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.input-pare > small > i {
+    color: var(--danger-color);
+}
+
+.auto-generate-pass-container {
+    width: 100%;
+    text-align: start;
+}
+
+.sub-scription {
+    text-align: start;
+    margin-top: 5px;
+}
+
+.sub-scription i {
+    color: var(--muted-text);
+}
+
+.save-as-text-file {
+    text-align: start;
+}
+
+.user-policy-content {
+    width: 600px;
+    display: flex;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-block: 10px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.policy-search-container {
+    display: flex;
+    gap: 20px;
+    justify-content: start;
+    align-items: center;
+}

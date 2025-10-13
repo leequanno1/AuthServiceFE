@@ -1,0 +1,17 @@
+
+.icon-button {
+    background-color: transparent;
+    display: grid;
+    place-items: center;
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.icon-button:hover {
+    box-shadow: var(--box-shadow);
+}
+
+.icon-button:active {
+    background-color: var(--primary-light);
+}

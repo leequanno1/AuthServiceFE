@@ -4,7 +4,6 @@
   flex-direction: column;
   gap: 4px;
   align-items: start;
-  width: 100%;
 }
 
 .input-label {
@@ -20,7 +19,7 @@
   padding: 0px 10px;
   background-color: #fff;
   transition: border-color 0.3s ease;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .input-text-container:focus-within {
