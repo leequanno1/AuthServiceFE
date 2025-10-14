@@ -8,6 +8,9 @@ import Frame from "./sceens/Frame/Frame";
 import ConsoleHome from "./sceens/ConsoleHome/ConsoleHome";
 import AccountAccessControl from "./sceens/AccountAccessControl/AccountAccessControl";
 import CreateSubUser from "./sceens/CreateSubUser/CreateSubUser";
+import UserInfoSceen from "./sceens/UserInfoSceen/UserInfoSceen";
+import PoolAndPoliciesInfo from "./compine-components/SectionPart/PoolAndPoliciesInfo/PoolAndPoliciesInfo";
+import SubUserAndPoliciesInfo from "./compine-components/SectionPart/SubUserAndPoliciesInfo/SubUserAndPoliciesInfo";
 
 const AppRoute: React.FC = () => {
   return (
@@ -28,6 +31,11 @@ const AppRoute: React.FC = () => {
         <Route path="/account-control" element={<Frame />}>
           <Route index element={<AccountAccessControl/>} />
           <Route path="create" element={<CreateSubUser/>} />
+          <Route path="user/:accountId" element={<UserInfoSceen/>} >
+            <Route index element={<PoolAndPoliciesInfo />} />
+            <Route path="pools" element={<PoolAndPoliciesInfo />} />
+            <Route path="sub-users" element={<SubUserAndPoliciesInfo />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

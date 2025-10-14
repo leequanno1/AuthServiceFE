@@ -8,7 +8,7 @@ interface CardProps {
     children?: ReactNode; // new: use <Card>...</Card>
     className?: string;
     "data-testid"?: string;
-    minWidth?: number;
+    minWidth?: string;
 }
 
 const Card: FC<CardProps> = ({
@@ -18,7 +18,7 @@ const Card: FC<CardProps> = ({
     children = null,
     className = "",
     "data-testid": testId,
-    minWidth=300,
+    minWidth="300px",
 }) => {
     const headerId = `card-${Math.random().toString(36).slice(2, 9)}`;
 
