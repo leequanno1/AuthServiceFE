@@ -11,6 +11,8 @@ import CreateSubUser from "./sceens/CreateSubUser/CreateSubUser";
 import UserInfoSceen from "./sceens/UserInfoSceen/UserInfoSceen";
 import PoolAndPoliciesInfo from "./compine-components/SectionPart/PoolAndPoliciesInfo/PoolAndPoliciesInfo";
 import SubUserAndPoliciesInfo from "./compine-components/SectionPart/SubUserAndPoliciesInfo/SubUserAndPoliciesInfo";
+import UserPoolControl from "./sceens/UserPoolControl/UserPoolControl";
+import UserPoolInfoScreen from "./sceens/UserPoolInfoScreen/UserPoolInfoScreen";
 
 const AppRoute: React.FC = () => {
   return (
@@ -36,6 +38,11 @@ const AppRoute: React.FC = () => {
             <Route path="pools" element={<PoolAndPoliciesInfo />} />
             <Route path="sub-users" element={<SubUserAndPoliciesInfo />} />
           </Route>
+        </Route>
+
+        <Route path="/pool-control" element={<Frame />}>
+          <Route index element={<UserPoolControl/>} />
+          <Route path="pool/:poolID" element={<UserPoolInfoScreen/>} />
         </Route>
       </Routes>
     </BrowserRouter>

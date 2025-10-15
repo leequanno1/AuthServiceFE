@@ -11,7 +11,7 @@
     font-size: 14px;
     font-family: var(--web-font);
     font-weight: 500;
-    min-width: 80px;
+    min-width: 90px;
     background-color: var(--primary-light);
     cursor: pointer;
 }

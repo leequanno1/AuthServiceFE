@@ -61,7 +61,7 @@ const UserInfoSceen: React.FC = () => {
         {/* Bottom component */}
         <div className="sub-info-container">
             <div className="tab-container">
-                <Link className={location.pathname.endsWith("pools") ? "active" : ""} to={`/account-control/user/${accountId}/pools`} >Pools and Policies</Link>
+                <Link className={location.pathname.endsWith("sub-users") ? "" : "active"} to={`/account-control/user/${accountId}/pools`} >Pools and Policies</Link>
                 <Link className={location.pathname.endsWith("sub-users") ? "active" : ""} to={`/account-control/user/${accountId}/sub-users`} >Sub-user and Policies</Link>
             </div>
             <div className="outlet-container">

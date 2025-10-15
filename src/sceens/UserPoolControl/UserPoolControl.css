@@ -1,0 +1,117 @@
+.user-pool-control-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.upc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 20px;
+}
+
+.scrollable-content {
+    height: calc(100vh - 155px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scrollable-content > div:nth-child(1) {
+    max-width: none;
+    min-height: 0;
+    height: 50%;
+    flex: 1;
+    overflow-y: hidden;
+} 
+
+.scrollable-content > div:nth-child(2) {
+    max-width: none;
+    flex: 1;
+    height: 50%;
+    width: 100% !important;
+    overflow-y: hidden;
+}
+
+.qa-card-content {
+    height: 100%;
+    overflow: hidden;
+}
+
+.card-scroll-able {
+    padding: 10px;
+    height: 100%;
+    overflow: auto;
+    padding-inline: 20px;
+}
+
+.card-pool-content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.card-pool-content .verticle-line {
+    height: 100%;
+    width: 1px;
+    margin-inline: 10px;
+    background: var(--divider-color);
+}
+
+.content-left, 
+.tag-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    justify-content: start;
+    align-items: start;
+}
+
+.content-left {
+    gap: 10px;
+    flex: 1;
+}
+
+.tag-names {
+    display: flex;
+    width: 70%;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.card-pool-content h3 {
+    text-transform: uppercase;
+}
+
+.content-left h3, 
+.content-left span,
+.content-left .date-text {
+    text-align: start;
+}
+
+.date-text.last {
+    padding-bottom: 10px;
+}
+
+.content-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    gap: 10px;
+}
+
+.content-right > h3 {
+    text-align: start;
+}
+
+.content-right > div {
+    text-align: start;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
