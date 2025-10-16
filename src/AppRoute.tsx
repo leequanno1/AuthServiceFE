@@ -13,6 +13,9 @@ import PoolAndPoliciesInfo from "./compine-components/SectionPart/PoolAndPolicie
 import SubUserAndPoliciesInfo from "./compine-components/SectionPart/SubUserAndPoliciesInfo/SubUserAndPoliciesInfo";
 import UserPoolControl from "./sceens/UserPoolControl/UserPoolControl";
 import UserPoolInfoScreen from "./sceens/UserPoolInfoScreen/UserPoolInfoScreen";
+import AccessableUsers from "./sceens/UserPoolInfoScreen/AccessableUsers/AccessableUsers";
+import Monitoring from "./sceens/UserPoolInfoScreen/Monitoring/Monitoring";
+import UserData from "./sceens/UserPoolInfoScreen/UserData/UserData";
 
 const AppRoute: React.FC = () => {
   return (
@@ -27,13 +30,13 @@ const AppRoute: React.FC = () => {
         </Route>
         {/* Path = /dash-board */}
         <Route path="/console-home" element={<Frame />}>
-          <Route index element={<ConsoleHome/>} />
+          <Route index element={<ConsoleHome />} />
         </Route>
         {/* Path = /account-control */}
         <Route path="/account-control" element={<Frame />}>
-          <Route index element={<AccountAccessControl/>} />
-          <Route path="create" element={<CreateSubUser/>} />
-          <Route path="user/:accountId" element={<UserInfoSceen/>} >
+          <Route index element={<AccountAccessControl />} />
+          <Route path="create" element={<CreateSubUser />} />
+          <Route path="user/:accountId" element={<UserInfoSceen />}>
             <Route index element={<PoolAndPoliciesInfo />} />
             <Route path="pools" element={<PoolAndPoliciesInfo />} />
             <Route path="sub-users" element={<SubUserAndPoliciesInfo />} />
@@ -41,8 +44,12 @@ const AppRoute: React.FC = () => {
         </Route>
 
         <Route path="/pool-control" element={<Frame />}>
-          <Route index element={<UserPoolControl/>} />
-          <Route path="pool/:poolID" element={<UserPoolInfoScreen/>} />
+          <Route index element={<UserPoolControl />} />
+          <Route path="pool/:poolID" element={<UserPoolInfoScreen />}>
+            <Route index element={<AccessableUsers />} />
+            <Route path="monitor" element={<Monitoring />} />
+            <Route path="user-data" element={<UserData />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

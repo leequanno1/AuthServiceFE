@@ -1,0 +1,14 @@
+.monitoring-container-content h2 {
+    text-align: start;
+    margin: 10px;
+    font-weight: 600;
+}
+
+.monitoring-container-content .chart-container {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    padding: 10px;
+}
