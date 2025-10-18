@@ -1,0 +1,36 @@
+.input-form {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 15px;
+}
+
+.input-form .validationable {
+    display: flex;
+    gap: 10px;
+}
+
+.input-form .validationable small {
+    height: fit-content;
+    margin-top: auto;
+    margin-bottom: 12px;
+}
+
+.input-form .name-tags-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-block: 10px;
+}
+
+.input-form .field-container .sub-scription {
+    font-style: italic;
+    color: var(--muted-text);
+}
+
+.input-form .check-box-container {
+    display: flex;
+    gap: 10px;
+}

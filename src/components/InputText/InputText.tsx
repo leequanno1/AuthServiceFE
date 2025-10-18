@@ -7,7 +7,7 @@ interface InputTextProps{
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  type?: "text" | "password" | "email";
+  type?: "text" | "password" | "email" | "number";
   width?: number;
   lable?: string;
   textSize?: number;

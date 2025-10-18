@@ -16,6 +16,9 @@ import UserPoolInfoScreen from "./sceens/UserPoolInfoScreen/UserPoolInfoScreen";
 import AccessableUsers from "./sceens/UserPoolInfoScreen/AccessableUsers/AccessableUsers";
 import Monitoring from "./sceens/UserPoolInfoScreen/Monitoring/Monitoring";
 import UserData from "./sceens/UserPoolInfoScreen/UserData/UserData";
+import CreateUserPool from "./sceens/CreateUserPool/CreateUserPool";
+import CreateFullFunctionPool from "./compine-components/SectionPart/CreateUserPool/CreateFullFunctionPool";
+import CreateEmptyPool from "./compine-components/SectionPart/CreateUserPool/CreateEmptyPool";
 
 const AppRoute: React.FC = () => {
   return (
@@ -49,6 +52,10 @@ const AppRoute: React.FC = () => {
             <Route index element={<AccessableUsers />} />
             <Route path="monitor" element={<Monitoring />} />
             <Route path="user-data" element={<UserData />} />
+          </Route>
+          <Route path="create" element={<CreateUserPool />}>
+            <Route index element={<CreateFullFunctionPool/>} />
+            <Route path="empty-function" element={<CreateEmptyPool/>} />
           </Route>
         </Route>
       </Routes>
