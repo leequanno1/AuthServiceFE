@@ -39,6 +39,7 @@ const MiniPolicyInfo: React.FC = () => {
       
       <div className="mnpc-search-box">
         <InputText
+          stretch={false}
           value=""
           Icon={MagnifyingGlass}
           IconSize={20}
@@ -64,6 +65,7 @@ const MiniPolicyInfo: React.FC = () => {
       <div className="mnpc-search-box">
         <InputText
           value=""
+          stretch={false}
           Icon={MagnifyingGlass}
           IconSize={20}
           width={180}

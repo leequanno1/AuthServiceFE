@@ -1,0 +1,19 @@
+export interface User {
+    userId?:string;
+    username?:string;
+    email?:string;
+    phoneNumber?:string;
+    telCountryCode?:string;
+    password?:string;
+    lastName?:string;
+    firstName?:string;
+    avatarImg?:string;
+    backgroundImg?:string;
+    displayName?:string;
+    gender?:boolean;
+    isValidated?:boolean;
+    poolId?:string;
+    createdAtTimestamp?:Date;
+    updatedAt?:Date;
+    delFlag?:Date;
+}

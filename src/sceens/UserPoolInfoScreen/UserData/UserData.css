@@ -1,0 +1,13 @@
+.user-data-content {
+    padding: 10px;
+}
+
+.user-data-content h2 {
+    font-weight: 600;
+    text-align: start;
+}
+
+.user-data-content .button-container {
+    display: flex;
+    gap: 10px;
+}

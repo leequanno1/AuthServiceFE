@@ -133,6 +133,7 @@ const MiniProfile: React.FC = () => {
         <div className="mn-search-box">
           <InputText
             value=""
+            stretch={false}
             width={180}
             onChange={() => {}}
             placeholder="Search for pool information"
