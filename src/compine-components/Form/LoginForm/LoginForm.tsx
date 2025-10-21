@@ -3,14 +3,31 @@ import "./LoginForm.css";
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import { Link } from "react-router-dom";
+import accountService from "../../../services/account-service";
+import { getServerErrorCode } from "../../../services/error-code-service";
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     // Handle login logic here
-    console.log("Logging in with", username, password);
+    if (!username || !password) {
+      setError("Please enter both username and password.");
+      return;
+    }
+    try {
+      await accountService.login(username, password);
+      
+    } catch (err:any) {
+      if (getServerErrorCode(err) === 1002) {
+        setError("Wrong password. Please try again.");
+      }
+      else if (getServerErrorCode(err) === 1001) {
+        setError("Account does not exist. Please sign up.");
+      }
+    }
   };
 
   return (
@@ -26,6 +43,8 @@ const LoginForm: React.FC = () => {
         <Button tyle="primary" label="Sign In" onClick={handleLogin}/>
         <Link to="/forgot" className="forgot-password-link">Forgot Password?</Link>
       </div>
+      <span className="flex-1"></span>
+      <small className="error global">{error}</small>
       <span className="flex-1"></span>
       <span className="login-form-divider">Don't have an account? <Link to="/sign-up">Sign up</Link></span>
     </div>

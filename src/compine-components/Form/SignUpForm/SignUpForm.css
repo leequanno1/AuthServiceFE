@@ -46,7 +46,11 @@
 }
 
 .sign-up-form-1 .password-inputs > .input-text-wrapper {
-    width: calc(50% - 5px);
+    width: calc(50% - 5px) !important;
+}
+
+.input-text-container {
+    width: 100% !important;
 }
 
 .sign-up-form-1 .email-input-group {
@@ -57,7 +61,7 @@
 }
 
 .sign-up-form-1 .email-input-group > .input-text-wrapper {
-    width: calc(75% - 5px);
+    width: calc(75% - 5px) !important;
 }
 
 .sign-up-form-1 .email-input-group > .button {
@@ -74,7 +78,7 @@
 }
 
 .form-2-group > .input-text-wrapper {
-    width: calc(75% - 5px);
+    width: calc(75% - 5px) !important;
 }
 
 .form-2-group > .countdown-button  {

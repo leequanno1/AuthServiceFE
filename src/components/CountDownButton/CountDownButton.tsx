@@ -43,7 +43,7 @@ const CountDownButton: React.FC<CountDownButtonProps> = ({
 
   const handleClick = async () => {
     if (!isCounting && timeTotal === timeLeft && timeLeft > 0) {
-      await onClick();
+      onClick();
       setIsCounting(true);
     }
   };
