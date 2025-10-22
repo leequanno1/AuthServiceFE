@@ -25,7 +25,16 @@
     margin-block: 10px;
 }
 
+.input-form .field-container {
+    max-width: 600px;
+}
+
+.input-form .field-container .input-text-wrapper {
+    width: fit-content !important;
+}
+
 .input-form .field-container .sub-scription {
+    display: block;
     font-style: italic;
     color: var(--muted-text);
 }

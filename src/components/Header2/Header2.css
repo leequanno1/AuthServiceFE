@@ -13,6 +13,10 @@ header {
     position: relative;
 }
 
+.logo {
+    text-decoration: none;
+}
+
 .app-logo {
     font-size: 30px;
     margin-left: 35px;

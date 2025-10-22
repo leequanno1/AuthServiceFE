@@ -1,3 +1,5 @@
+import Account from "../entities/account";
+
 export const readCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
   const parts = document.cookie.split(";").map((c) => c.trim());
@@ -20,3 +22,7 @@ export const getAccessTokenFromCookie = (): string | null =>
 
 export const getRefreshTokenFromCookie = (): string | null =>
   readCookie("refreshToken") ?? readCookie("refresh_token");
+
+export const removeCookie = (name: string) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}

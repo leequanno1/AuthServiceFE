@@ -5,9 +5,8 @@ import {getAccessTokenFromCookie , setCookie} from "./cookie-service"
  
 const accountService = {
 
-    getAccountDetails: async () => {
+    getAccountDetails: () => {
         const account = extractToken(getAccessTokenFromCookie());
-        console.log("Account details fetched:", account);
         accountStore.getState().setAccount(account);
     },
     

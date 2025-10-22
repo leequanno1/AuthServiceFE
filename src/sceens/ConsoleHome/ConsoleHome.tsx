@@ -1,8 +1,8 @@
 import React from "react";
 import "./ConsoleHome.css"
-import Button from "../../components/Button/Button";
 import UserPoolTable from "../../compine-components/Table/UserPoolTable/UserPoolTable";
 import UserTable from "../../compine-components/Table/UserTable/UserTable";
+import LinkButton from "../../components/LinkButton/LinkButton";
 
 const ConsoleHome: React.FC = () => {
 
@@ -10,8 +10,8 @@ const ConsoleHome: React.FC = () => {
         <div className="console-home-container">
             <div className="cs-header-container">
                 <h1 className="cs-header">Console Home</h1>
-                <Button label="+ Add new user" tyle="tertiary" borderRadius={3} onClick={() => {}}/>
-                <Button label="+ Add new pool" tyle="tertiary" borderRadius={3} onClick={() => {}}/>
+                <LinkButton to="/account-control/create" label="+ Add new user" type="tertiary" borderRadius={3}/>
+                <LinkButton to="/pool-control/create" label="+ Add new pool" type="tertiary" borderRadius={3} />
             </div>
             <div className="cs-table-container">
                 <UserTable tableTitle="Account Access Control"/>

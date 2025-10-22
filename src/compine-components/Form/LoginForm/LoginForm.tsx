@@ -2,7 +2,7 @@ import React from "react";
 import "./LoginForm.css";
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate,  } from "react-router-dom";
 import accountService from "../../../services/account-service";
 import { getServerErrorCode } from "../../../services/error-code-service";
 
@@ -10,6 +10,7 @@ const LoginForm: React.FC = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async() => {
     // Handle login logic here
@@ -19,7 +20,7 @@ const LoginForm: React.FC = () => {
     }
     try {
       await accountService.login(username, password);
-      
+      navigate("/console-home", { replace: true });
     } catch (err:any) {
       if (getServerErrorCode(err) === 1002) {
         setError("Wrong password. Please try again.");

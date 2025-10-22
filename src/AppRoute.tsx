@@ -19,24 +19,26 @@ import UserData from "./sceens/UserPoolInfoScreen/UserData/UserData";
 import CreateUserPool from "./sceens/CreateUserPool/CreateUserPool";
 import CreateFullFunctionPool from "./compine-components/SectionPart/CreateUserPool/CreateFullFunctionPool";
 import CreateEmptyPool from "./compine-components/SectionPart/CreateUserPool/CreateEmptyPool";
+import HaveTokenNavigate from "./route-wrapper/HaveTokenNavidate/HaveTokenNavigate";
+import NoTokenNavigate from "./route-wrapper/NoTokenNavigate/NoTokenNavigate";
 
 const AppRoute: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* Path = "/" */}
-        <Route path="/" element={<StartScreen />}>
+        <Route path="/" element={<HaveTokenNavigate><StartScreen /></HaveTokenNavigate>}>
           <Route index element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/sign-up" element={<SignUpForm />} />
           <Route path="/forgot" element={<ForgotPasswordForm />} />
         </Route>
         {/* Path = /dash-board */}
-        <Route path="/console-home" element={<Frame />}>
+        <Route path="/console-home" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<ConsoleHome />} />
         </Route>
         {/* Path = /account-control */}
-        <Route path="/account-control" element={<Frame />}>
+        <Route path="/account-control" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<AccountAccessControl />} />
           <Route path="create" element={<CreateSubUser />} />
           <Route path="user/:accountId" element={<UserInfoSceen />}>
@@ -46,7 +48,7 @@ const AppRoute: React.FC = () => {
           </Route>
         </Route>
 
-        <Route path="/pool-control" element={<Frame />}>
+        <Route path="/pool-control" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<UserPoolControl />} />
           <Route path="pool/:poolID" element={<UserPoolInfoScreen />}>
             <Route index element={<AccessableUsers />} />
