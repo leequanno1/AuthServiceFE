@@ -54,11 +54,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
   ];
 
   const poolPolicies: UserPoolPolicies = {
-    poolId: "policy1",
-    accountId: "account1",
-    viewableTargets: ["1", "2", "4"],
-    editableTargets: ["1"],
-    manageableTargets: ["1", "2", "3"],
+    
   };
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -129,7 +125,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
               onChange={handleToggleAll}
             />
           </div>
-          <div className="pool-table-head-item">Name/Username</div>
+          <div className="pool-table-head-item">Pool name</div>
           <div className="pool-table-head-item">Access range</div>
           <div className="pool-table-head-item">Created by/Date</div>
         </div>

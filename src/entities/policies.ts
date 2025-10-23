@@ -1,7 +1,7 @@
 export interface Policy {
     policyId?: number;
     policyName?: string;
-    accessRange?: number;
+    accessRange?: 1 | 2;
     selected?: boolean;
     type?: "accout_policy" | "pool_policy";
 }

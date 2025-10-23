@@ -46,14 +46,14 @@ const TableRow: React.FC<TableRowProps> = ({
                 <div className="row-column-2">{pool.poolName}</div>
 
                 <div className="row-column-3">
-                    {poolPolicies.viewableTargets?.includes(pool?.poolId ?? " ") && (
+                    {/* {poolPolicies.viewableTargets?.includes(pool?.poolId ?? " ") && (
                         <PoolAccessLabel accessLevel="view" />
                     )}
 
                     {(poolPolicies.editableTargets?.includes(pool?.poolId ?? " ") ||
                         poolPolicies.manageableTargets?.includes(pool?.poolId ?? " ")) && (
                             <PoolAccessLabel accessLevel="edit" />
-                        )}
+                        )} */}
                 </div>
 
                 <div className="row-column-4">

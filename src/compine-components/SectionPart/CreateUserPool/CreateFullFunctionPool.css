@@ -16,6 +16,7 @@
     height: fit-content;
     margin-top: auto;
     margin-bottom: 12px;
+    text-align: start;
 }
 
 .input-form .name-tags-container {

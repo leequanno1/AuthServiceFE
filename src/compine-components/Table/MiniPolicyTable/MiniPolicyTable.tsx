@@ -5,10 +5,10 @@ import PoolAccessLabel from "../../../components/PoolAccessLable/PoolAccessLable
 
 interface MiniPolicyTableProps {
   datas: Policy[];
+  onSelected?: (selecteds: Policy[]) => void;
 }
 
-const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas }) => {
-    
+const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) => {
     
     const [rows, setRows] = React.useState<Policy[]>(
         datas.map((p) => ({ ...p, selected: !!p.selected }))
@@ -17,6 +17,12 @@ const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas }) => {
     React.useEffect(() => {
         setRows(datas.map((p) => ({ ...p, selected: !!p.selected })));
     }, [datas]);
+
+    React.useEffect(() => {
+        if (onSelected) {
+            onSelected(rows.filter((r) => r.selected));
+        }
+    }, [rows])
 
     const getId = (policy: Policy, index: number) => (policy.policyId ?? index);
 

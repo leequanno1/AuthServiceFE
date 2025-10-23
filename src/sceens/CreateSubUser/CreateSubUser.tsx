@@ -5,8 +5,34 @@ import MiniPolicyTable from "../../compine-components/Table/MiniPolicyTable/Mini
 import { MagnifyingGlass, X } from "phosphor-react";
 import InputText from "../../components/InputText/InputText";
 import Button from "../../components/Button/Button";
+import { CSA_ERROR_MESSAGE } from "../../constants/error-message/create-sub-account";
+import { createPassword } from "../../services/password-service";
+import { isEmailFormat } from "../../services/email-service";
+import { Policy } from "../../entities/policies";
+import policyService from "../../services/policy-service"
+import { api } from "../../services/api-service";
+import { getServerErrorCode } from "../../services/error-code-service";
+import { useNavigate } from "react-router-dom";
+import { accountInfoContent, exportTextFile } from "../../services/file-export-service";
 
 const CreateSubUser: React.FC = () => {
+  const [username, setUsername] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [errorCode, setErrorCode] = React.useState<string>("");
+  const [autoGenPassword, setAutoGenPassword] = React.useState<boolean>(false);
+  const [saveInfoAsText, setSaveInfoAsText] = React.useState<boolean>(false);
+  const [policies, setPolicies] = React.useState<Policy[]>([]);
+  const [selectedPolicies, setSelectedPolicies] = React.useState<Policy[]>([]);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const setStaterPolicies = async () => {
+      setPolicies(await policyService.getStaterAccountPolicies())
+    }
+    setStaterPolicies();
+  }, []);
+
   return (
     <div className="create-sub-account-container">
       <h1>Create New Sub-Account</h1>
@@ -16,30 +42,61 @@ const CreateSubUser: React.FC = () => {
             <div className="input-pare">
               <InputText
                 lable="Username"
-                value=""
+                value={username}
                 placeholder="example_username"
                 stretch={false}
-                onChange={() => {}}
+                onChange={(value) => setUsername(value)}
               />
-              <small>
-                <X fontSize={16} color="var(--danger-color)" />
-                <i>Username already existed</i>
-              </small>
+              {errorCode === "CC1000" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.CC1000}</i>
+                </small>
+              )}
+              {errorCode === "1003" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.SC1003}</i>
+                </small>
+              )}
             </div>
 
             <div className="input-pare">
               <InputText
                 lable="Password"
-                value=""
+                value={password}
                 stretch={false}
                 type="password"
                 placeholder="••••••••"
-                onChange={() => {}}
+                disabled={autoGenPassword}
+                onChange={(value) => setPassword(value)}
               />
+              {errorCode === "CC1001" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.CC1001}</i>
+                </small>
+              )}
             </div>
             <div>
               <div className="auto-generate-pass-container">
-                <input id="autoGeneratePass" type="checkbox" />{" "}
+                <input
+                  id="autoGeneratePass"
+                  checked={autoGenPassword}
+                  type="checkbox"
+                  onChange={(e) => {
+                    const isChecked = e.target.checked;
+                    if (isChecked) {
+                      // generate new pass
+                      setPassword(createPassword())
+                      setSaveInfoAsText(true);
+                    } else {
+                      // clear password
+                      setPassword("")
+                    }
+                    setAutoGenPassword(isChecked)
+                  }}
+                />{" "}
                 <label htmlFor="autoGeneratePass">Auto generate password</label>
               </div>
               <div className="sub-scription">
@@ -52,19 +109,39 @@ const CreateSubUser: React.FC = () => {
             <div className="input-pare">
               <InputText
                 lable="Email"
-                value=""
+                value={email}
                 stretch={false}
                 type="email"
                 placeholder="example@email.com"
-                onChange={() => {}}
+                onChange={(value) => setEmail(value)}
               />
-              <small>
-                <X fontSize={16} color="var(--danger-color)" />
-                <i>Email already existed</i>
-              </small>
+              {errorCode === "CC1002" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.CC1002}</i>
+                </small>
+              )}
+              {errorCode === "1004" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.SC1004}</i>
+                </small>
+              )}
+              {errorCode === "CC1003" && (
+                <small>
+                  <X fontSize={16} color="var(--danger-color)" />
+                  <i>{CSA_ERROR_MESSAGE.CC1003}</i>
+                </small>
+              )}
             </div>
             <div className="save-as-text-file">
-              <input id="saveAsTextFile" type="checkbox" />{" "}
+              <input
+                disabled={autoGenPassword}
+                id="saveAsTextFile"
+                type="checkbox"
+                checked={saveInfoAsText}
+                onChange={(e) => setSaveInfoAsText(e.target.checked)}
+              />{" "}
               <label htmlFor="saveAsTextFile">
                 Also save account information text file.
               </label>
@@ -82,9 +159,8 @@ const CreateSubUser: React.FC = () => {
                 Icon={MagnifyingGlass}
                 placeholder="Search for account polocy"
               />
-              <Button label="Save" onClick={() => {}} borderRadius={3} />
             </div>
-            <MiniPolicyTable datas={[]} />
+            <MiniPolicyTable datas={policies} onSelected={(plcs) => setSelectedPolicies(plcs)}/>
           </div>
         </Card>
 
@@ -92,7 +168,52 @@ const CreateSubUser: React.FC = () => {
           <Button
             tyle="tertiary"
             borderRadius={3}
-            onClick={() => {}}
+            onClick={async () => {
+              if (!username) {
+                setErrorCode("CC1000");
+                return;
+              }
+              if (!password) {
+                setErrorCode("CC1001");
+                return;
+              }
+              if (!email) {
+                setErrorCode("CC1002");
+                return;
+              }
+              if (!isEmailFormat(email)) {
+                setErrorCode("CC1003");
+                return;
+              }
+              setErrorCode("");
+              // add user
+              let accountId = "";
+              try {
+                const body = {
+                  username,
+                  password,
+                  email,
+                }
+                const response = await api.post("/account/create-subuser", body);
+                accountId = response.data.message;
+                // export data to text file
+                exportTextFile(`Account_info_${accountId}.txt`, accountInfoContent(username, password, email));
+              } catch (error) {
+                setErrorCode(getServerErrorCode(error).toString());
+                return;
+              }
+              // add policies
+              if (selectedPolicies) {
+                try {
+                  const body = policyService.toAccountPoliciesRqBody(selectedPolicies, accountId);
+                  await api.post("/account-policy/attach", body);
+                } catch (error) {
+                  console.error(error);
+                }
+              }
+
+              navigate(`/account-control/user/${accountId}`, {replace:true});
+            }}
             label="Confirm created"
           />
         </div>
