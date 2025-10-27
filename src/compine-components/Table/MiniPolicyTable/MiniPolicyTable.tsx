@@ -10,38 +10,7 @@ interface MiniPolicyTableProps {
 
 const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) => {
     
-    const [rows, setRows] = React.useState<Policy[]>(
-        datas.map((p) => ({ ...p, selected: !!p.selected }))
-    );
-    
-    React.useEffect(() => {
-        setRows(datas.map((p) => ({ ...p, selected: !!p.selected })));
-    }, [datas]);
-
-    React.useEffect(() => {
-        if (onSelected) {
-            onSelected(rows.filter((r) => r.selected));
-        }
-    }, [rows])
-
-    const getId = (policy: Policy, index: number) => (policy.policyId ?? index);
-
-    const isAllChecked = rows.length > 0 && rows.every((p) => !!p.selected);
-
-    const toggleOne = (id: number | string) => {
-        setRows((prev) =>
-            prev.map((r, i) => {
-                const rid = getId(r, i);
-                if (rid === id) return { ...r, selected: !r.selected };
-                return r;
-            })
-        );
-    };
-
-    const toggleAll = () => {
-        const nextSelected = !isAllChecked;
-        setRows((prev) => prev.map((r) => ({ ...r, selected: nextSelected })));
-    };
+    const isAllChecked = datas.length > 0 && datas.every((p) => !!p.selected);
 
     return (
         <div className="mini-policy-table-wrapper">
@@ -53,7 +22,16 @@ const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) 
                                 type="checkbox"
                                 aria-label="Select all policies"
                                 checked={isAllChecked}
-                                onChange={toggleAll}
+                                onChange={() => {
+                                    // 
+                                    if (onSelected && datas && datas.length > 0) {
+                                        const tempDatas = datas.map(dt => {
+                                            dt.selected = !isAllChecked;
+                                            return dt;
+                                        });
+                                        onSelected(tempDatas);
+                                    }
+                                }}
                                 data-testid="select-all"
                             />
                         </th>
@@ -62,21 +40,30 @@ const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) 
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((policy, index) => {
-                        const id = getId(policy, index);
+                    {datas.map((policy, index) => {
+                        // const id = getId(policy, index);
                         const checked = !!policy.selected;
                         const name = policy.policyName ?? "";
                         const accessRange = policy.accessRange ?? "";
 
                         return (
-                            <tr key={id}>
+                            <tr>
                                 <td>
                                     <input
                                         type="checkbox"
                                         checked={checked}
-                                        onChange={() => toggleOne(id)}
+                                        onChange={() => {
+                                            if (onSelected) {
+                                                const tempDatas = datas.map(dt => {
+                                                    if (dt.policyId === policy.policyId) {
+                                                        dt.selected = !policy.selected;
+                                                    }
+                                                    return dt;
+                                                });
+                                                onSelected(tempDatas);
+                                            }
+                                        }}
                                         aria-label={`Select policy ${name}`}
-                                        data-testid={`select-${id}`}
                                     />
                                 </td>
                                 <td>{name}</td>
@@ -87,7 +74,7 @@ const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) 
                             </tr>
                         );
                     })}
-                    {rows.length === 0 && (
+                    {datas.length === 0 && (
                         <tr>
                             <td colSpan={3} className="empty">
                                 No policies

@@ -10,54 +10,41 @@ import TableRow from "./TableRow/TableRow";
 import { UserPool } from "../../../entities/user-pool";
 import { UserPoolPolicies } from "../../../entities/user-pool-policies";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
+import accountService from "../../../services/account-service";
+import poolPoliciesService from "../../../services/pool-policies-service";
+import userPoolService from "../../../services/user-pool-service";
+import userPoolStore from "../../../store/user-pool.store";
+import userPoolPoliciesStore from "../../../store/user-pool-policies.store";
+import accountStore from "../../../store/account.store";
+import { api } from "../../../services/api-service";
+import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 
 interface UserPoolTableProps {
   tableName?: string;
+  onRowClick?: (row: UserPool | null) => void;
 }
 
 const UserPoolTable: React.FC<UserPoolTableProps> = ({
   tableName = "User Pool Table",
+  onRowClick,
 }) => {
-  const userPools: UserPool[] = [
-    {
-      poolId: "1",
-      poolName: "Pool One",
-      createdAt: new Date("2023-01-01"),
-      account: { rootId: "admin" },
-      userFields: ["username", "email", "phone"],
-      authorizeFields: ["role", "department"],
-    },
-    {
-      poolId: "2",
-      poolName: "Pool Two",
-      createdAt: new Date("2023-01-01"),
-      account: { rootId: "admin" },
-      userFields: ["username", "email", "phone"],
-      authorizeFields: ["role", "department"],
-    },
-    {
-      poolId: "3",
-      poolName: "Pool Three",
-      createdAt: new Date("2023-01-01"),
-      account: { rootId: "admin" },
-      userFields: ["username", "email", "phone"],
-      authorizeFields: ["role", "department"],
-    },
-    {
-      poolId: "4",
-      poolName: "Pool Four",
-      createdAt: new Date("2023-01-01"),
-      account: { rootId: "admin" },
-      userFields: ["username", "email", "phone"],
-      authorizeFields: ["role", "department"],
-    },
-  ];
+  const [userPools, setUserPools] = React.useState<UserPool[]>([]);
 
-  const poolPolicies: UserPoolPolicies = {
-    
-  };
+  const [poolPolicies, setPoolPolicies] = React.useState<
+    Map<string, UserPoolPolicies>
+  >(new Map());
+
+  const [currentRowClick, setCurrentRowClick] = React.useState<UserPool | null>(
+    null
+  );
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const [counter, setCounter] = useState<number>(0);
+
+  const isRoot = accountService.isRoot();
+
+  const rootAccount = accountStore.getState().rootAccount;
 
   // Tính toán trạng thái của header
   const allSelected =
@@ -72,6 +59,24 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
       headerRef.current.indeterminate = someSelected;
     }
   }, [someSelected]);
+
+  useEffect(() => {
+    const initData = async () => {
+      await userPoolService.refreshUserPool();
+      setUserPools(userPoolStore.getState().userPools);
+      if (!isRoot) {
+        await poolPoliciesService.refreshPoolPolicies();
+        setPoolPolicies(
+          userPoolPoliciesStore.getState().userPoolPoliciesMapByPoolID
+        );
+      }
+      if (!rootAccount) {
+        await accountService.getRootDetails();
+      }
+    };
+
+    initData();
+  }, [isRoot, rootAccount, counter]);
 
   // Toggle tất cả
   const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,14 +99,52 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
         <h2 className="pool-table-name">{tableName}</h2>
         <div className="action-container">
           {/* TODO: add icon button here */}
-          <IconButton Icon={Trash} onClick={() => {}} />
-          <IconButton Icon={ArrowClockwise} onClick={() => {}} />
+          {isRoot && (
+            <ConfirmPopup
+              onAccept={async () => {
+                console.log(selectedIds);
+                if (selectedIds.length > 0) {
+                  try {
+                    // success
+                    await api.post("/user-pool/delete-many", selectedIds);
+                    // refresh user-pool
+                    await userPoolService.refreshUserPool();
+                    // refresh policy
+                    await poolPoliciesService.refreshPoolPolicies();
+
+                    setUserPools(userPoolStore.getState().userPools);
+                    setPoolPolicies(
+                      userPoolPoliciesStore.getState().userPoolPoliciesMap
+                    );
+                    setSelectedIds([]);
+                    if (onRowClick) {
+                      onRowClick(null);
+                    }
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }
+              }}
+              children={
+                <IconButton
+                  Icon={Trash}
+                  onClick={() => {}}
+                />
+              }
+            />
+          )}
+          <IconButton
+            Icon={ArrowClockwise}
+            onClick={() => {
+              setCounter(counter + 1);
+            }}
+          />
           <DropdownButton
             items={[
               {
                 label: "Go to feature",
                 onClick: () => {
-                  window.open("/account-control", "_blank");
+                  window.open("/pool-control", "_blank");
                 },
               },
             ]}
@@ -134,13 +177,24 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
           {/* Table rows */}
 
           {userPools.map((pool) => (
-            <TableRow
-              key={pool.poolId}
-              pool={pool}
-              poolPolicies={poolPolicies}
-              isChecked={selectedIds.includes(pool.poolId ?? "")}
-              onCheckedChange={() => handleRowToggle(pool.poolId ?? "")}
-            />
+            <div
+              onClick={() => {
+                if (onRowClick && pool !== currentRowClick) {
+                  setCurrentRowClick(pool);
+                  onRowClick(pool);
+                }
+              }}
+            >
+              <TableRow
+                key={pool.poolId}
+                pool={pool}
+                poolPolicies={poolPolicies.get(pool.poolId ?? "")}
+                isRoot={isRoot}
+                rootUsername={rootAccount?.username}
+                isChecked={selectedIds.includes(pool.poolId ?? "")}
+                onCheckedChange={() => handleRowToggle(pool.poolId ?? "")}
+              />
+            </div>
           ))}
         </div>
       </div>

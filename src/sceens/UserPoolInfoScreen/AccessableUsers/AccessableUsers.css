@@ -7,6 +7,7 @@
     gap: 10px;
     padding: 10px;
     height: 100%;
+    min-height: 50vh;
 }
 
 .amc-wrapper > div:nth-child(1),
@@ -28,6 +29,8 @@
     display: flex; 
     gap: 10px;
 }
+
+
 
 .user-table {
     width: 100%;
@@ -51,6 +54,7 @@
 .user-table tbody > tr {
     height: 40px;
     background: var(--background-color);
+    border: 1px solid transparent;
     border-bottom: 1px solid var(--border-color);
 } 
 
@@ -72,6 +76,15 @@
     gap: 10px;
 }
 
+.policy-content .search-container .confirm-trigger {
+    margin-block: auto;
+}
+
 .policy-content .mini-policy-table-wrapper {
     flex: 1;
+}
+
+.au-row:hover {
+    border: 1px solid var(--primary-dark);
+    cursor: pointer;
 }

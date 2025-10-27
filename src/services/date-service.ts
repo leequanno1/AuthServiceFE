@@ -1,7 +1,10 @@
 export const DateService = {
 
-    formatDate: (date: Date): string => {
-        const formatted = date.toISOString().slice(0, 10).replace(/-/g, '/');
+    formatDate: (date: Date | undefined): string => {
+        if (!date) {
+            date = new Date();
+        }
+        const formatted = date.toString().slice(0, 10).replace(/-/g, '/');
         return formatted;
     },
 
