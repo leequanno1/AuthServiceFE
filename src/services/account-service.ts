@@ -58,9 +58,23 @@ const accountService = {
       const response = await api.get(`/account/get-all/${parrentId}`);
       const subAccounts = response.data.result as Account[];
       accountStore.getState().setSubAccounts(subAccounts);
-      console.log(subAccounts);
     } catch (error) {
       throw error;
+    }
+  },
+
+  /**
+   * Get sub-account array by parent ID
+   * @param parentID string parent ID
+   * @returns array of Account, if 404 then return empty array
+   */
+  getSubAccountsByParentID: async (parentID: string) => {
+    try {
+      const response = await api.get(`/account/get-all/${parentID}`);
+      return response.data.result as Account[];
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   },
 
@@ -73,7 +87,16 @@ const accountService = {
   getAttachedPoolPoliciesAccounts: async (parentID: string, poolID: string) => {
     const response = await api.get(`/pool-policy/accounts/${parentID}/${poolID}`);
     return response.data.result as Account[];
-  }
+  },
+
+  deleteAccountById: async (accountIds: string[], isDeleteSubAccounts: boolean) => {
+    const response = await api.post(`/account/logical-delete`, {
+      accountIds,
+      isDeleteSubAccounts,
+    })
+    
+    return response.data.result as string;
+  },
 };
 
 export default accountService;

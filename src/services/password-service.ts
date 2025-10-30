@@ -35,3 +35,11 @@ export const createPassword = (length = 12): string => {
 
   return result.join("");
 };
+
+export const handleCopy = async (textToCopy: string) => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };

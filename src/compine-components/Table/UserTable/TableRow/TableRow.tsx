@@ -3,54 +3,48 @@ import React from "react";
 import Account from "../../../../entities/account";
 import { DateService } from "../../../../services/date-service";
 import { CaretDownFill } from 'react-bootstrap-icons';
+import accountService from "../../../../services/account-service";
+import { Link } from "react-router-dom";
 
 interface TableRowProps {
   isSubRow?: boolean;
   account: Account;
+  parentAcc: Account|null|undefined;
   isChecked?: boolean;
   onCheckedChange?: (accountId: string) => void;
+  onClick?: (account: Account) => void;
+  onSubRowClick?: (account: Account) => void;
 }
 
 const TableRow: React.FC<TableRowProps> = ({
   isSubRow = false,
   account,
   isChecked = false,
+  parentAcc,
   onCheckedChange = () => { },
+  onClick = () => {},
+  onSubRowClick = () => {},
 }) => {
 
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const [isDataLoaded, setIsDataLoaded] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+  const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
   const [subAccounts, setSubAccounts] = React.useState<Account[]>([]);
 
   React.useEffect(() => {
-    if (isExpanded && !isDataLoaded) {
-      console.log("load sub users");
-      setIsDataLoaded(true);
-      // Giả lập tải dữ liệu
-      setTimeout(() => {
-        setSubAccounts([
-          {
-            accountId: "1-1",
-            displayName: "Sub User One",
-            username: "subuser1",
-            parentId: "user1",
-            createdAt: new Date("2023-01-02"),
-          },
-          {
-            accountId: "1-2",
-            displayName: "Sub User Two",
-            username: "subuser2",
-            parentId: "user1",
-            createdAt: new Date("2023-01-03"),
-          },
-        ]);
-      }, 500);
+    const initSubAccountData = async () => {
+      if (isExpanded && !isDataLoaded) {
+        setIsDataLoaded(true);
+        // Giả lập tải dữ liệu
+        setSubAccounts(await accountService.getSubAccountsByParentID(account.accountId??""));
+      }
     }
-  }, [isExpanded, isDataLoaded]);
+    initSubAccountData();
+  }, [isExpanded, isDataLoaded, account.accountId]);
 
   return (
     <div className="row-wraper">
       <div
+        onClick={() => {onClick(account);}}
         className={`table-row ${isSubRow ? "sub-row" : ""}`}
         onDoubleClick={() => {
           setIsExpanded((prev) => !prev);
@@ -66,10 +60,10 @@ const TableRow: React.FC<TableRowProps> = ({
           <div className="padding-left"></div>
         )}
 
-        <div className="row-column-2">{`${account.displayName}/${account.username}`}</div>
+        <div className="row-column-2"><Link to={`/account-control/user/${account.accountId}`}>{`${account.displayName}/${account.username}`}</Link></div>
 
         <div className="row-column-3">
-          <span>{`by ${account.parentId}--${account.createdAt ? DateService.formatDate(account.createdAt) : ""}`}</span>
+          <span>{`by ${parentAcc?.username}--${account.createdAt ? DateService.formatDate(account.createdAt) : ""}`}</span>
           <span className="flex-1"></span>
           {!isSubRow && (
             <CaretDownFill
@@ -87,9 +81,11 @@ const TableRow: React.FC<TableRowProps> = ({
         {subAccounts.length > 0 && (
           subAccounts.map((subAcc) => (
             <TableRow
+              onClick={() => {onSubRowClick(subAcc)}}
               key={subAcc.accountId}
               isSubRow={true}
               account={subAcc}
+              parentAcc={account}
               onCheckedChange={onCheckedChange}
             />
           ))

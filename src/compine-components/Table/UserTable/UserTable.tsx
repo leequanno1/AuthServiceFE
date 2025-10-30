@@ -9,43 +9,21 @@ import {
   Trash,
 } from "phosphor-react";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
+import accountStore from "../../../store/account.store";
+import accountService from "../../../services/account-service";
+import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 
 interface UserTableProps {
   tableTitle?: string;
+  onSelected?: (seletedAccount: Account) => void
 }
 
-const UserTable: React.FC<UserTableProps> = ({ tableTitle = "User List" }) => {
-  let accounts: Account[] = [
-    {
-      accountId: "1",
-      displayName: "User One",
-      username: "user1",
-      parentId: "admin",
-      createdAt: new Date("2023-01-01"),
-    },
-    {
-      accountId: "2",
-      displayName: "User Two",
-      username: "user2",
-      parentId: "admin",
-      createdAt: new Date("2023-01-01"),
-    },
-    {
-      accountId: "3",
-      displayName: "User three",
-      username: "user3",
-      parentId: "admin",
-      createdAt: new Date("2023-01-01"),
-    },
-    {
-      accountId: "4",
-      displayName: "User Four",
-      username: "user4",
-      parentId: "admin",
-      createdAt: new Date("2023-01-01"),
-    },
-  ];
-
+const UserTable: React.FC<UserTableProps> = ({ 
+  tableTitle = "User List",
+  onSelected = () => {},
+}) => {
+  const [accounts,setAccounts] = useState<Account[]>([])
+  const sessionAccount = accountStore.getState().account;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Tính toán trạng thái của header
@@ -62,6 +40,16 @@ const UserTable: React.FC<UserTableProps> = ({ tableTitle = "User List" }) => {
     }
   }, [someSelected]);
 
+  useEffect(() => {
+    const initAcocuntDatas = async () => {
+      await accountService.refreshSubAccount();
+      const tempSubAccs = accountStore.getState().subAccounts;
+      setAccounts(tempSubAccs??[]);
+    }
+
+    initAcocuntDatas();
+  }, [])
+
   // Toggle tất cả
   const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedIds(
@@ -76,6 +64,10 @@ const UserTable: React.FC<UserTableProps> = ({ tableTitle = "User List" }) => {
     );
   };
 
+  // const getSeletedAccount = () => {
+  //   return accounts.filter(acc => selectedIds.some(id => id === acc.accountId));
+  // }
+
   return (
     <div className="tatle-container">
       <div className="table-name-box">
@@ -83,7 +75,14 @@ const UserTable: React.FC<UserTableProps> = ({ tableTitle = "User List" }) => {
         <h2 className="table-name">{tableTitle}</h2>
         <div className="action-container">
           {/* TODO: add icon button here */}
-          <IconButton Icon={Trash} onClick={() => {}} />
+          <ConfirmPopup
+            onAccept={ async () => {
+              await accountService.deleteAccountById(selectedIds, true);
+              setAccounts(accounts.filter(acc => !selectedIds.some(id => id === acc.accountId)));
+              setSelectedIds([]);
+            }}
+            children={<IconButton Icon={Trash} onClick={() => {}} />}
+          />
           <IconButton Icon={ArrowClockwise} onClick={() => {}} />
           <DropdownButton
             items={[
@@ -123,8 +122,11 @@ const UserTable: React.FC<UserTableProps> = ({ tableTitle = "User List" }) => {
 
           {accounts.map((acc) => (
             <TableRow
+              parentAcc={sessionAccount}
               key={acc.accountId}
               account={acc}
+              onClick={(r) => {onSelected(r);}}
+              onSubRowClick={(sr) => {onSelected(sr);}}
               isChecked={selectedIds.includes(acc.accountId ?? "")}
               onCheckedChange={() => handleRowToggle(acc.accountId ?? "")}
             />

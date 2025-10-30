@@ -31,7 +31,10 @@ const AccessableUsers: React.FC = () => {
     React.useState<Account | null>(null);
   const [subUserPoolPoolicies, setSubUserPoolPolicies] =
     React.useState<UserPoolPolicies | null>(null);
-  const [policyList, setPolicyList] = React.useState<Policy[]>([]);
+  const [policyList, setPolicyList] = 
+    React.useState<Policy[]>([]);
+  const [userSearch, setUserSearch] = 
+    React.useState<string>("");
 
   const isRoot = accountService.isRoot();
   const currentAccount = accountStore.getState().account;
@@ -48,10 +51,21 @@ const AccessableUsers: React.FC = () => {
           setPoolPolicies(tempPolicies);
         }
       }
-      const attachedAccounts = await accountService.getAttachedPoolPoliciesAccounts(currentAccount?.accountId??"", poolID??"");
+      const attachedAccounts =
+        await accountService.getAttachedPoolPoliciesAccounts(
+          currentAccount?.accountId ?? "",
+          poolID ?? ""
+        );
       setUsers(attachedAccounts);
       await accountService.refreshSubAccount();
-      setSubAccounts(accountStore.getState().subAccounts?.filter(item => !attachedAccounts.some(acc => acc.accountId === item.accountId)) ?? []);
+      setSubAccounts(
+        accountStore
+          .getState()
+          .subAccounts?.filter(
+            (item) =>
+              !attachedAccounts.some((acc) => acc.accountId === item.accountId)
+          ) ?? []
+      );
     };
 
     initData();
@@ -157,31 +171,78 @@ const AccessableUsers: React.FC = () => {
               {(isRoot || (poolPolicies && poolPolicies.canManage)) && (
                 <div className="search-container">
                   <DropdownButton
-                    items={subAccounts.map(sa => {
-                      return {
-                        label: `${sa.displayName}/${sa.username} ..... by ${currentAccount?.username}--${DateService.formatDate(sa.createdAt)}`,
-                        onClick: () => {
-                          setUsers([...users, sa]);
-                          setSubAccounts(subAccounts.filter(sacc => sacc !== sa));
+                    items={subAccounts
+                      .filter((item) => {
+                        if (!userSearch){
+                          return true;
+                        } else {
+                          return item.username?.includes(userSearch) || item.displayName?.includes(userSearch);
                         }
-                      }
-                    })}
+                      })
+                      .map((sa) => {
+                        return {
+                          label: `${sa.displayName}/${sa.username} ..... by ${
+                            currentAccount?.username
+                          }--${DateService.formatDate(sa.createdAt)}`,
+                          onClick: () => {
+                            setUsers([...users, sa]);
+                            setSubAccounts(
+                              subAccounts.filter((sacc) => sacc !== sa)
+                            );
+                          },
+                        };
+                      })
+                    }
                     align="start"
                     children={
                       <InputText
                         stretch={false}
                         Icon={MagnifyingGlass}
                         placeholder="Search by name or username"
-                        value=""
-                        onChange={() => {}}
+                        value={userSearch}
+                        onChange={(value) => {setUserSearch(value)}}
                       />
                     }
                   />
-                  <Button
-                    label="Delete user"
-                    borderRadius={3}
-                    tyle="secondary"
-                    onClick={() => {}}
+                  <ConfirmPopup
+                    onAccept={async () => {
+                      const tempsSubUsers = getCheckedUsers();
+                      console.log(tempsSubUsers);
+                      // get policies ID
+                      let policyIDs: string[] = [];
+                      for (let tsu of tempsSubUsers) {
+                        const tempPolicy =
+                          await poolPoliciesService.getPolicyBySubAccountId(
+                            tsu.accountId ?? "",
+                            poolID ?? ""
+                          );
+                        if (tempPolicy) {
+                          policyIDs.push(tempPolicy?.policyId ?? "");
+                        }
+                      }
+                      // delete policies
+                      await poolPoliciesService.deletePolicy(policyIDs);
+                      console.log(tempsSubUsers);
+                      setUsers(
+                        users.filter(
+                          (us) =>
+                            !tempsSubUsers.some(
+                              (tmpSU) => tmpSU.accountId === us.accountId
+                            )
+                        )
+                      );
+                      setSubAccounts([...subAccounts, ...tempsSubUsers]);
+                      setSubUserPoolPolicies(null);
+                      setCurrentSelectedSubAcc(null);
+                    }}
+                    children={
+                      <Button
+                        label="Delete user"
+                        borderRadius={3}
+                        tyle="secondary"
+                        onClick={() => {}}
+                      />
+                    }
                   />
                 </div>
               )}

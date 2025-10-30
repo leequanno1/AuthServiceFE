@@ -124,6 +124,14 @@ const poolPoliciesService = {
         throw error;
     }
   },
+
+  deletePolicy: async (policyIds: string[]) => {
+    if (policyIds && policyIds.length > 0) {
+      const response = await api.post("/pool-policy/delete-many", policyIds);
+      return response.data.message as string;
+    }
+    return "NO DELETE";
+  }
 };
 
 export default poolPoliciesService;

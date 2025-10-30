@@ -52,6 +52,8 @@
     overflow-x: hidden;
     overflow-wrap: break-word;
     text-align: start;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-drawer .horizontal-line {
@@ -63,4 +65,25 @@
 
 .app-drawer.close .horizontal-line {
     opacity: 0;
+}
+
+.nav {
+    text-decoration: none;
+}
+
+.nav:hover {
+    text-decoration: underline;
+}
+
+.nav.head-nav {
+    margin-top: 10px;
+}
+
+.nav.head-nav h3 {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.nav.sub-nav {
+    margin-left: 5px;
 }

@@ -197,7 +197,9 @@ const CreateSubUser: React.FC = () => {
                 const response = await api.post("/account/create-subuser", body);
                 accountId = response.data.message;
                 // export data to text file
-                exportTextFile(`Account_info_${accountId}.txt`, accountInfoContent(username, password, email));
+                if (saveInfoAsText) {
+                  exportTextFile(`Account_info_${accountId}.txt`, accountInfoContent(username, password, email));
+                }
               } catch (error) {
                 setErrorCode(getServerErrorCode(error).toString());
                 return;

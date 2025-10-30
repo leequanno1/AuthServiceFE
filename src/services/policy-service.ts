@@ -1,4 +1,4 @@
-import { ACCOUNT_POLICIES } from "../constants/policies/account-policy";
+import { init_ACCOUNT_POLICIES } from "../constants/policies/account-policy";
 import { AccountPolicies } from "../entities/account-policies";
 import { Policy } from "../entities/policies";
 import accountStore from "../store/account.store";
@@ -18,22 +18,23 @@ const policyService = {
     const account = accountStore.getState().account;
 
     if (!account?.rootId) {
-      return ACCOUNT_POLICIES;
+      return init_ACCOUNT_POLICIES();
     } else {
       // get account policy
+      const tempPlcs = init_ACCOUNT_POLICIES();
       const response = await api.get(
         `/account-policy/get/${account?.accountId}`
       );
       const accPolicies = response.data.result as AccountPolicies;
       let policies: Policy[] = [];
       if (accPolicies.canCreate) {
-        policies.push(ACCOUNT_POLICIES[0]);
+        policies.push(tempPlcs[0]);
       }
       if (accPolicies.canView) {
-        policies.push(ACCOUNT_POLICIES[1]);
+        policies.push(tempPlcs[1]);
       }
       if (accPolicies.canDelete) {
-        policies.push(ACCOUNT_POLICIES[2]);
+        policies.push(tempPlcs[2]);
       }
       return policies;
     }
@@ -51,7 +52,7 @@ const policyService = {
       canDelete: false,
     };
 
-    if (policyId) {
+    if (!!policyId) {
         body = {
             policyId,
             ...body,

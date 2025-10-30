@@ -1,24 +1,62 @@
-import React from "react";
 import "./AccountAccessControl.css";
 import UserTable from "../../compine-components/Table/UserTable/UserTable";
 import MiniProfile from "../../compine-components/SectionPart/MiniProfile/MiniProfile";
-import Button from "../../components/Button/Button";
 import MiniPolicyInfo from "../../compine-components/SectionPart/MiniPolicyInfo/MiniPolicyInfo";
+import LinkButton from "../../components/LinkButton/LinkButton";
+import { useEffect, useState } from "react";
+import Account from "../../entities/account";
+import { UserPool } from "../../entities/user-pool";
+import accountStore from "../../store/account.store";
+import accountService from "../../services/account-service";
+import userPoolService from "../../services/user-pool-service";
+import userPoolStore from "../../store/user-pool.store";
 
 const AccountAccessControl = () => {
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [selectedPool, setSelectedPool] = useState<UserPool | null>(null);
+  const [totalPools, setTotalPools] = useState<UserPool[]>([])
+
+  useEffect(() => {
+    const initAllAttachedPoolsValue = async () => {
+      await userPoolService.refreshUserPool();
+      setTotalPools(userPoolStore.getState().userPools);
+    }
+
+    initAllAttachedPoolsValue();
+  }, [])
+
   return (
     <div className="aac-container">
       <div className="acc-header">
         <h1>Account Access Control</h1>
-        <Button label="+ Add new user" tyle="tertiary" borderRadius={3} onClick={() => {}} />
+        <LinkButton
+          to={"/account-control/create"}
+          label="+ Add new user"
+          type="tertiary"
+          borderRadius={3}
+        />
       </div>
       <div className="acc-body">
-          <UserTable />
-          <div className="aac-right-container">
-            <MiniProfile />
-            <MiniPolicyInfo />
-          </div>
+        <UserTable
+          onSelected={(acc) => {
+            setSelectedAccount(acc);
+            setSelectedPool(null);
+          }}
+        />
+        <div className="aac-right-container">
+          <MiniProfile
+            account={selectedAccount}
+            onPoolSelect={(pool) => {
+              setSelectedPool(pool);
+            }}
+            totalPools={totalPools}
+          />
+          <MiniPolicyInfo 
+            account={selectedAccount} 
+            pool={selectedPool} 
+          />
         </div>
+      </div>
     </div>
   );
 };

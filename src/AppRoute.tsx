@@ -50,14 +50,14 @@ const AppRoute: React.FC = () => {
 
         <Route path="/pool-control" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<UserPoolControl />} />
+          <Route path="create" element={<CreateUserPool />}>
+            <Route index element={<CreateFullFunctionPool/>} />
+            <Route path="empty-function" element={<CreateEmptyPool/>} />
+          </Route>
           <Route path="pool/:poolID" element={<UserPoolInfoScreen />}>
             <Route index element={<AccessableUsers />} />
             <Route path="monitor" element={<Monitoring />} />
             <Route path="user-data" element={<UserData />} />
-          </Route>
-          <Route path="create" element={<CreateUserPool />}>
-            <Route index element={<CreateFullFunctionPool/>} />
-            <Route path="empty-function" element={<CreateEmptyPool/>} />
           </Route>
         </Route>
       </Routes>

@@ -31,7 +31,7 @@
     color: var(--text-color);
 }
 
-.mini-profile-header button {
+.mini-profile-header a {
     margin-right: 10px;
 }
 
@@ -120,11 +120,19 @@
 
 .mn-pool-table tr {
     height: 35px;
-    border-bottom: 1px solid var(--divider-color);
+    border: 1px solid transparent;
 }
+
+
 
 .mn-pool-table tbody tr {
     background-color: var(--background-color);
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.mn-pool-table tbody tr:hover {
+    cursor: pointer;
+    border: 1px solid var(--primary-dark);
 }
 
 .mn-pool-table th {

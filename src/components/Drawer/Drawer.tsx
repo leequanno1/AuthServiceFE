@@ -3,6 +3,7 @@ import "./Drawer.css";
 // import { List } from "react-bootstrap-icons";
 import { List } from "phosphor-react";
 import IconButton from "../IconButton/IconButton";
+import { Link } from "react-router-dom";
 
 const Drawer: React.FC = () => {
 
@@ -18,11 +19,12 @@ const Drawer: React.FC = () => {
             <div className="dw-name">Feature</div>
             {/* Menu Items */}
             <div className="dw-menu-items">
-                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                <br/>
-                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                <br/>
-                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                <Link className="nav head-nav" to={"/console-home"}><h3>Profile</h3></Link>
+                <Link className="nav head-nav" to={"/console-home"}><h3>Console Home</h3></Link>
+                <Link className="nav head-nav" to={"/account-control"}><h3>Account Control</h3></Link>
+                <Link className="nav sub-nav" to={"/account-control/create"}>Create sub-account</Link>
+                <Link className="nav head-nav" to={"/pool-control"}><h3>Pool Control</h3></Link>
+                <Link className="nav sub-nav" to={"/pool-control/create"}>Create new pool</Link>
             </div>
         </nav>
     );
