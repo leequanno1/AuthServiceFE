@@ -44,6 +44,8 @@
     box-shadow: var(--box-shadow);
     flex: 1;
     border: 1px solid var(--divider-color);
+    display: flex;
+    flex-direction: column;
 }
 
 .sub-info-container .tab-container {
@@ -73,17 +75,22 @@
     background: var(--background-color);
 }
 
-.outlet-container {
-    height: calc(100vh - 415px);
+.uif-outlet-container {
+    height: 100%;
     overflow-y: auto;
 }
 
 .outlet-content {
+    height: 100%;
     display: flex;
     gap: 10px;
     padding: 10px;
     justify-content: start;
     align-items: start;
+}
+
+.outlet-content>div {
+    height: 100%;
 }
 
 .outlet-content>div:nth-child(1) {

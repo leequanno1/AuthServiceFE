@@ -6,8 +6,6 @@ import LinkButton from "../../components/LinkButton/LinkButton";
 import { useEffect, useState } from "react";
 import Account from "../../entities/account";
 import { UserPool } from "../../entities/user-pool";
-import accountStore from "../../store/account.store";
-import accountService from "../../services/account-service";
 import userPoolService from "../../services/user-pool-service";
 import userPoolStore from "../../store/user-pool.store";
 

@@ -21,6 +21,8 @@ import { handleCopy } from "../../../services/password-service";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import poolPoliciesService from "../../../services/pool-policies-service";
+import accountService from "../../../services/account-service";
+import accountStore from "../../../store/account.store";
 
 interface MiniProfileProps {
   account: Account | null;
@@ -41,12 +43,14 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
   const headerCheckboxRef = React.useRef<HTMLInputElement | null>(null);
   const isAllSelected = pools.length > 0 && selected.size === pools.length;
   const isNoneSelected = selected.size === 0;
+  const rootAccount = accountStore.getState().rootAccount;
 
   React.useEffect(() => {
     // init pools data
     const initPoolsData = async () => {
       const tempPools = await userPoolService.getAllPoolByAccountID(account?.accountId??"");
       setPools(tempPools??[]);
+      await accountService.getRootDetails();
     }
 
     initPoolsData();
@@ -234,6 +238,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   </tr>
                 </thead>
                 <tbody>
+                  {(!pools || pools.length === 0) && <tr className="pool-row empty"><td colSpan={3}>No policies</td></tr>}
                   {pools.map((pool) => (
                     <tr
                       key={pool.poolId}
@@ -250,7 +255,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                       </td>
                       <td>{pool.poolName}</td>
                       <td>
-                        <i>by {pool.account?.accountId}</i>-
+                        <i>by {rootAccount?.username}</i>-
                         {DateService.formatDate(pool.createdAt)}
                       </td>
                     </tr>

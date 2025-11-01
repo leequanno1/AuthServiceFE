@@ -15,11 +15,13 @@ import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 
 interface UserTableProps {
   tableTitle?: string;
+  customAccounts?: Account[] | null;
   onSelected?: (seletedAccount: Account) => void
 }
 
 const UserTable: React.FC<UserTableProps> = ({ 
   tableTitle = "User List",
+  customAccounts = null,
   onSelected = () => {},
 }) => {
   const [accounts,setAccounts] = useState<Account[]>([])
@@ -42,13 +44,17 @@ const UserTable: React.FC<UserTableProps> = ({
 
   useEffect(() => {
     const initAcocuntDatas = async () => {
-      await accountService.refreshSubAccount();
-      const tempSubAccs = accountStore.getState().subAccounts;
-      setAccounts(tempSubAccs??[]);
+      if(customAccounts === null) {
+        await accountService.refreshSubAccount();
+        const tempSubAccs = accountStore.getState().subAccounts;
+        setAccounts(tempSubAccs??[]);
+      } else {
+        setAccounts(customAccounts);
+      }
     }
 
     initAcocuntDatas();
-  }, [])
+  }, [customAccounts])
 
   // Toggle tất cả
   const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {

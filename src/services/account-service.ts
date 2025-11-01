@@ -97,6 +97,23 @@ const accountService = {
     
     return response.data.result as string;
   },
+
+  /**
+   * Get account by account ID, if account is deleted or request user have no authority then return null
+   * @param accountId 
+   * @returns Account | null
+   */
+  getAccountByAccountId: async (accountId: string) => {
+
+    try {
+      const response = await api.get(`/account/get-by-id/${accountId}`);
+      const account = response.data.result as Account;
+      return account;
+    } catch (error) {
+      return null;
+    }
+
+  },
 };
 
 export default accountService;
