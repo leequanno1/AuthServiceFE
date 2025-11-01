@@ -1,0 +1,26 @@
+.view-port-ctn {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.aler-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.aler-content h2 {
+    font-size: 30px;
+    margin-top: 150px;
+    margin-bottom: 20px;
+}
+
+.aler-content .textcontent {
+    font-size: 18px;
+}
+
+.aler-content .btn-ctn {
+    margin-top: 15px;
+}

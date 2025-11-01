@@ -21,6 +21,8 @@ import CreateFullFunctionPool from "./compine-components/SectionPart/CreateUserP
 import CreateEmptyPool from "./compine-components/SectionPart/CreateUserPool/CreateEmptyPool";
 import HaveTokenNavigate from "./route-wrapper/HaveTokenNavidate/HaveTokenNavigate";
 import NoTokenNavigate from "./route-wrapper/NoTokenNavigate/NoTokenNavigate";
+import LoginSubAccountForm from "./compine-components/Form/LoginSubAccountForm/LoginSubAccountForm";
+import NoAcctiveAccount from "./sceens/NoAcctiveAccount/NoAcctiveAccount";
 
 const AppRoute: React.FC = () => {
   return (
@@ -32,8 +34,10 @@ const AppRoute: React.FC = () => {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/sign-up" element={<SignUpForm />} />
           <Route path="/forgot" element={<ForgotPasswordForm />} />
+          <Route path="/login/:rootID" element={<LoginSubAccountForm />} />
         </Route>
         {/* Path = /dash-board */}
+        <Route path="/no-active" element={<NoAcctiveAccount/>}></Route>
         <Route path="/console-home" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<ConsoleHome />} />
         </Route>

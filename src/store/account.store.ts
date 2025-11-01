@@ -16,6 +16,7 @@ interface AccountState {
   clearAccount: () => void;
   setSubAccounts: (accounts: Account[]) => void;
   clearSubAccounts: () => void;
+  clearAll: () => void;
 }
 
 const accountStore = create<AccountState>((set) => ({
@@ -36,6 +37,14 @@ const accountStore = create<AccountState>((set) => ({
   clearSubAccounts: () => set({
     subAccounts: [],
     subAccountMap: new Map()
+  }),
+  clearAll: () => set({
+    account: null,
+    rootAccount: null,
+    accessToken: null,
+    refreshToken: null,
+    subAccounts: [],
+    subAccountMap: new Map(),
   })
 }));
 

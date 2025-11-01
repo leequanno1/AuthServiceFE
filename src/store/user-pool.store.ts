@@ -5,6 +5,7 @@ interface UserPoolState {
     userPools: UserPool[],
     userPoolsMap: Map<string, UserPool>,
     setUserPools: (ups: UserPool[]) => void,
+    clearAll: () => void,
 }
 
 const userPoolStore = create<UserPoolState>((set) => ({
@@ -13,6 +14,10 @@ const userPoolStore = create<UserPoolState>((set) => ({
     setUserPools : (ups) => set({
         userPools : ups,
         userPoolsMap: new Map(ups.map(item => [item.poolId??"", item])),
+    }),
+    clearAll: () => set({
+        userPools: [],
+        userPoolsMap: new Map(),
     })
 }));
 

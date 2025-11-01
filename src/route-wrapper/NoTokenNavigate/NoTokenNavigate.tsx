@@ -6,6 +6,7 @@ import {
   setCookie,
 } from "../../services/cookie-service";
 import { api } from "../../services/api-service";
+import extractToken from "../../services/token-service";
 
 const NoTokenNavigate: React.FC<{ children: JSX.Element }> = ({
   children,
@@ -52,6 +53,12 @@ const NoTokenNavigate: React.FC<{ children: JSX.Element }> = ({
             setRedirect("/");
         }
       }
+      // check token active
+      const crAcc = extractToken(getAccessTokenFromCookie());
+      if (!!crAcc && !crAcc.active) {
+        // redirect to active page
+        setRedirect("/no-active");
+      } 
     };
 
     checkToken();

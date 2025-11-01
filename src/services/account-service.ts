@@ -1,8 +1,10 @@
 import { api } from "./api-service";
 import accountStore from "../store/account.store";
 import extractToken from "./token-service";
-import { getAccessTokenFromCookie, setCookie } from "./cookie-service";
+import { getAccessTokenFromCookie, removeCookie, setCookie } from "./cookie-service";
 import Account from "../entities/account";
+import userPoolStore from "../store/user-pool.store";
+import userPoolPoliciesStore from "../store/user-pool-policies.store";
 
 const accountService = {
   getAccountDetails: () => {
@@ -49,6 +51,33 @@ const accountService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  subLogin: async (rootId: string, username: string, password: string) => {
+    const response = await api.post("/auth/sub-login", {rootId, username, password });
+      const { accessToken, refreshToken } = response.data.result;
+      const account = extractToken(accessToken);
+      accountStore.getState().setTokens(accessToken, refreshToken);
+      accountStore.getState().setAccount(extractToken(accessToken));
+      // set cookies for tokens
+      setCookie("accessToken", accessToken, 2 * 60);
+      setCookie("refreshToken", refreshToken, 7 * 24 * 60 * 60);
+      if (!account?.rootId) {
+        accountStore.getState().setRootAccount(account);
+      } else {
+        const resp2 = await api.get("/account/get-root");
+        const rootAccount = resp2.data.result as Account;
+        accountStore.getState().setRootAccount(rootAccount);
+      }
+  },
+
+  logout: () => {
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    // clear store data
+    accountStore.getState().clearAll();
+    userPoolStore.getState().clearAll();
+    userPoolPoliciesStore.getState().clearAll();
   },
 
   refreshSubAccount: async () => {
@@ -114,6 +143,23 @@ const accountService = {
     }
 
   },
+
+  toggleAccountStatus: async (accountID: string, accStatus: boolean) => {
+
+    const response = await api.post(`/account/toggle-status/${accountID}/${accStatus}`);
+    return response.data.message as string;
+  
+  },
+
+  resetSubAccountPassword: async (accountID: string, newPassword: string) => {
+
+    const reqBody = {
+      targetAccountId: accountID,
+      newPassword: newPassword
+    }
+    const response = await api.post("/account/reset-subaccount-password", reqBody);
+    return response.data.message;
+  }
 };
 
 export default accountService;

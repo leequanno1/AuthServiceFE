@@ -17,12 +17,13 @@ import { UserPool } from "../../../entities/user-pool";
 import { DateService } from "../../../services/date-service";
 import userPoolService from "../../../services/user-pool-service";
 import LinkIconButton from "../../../components/LinkIconButton/LinkIconButton";
-import { handleCopy } from "../../../services/password-service";
+import { createPassword, handleCopy } from "../../../services/password-service";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import poolPoliciesService from "../../../services/pool-policies-service";
 import accountService from "../../../services/account-service";
 import accountStore from "../../../store/account.store";
+import { exportAccountInfo, exportTextFile } from "../../../services/file-export-service";
 
 interface MiniProfileProps {
   account: Account | null;
@@ -36,6 +37,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
   onPoolSelect = () => {},
 }) => {
 
+  const [nAccount, setAccount] = React.useState<Account | undefined>();
   const [pools,setPools] = React.useState<UserPool[]>([]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [search, setSearch] = React.useState<string>("");
@@ -48,7 +50,14 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
   React.useEffect(() => {
     // init pools data
     const initPoolsData = async () => {
-      const tempPools = await userPoolService.getAllPoolByAccountID(account?.accountId??"");
+      // handle get new account data
+      let tmpAcc = accountStore.getState().subAccountMap?.get(account?.accountId??"");
+      if (!tmpAcc) {
+        await accountService.refreshSubAccount();
+        tmpAcc = accountStore.getState().subAccountMap?.get(account?.accountId??"");
+      }
+      setAccount(tmpAcc);
+      const tempPools = await userPoolService.getAllPoolByAccountID(tmpAcc?.accountId??"");
       setPools(tempPools??[]);
       await accountService.getRootDetails();
     }
@@ -89,7 +98,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
         } />
       </div>
       <div className="mini-profile-body">
-        {!!account && (
+        {!!nAccount && (
           <>
             <h3>Account information</h3>
 
@@ -98,56 +107,82 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                 <div className="acc-id-copy">
                   <span>
                     <strong>Account ID: </strong>
-                    {account.accountId}
+                    {nAccount.accountId}
                   </span>
                   <IconButton
                     Icon={Copy}
                     IconWeight="regular"
                     onClick={async () => {
-                      await handleCopy(account.accountId??"");
+                      await handleCopy(nAccount.accountId??"");
                     }}
                   />
                 </div>
                 <span>
                   <strong>Username: </strong>
-                  {account.username}
+                  {nAccount.username}
                 </span>
                 <span>
                   <strong>Display name: </strong>
-                  {account.displayName}
+                  {nAccount.displayName}
                 </span>
                 <span>
                   <strong>Email: </strong>
-                  {account.email}
+                  {nAccount.email}
                 </span>
                 <span>
                   <strong>Created at: </strong>
-                  {DateService.formatDate(account.createdAt)}
+                  {DateService.formatDate(nAccount.createdAt)}
                 </span>
                 <span>
                   <strong>Status: </strong>
-                  {account.active ? "Active" : "Disable"}
+                  {nAccount.active ? "Active" : "Disable"}
                 </span>
                 <span>
                   <strong>Is Deleted: </strong>
-                  {account.delFlag ? "True" : "False"}
+                  {nAccount.delFlag ? "True" : "False"}
                 </span>
               </div>
               <div className="acc-card-right">
-                <IconButton
-                  Icon={ArrowCounterClockwise}
-                  IconWeight="regular"
-                  onClick={() => {}}
+                <ConfirmPopup
+                  onAccept={async () => {
+                    const newPassword = createPassword();
+                    await accountService.resetSubAccountPassword(nAccount.accountId??"", newPassword);
+                    // export account info
+                    let temAcc: Account = {
+                      ...nAccount,
+                      password : newPassword
+                    };
+                    exportAccountInfo(temAcc);
+                  }}
+                  children={
+                    <div title="Reset password">
+                      <IconButton
+                        Icon={ArrowCounterClockwise}
+                        IconWeight="regular"
+                        onClick={() => {}}
+                      />
+                    </div>
+                  }
                 />
-                <IconButton
-                  Icon={Power}
-                  IconWeight="regular"
-                  onClick={() => {}}
-                />
-                <IconButton
-                  Icon={Trash}
-                  IconWeight="regular"
-                  onClick={() => {}}
+                <ConfirmPopup 
+                  onAccept={async () => {
+                    // toggle account status
+                    await accountService.toggleAccountStatus(nAccount?.accountId??"", !(nAccount?.active));
+                    // refesh sub-account list
+                    await accountService.refreshSubAccount();
+                    // if ok modify account status state
+                    setAccount(accountStore.getState().subAccountMap?.get(nAccount?.accountId??""));
+                  }}
+                  children={
+                    <div title={!!nAccount.active?"Disable Account": "Active Account"}>
+                      <IconButton
+                        Icon={Power}
+                        IconWeight="regular"
+                        onClick={() => {}}
+                        color={!!nAccount.active? "var(--danger-color)" : "var(--text-color)"}
+                      />
+                    </div>
+                  }
                 />
               </div>
             </div>
@@ -198,7 +233,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   const selectedArr = Array.from(selected);
                   // first get pool policy, if policy exist then delete policy
                   for (const sl of selectedArr) {
-                    const plc = await poolPoliciesService.getPolicyBySubAccountId(account?.accountId??"", sl);
+                    const plc = await poolPoliciesService.getPolicyBySubAccountId(nAccount?.accountId??"", sl);
                     if (!!plc) {
                       plcIds.push(plc.policyId??"");
                     }

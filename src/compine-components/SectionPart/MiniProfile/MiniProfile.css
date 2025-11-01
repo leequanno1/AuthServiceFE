@@ -80,6 +80,10 @@
     padding-inline: 2px;
 }
 
+.acc-card-right .confirm-trigger {
+    margin-block: 0;
+}
+
 .mn-pool-info-header {
     display: flex;
     justify-content: start;

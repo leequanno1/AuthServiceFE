@@ -1,3 +1,4 @@
+import Account from "../entities/account";
 import accountStore from "../store/account.store";
 import accountService from "./account-service";
 
@@ -19,6 +20,11 @@ export const accountInfoContent = (username: string, password: string, email: st
     accountService.getAccountDetails();
     const account = accountStore.getState().account;
     const rootId = account?.rootId ? account?.rootId : account?.accountId;
-    
-    return `Login link: ${rootId} \nUsername: ${username} \nPassword: ${password} \nEmail: ${email}`;
+    const host = window.location.host;
+    return `Login link: ${host}/login/${rootId} \nUsername: ${username} \nPassword: ${password} \nEmail: ${email}`;
+}
+
+export const exportAccountInfo = (account: Account) => {
+  const content = accountInfoContent(account.username??"", account.password??"", account.email??"");
+  exportTextFile(`Account_Info_${account.accountId}`, content);
 }
