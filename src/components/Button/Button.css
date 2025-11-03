@@ -15,7 +15,9 @@ button:hover {
     opacity: 0.8;
 }
 
-button:disabled {
+button:disabled,
+button:disabled:hover {
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
@@ -26,6 +28,7 @@ button:active {
 .button.primary {
     background-color: var(--primary-color);
     color: var(--background-color);
+    border: 1px solid var(--primary-color);
 }
 
 .button.secondary {

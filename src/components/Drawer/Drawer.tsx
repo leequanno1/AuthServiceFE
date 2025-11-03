@@ -1,13 +1,29 @@
 import React from "react";
 import "./Drawer.css";
-// import { List } from "react-bootstrap-icons";
 import { List } from "phosphor-react";
 import IconButton from "../IconButton/IconButton";
 import { Link } from "react-router-dom";
+import accountService from "../../services/account-service";
+import { AccountPolicies } from "../../entities/account-policies";
+import { accountPoliciesService } from "../../services/account-policies-service";
+import accountStore from "../../store/account.store";
 
 const Drawer: React.FC = () => {
 
     const [isOpen, setIsOpen] = React.useState(true);
+    const [accountPolicies, setAccountPolicies] = React.useState<AccountPolicies | null>();
+    const isRoot = accountService.isRoot();
+
+    React.useEffect(() => {
+        const loadPolicies = async () => {
+            if (!isRoot) {
+                const tmpPlc = await accountPoliciesService.getAccountPolicies(accountStore.getState().account?.accountId??"");
+                setAccountPolicies(tmpPlc);
+            }
+        }
+
+        loadPolicies();
+    }, [isRoot])
 
     return (
         <nav className={`app-drawer ${isOpen ? "open" : "close"}`}>
@@ -22,9 +38,9 @@ const Drawer: React.FC = () => {
                 <Link className="nav head-nav" to={"/console-home"}><h3>Profile</h3></Link>
                 <Link className="nav head-nav" to={"/console-home"}><h3>Console Home</h3></Link>
                 <Link className="nav head-nav" to={"/account-control"}><h3>Account Control</h3></Link>
-                <Link className="nav sub-nav" to={"/account-control/create"}>Create sub-account</Link>
+                {(isRoot || !!accountPolicies?.canCreate) && <Link className="nav sub-nav" to={"/account-control/create"}>Create sub-account</Link>}
                 <Link className="nav head-nav" to={"/pool-control"}><h3>Pool Control</h3></Link>
-                <Link className="nav sub-nav" to={"/pool-control/create"}>Create new pool</Link>
+                {isRoot && <Link className="nav sub-nav" to={"/pool-control/create"}>Create new pool</Link>}
             </div>
         </nav>
     );

@@ -86,7 +86,7 @@ const TableRow: React.FC<TableRowProps> = ({
           <span>User Fields</span>
           <div className="user-fields-list">
             {pool.userFields?.map((field, index) => (
-              <NameTag key={index} name={field} />
+              <NameTag name={field} />
             ))}
           </div>
         </div>
@@ -94,7 +94,7 @@ const TableRow: React.FC<TableRowProps> = ({
           <span>Authorize Fields</span>
           <div className="authorize-fields-list">
             {pool.authorizeFields?.map((field, index) => (
-              <NameTag key={index} name={field} />
+              <NameTag name={field} />
             ))}
           </div>
         </div>

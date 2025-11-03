@@ -13,6 +13,7 @@ import poolPoliciesService from "../../../services/pool-policies-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import { AccountPolicies } from "../../../entities/account-policies";
 import { UserPoolPolicies } from "../../../entities/user-pool-policies";
+import accountStore from "../../../store/account.store";
 
 interface MiniPolicyInfoProps {
   account: Account | null;
@@ -28,12 +29,16 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
   const [selectedAccPlc, setSelectedAccPlc] = React.useState<Policy[]>([]);
   const [selectedPoolPlc, setSelectedPoolPlc] = React.useState<Policy[]>([]);
 
+  const isAccountPlcDisable = (!!accountPolicy?.creatorId && accountPolicy?.creatorId !== accountStore.getState().account?.accountId);
+  const isPoolPlcDisable = (!!poolPolicy?.creatorId && poolPolicy?.creatorId !== accountStore.getState().account?.accountId);
+
   React.useEffect(()=> {
     const initAccPolicies = async () => {
       if (!account) {
         setAccountPolicies([]);
       } else {
         // call api
+        console.log(account.username);
         const policies = await accountPoliciesService.getAccountPolicies(account.accountId??"");
         const plcList = await accountPoliciesService.initAccountPoliciesList(policies);
         setAccountPolicy(policies);
@@ -67,7 +72,7 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
     <div className="mn-policy-info-container">
       <div className="mini-pool-policy-header">
         <h2 className="mn-pp-header-name">User's policies</h2>
-        <IconButton Icon={ArrowSquareIn} IconSize={20} onClick={() => {}} />
+        {/* <IconButton Icon={ArrowSquareIn} IconSize={20} onClick={() => {}} /> */}
       </div>
 
       <div className="mini-pool-policy-body">
@@ -89,11 +94,13 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
                 onChange={() => {}}
               />
               <ConfirmPopup
+                disabled={isAccountPlcDisable}
                 onAccept={ async () => {
                   await accountPoliciesService.attachAccountPolices(account.accountId??"", selectedAccPlc, accountPolicy?.policyId);
                 }}
                 children={
                   <Button
+                    disabled={isAccountPlcDisable}
                     label="Save"
                     onClick={() => {}}
                     borderRadius={3}
@@ -126,11 +133,13 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
                 onChange={() => {}}
               />
               <ConfirmPopup 
+                disabled={isPoolPlcDisable}
                 onAccept={async () => {
                   await poolPoliciesService.attachUserPool(selectedPoolPlc, account?.accountId??"", pool.poolId??"",poolPolicy?.policyId);
                 }}
                 children={
                   <Button
+                    disabled={isPoolPlcDisable}
                     label="Save"
                     onClick={() => {}}
                     borderRadius={3}

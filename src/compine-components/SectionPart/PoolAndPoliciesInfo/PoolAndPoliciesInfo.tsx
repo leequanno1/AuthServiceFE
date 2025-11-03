@@ -194,7 +194,7 @@ const PoolAndPoliciesInfo: React.FC = () => {
                   )}
                   {pools.map((pool) => (
                     <tr
-                      key={pool.poolId}
+                      // key={pool.poolId}
                       className={`pool-row ${
                         selected.has(pool.poolId ?? "") ? "selected" : ""
                       }`}

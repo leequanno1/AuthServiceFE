@@ -44,10 +44,12 @@ const AccessableUsers: React.FC = () => {
     const initData = async () => {
       if (!isRoot) {
         // load policy
+        await poolPoliciesService.refreshPoolPolicies();
         const tempPolicies = userPoolPoliciesStore
           .getState()
           .userPoolPoliciesMapByPoolID.get(poolID ?? "");
         if (tempPolicies) {
+          console.log(tempPolicies);
           setPoolPolicies(tempPolicies);
         }
       }
@@ -271,7 +273,7 @@ const AccessableUsers: React.FC = () => {
                       <tr
                         className="au-row"
                         onClick={() => setCurrentSelectedSubAcc(u)}
-                        key={u.accountId}
+                        // key={u.accountId}
                       >
                         <td style={{ textAlign: "center" }}>
                           <input

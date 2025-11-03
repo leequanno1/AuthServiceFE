@@ -159,6 +159,22 @@ const accountService = {
     }
     const response = await api.post("/account/reset-subaccount-password", reqBody);
     return response.data.message;
+  },
+
+  changePassword: async (oldPassword: string, newPassword: string) => {
+
+    const reqBody = {
+      oldPassword,
+      newPassword
+    }
+    const response = await api.post("/account/change-password", reqBody);
+    return response.data.message;
+  },
+
+  updateDisplayName: async (displayName: string) => {
+
+    const response = await api.post(`/account/update-display-name/${displayName}`);
+    return response.data.message;
   }
 };
 

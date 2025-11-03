@@ -23,7 +23,10 @@ import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import poolPoliciesService from "../../../services/pool-policies-service";
 import accountService from "../../../services/account-service";
 import accountStore from "../../../store/account.store";
-import { exportAccountInfo, exportTextFile } from "../../../services/file-export-service";
+import {
+  exportAccountInfo,
+  exportTextFile,
+} from "../../../services/file-export-service";
 
 interface MiniProfileProps {
   account: Account | null;
@@ -31,14 +34,13 @@ interface MiniProfileProps {
   onPoolSelect?: (pool: UserPool) => void;
 }
 
-const MiniProfile: React.FC<MiniProfileProps> = ({ 
+const MiniProfile: React.FC<MiniProfileProps> = ({
   account,
   totalPools = [],
   onPoolSelect = () => {},
 }) => {
-
-  const [nAccount, setAccount] = React.useState<Account | undefined>();
-  const [pools,setPools] = React.useState<UserPool[]>([]);
+  const [nAccount, setAccount] = React.useState<Account | undefined | null>();
+  const [pools, setPools] = React.useState<UserPool[]>([]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [search, setSearch] = React.useState<string>("");
 
@@ -51,19 +53,32 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
     // init pools data
     const initPoolsData = async () => {
       // handle get new account data
-      let tmpAcc = accountStore.getState().subAccountMap?.get(account?.accountId??"");
-      if (!tmpAcc) {
-        await accountService.refreshSubAccount();
-        tmpAcc = accountStore.getState().subAccountMap?.get(account?.accountId??"");
+      if (account?.accountId) {
+        let tmpAcc: Account | null | undefined = accountStore
+          .getState()
+          .subAccountMap?.get(account?.accountId ?? "");
+        if (!tmpAcc) {
+          await accountService.refreshSubAccount();
+          tmpAcc = accountStore
+            .getState()
+            .subAccountMap?.get(account?.accountId ?? "");
+          if (!tmpAcc) {
+            tmpAcc = await accountService.getAccountByAccountId(
+              account?.accountId ?? ""
+            );
+          }
+        }
+        setAccount(tmpAcc);
+        const tempPools = await userPoolService.getAllPoolByAccountID(
+          tmpAcc?.accountId ?? ""
+        );
+        setPools(tempPools ?? []);
+        await accountService.getRootDetails();
       }
-      setAccount(tmpAcc);
-      const tempPools = await userPoolService.getAllPoolByAccountID(tmpAcc?.accountId??"");
-      setPools(tempPools??[]);
-      await accountService.getRootDetails();
-    }
+    };
 
     initPoolsData();
-  }, [account?.accountId])
+  }, [account?.accountId]);
 
   React.useEffect(() => {
     if (headerCheckboxRef.current) {
@@ -93,9 +108,15 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
     <div className="mini-profile-container">
       <div className="mini-profile-header">
         <h2 className="mn-pf-header-name">User's profile</h2>
-        <LinkIconButton Icon={ArrowSquareIn} IconSize={20} to={
-          !!account ? `/account-control/user/${account.accountId}` : "/account-control" 
-        } />
+        <LinkIconButton
+          Icon={ArrowSquareIn}
+          IconSize={20}
+          to={
+            !!account
+              ? `/account-control/user/${account.accountId}`
+              : "/account-control"
+          }
+        />
       </div>
       <div className="mini-profile-body">
         {!!nAccount && (
@@ -113,7 +134,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                     Icon={Copy}
                     IconWeight="regular"
                     onClick={async () => {
-                      await handleCopy(nAccount.accountId??"");
+                      await handleCopy(nAccount.accountId ?? "");
                     }}
                   />
                 </div>
@@ -146,11 +167,14 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                 <ConfirmPopup
                   onAccept={async () => {
                     const newPassword = createPassword();
-                    await accountService.resetSubAccountPassword(nAccount.accountId??"", newPassword);
+                    await accountService.resetSubAccountPassword(
+                      nAccount.accountId ?? "",
+                      newPassword
+                    );
                     // export account info
                     let temAcc: Account = {
                       ...nAccount,
-                      password : newPassword
+                      password: newPassword,
                     };
                     exportAccountInfo(temAcc);
                   }}
@@ -164,22 +188,37 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                     </div>
                   }
                 />
-                <ConfirmPopup 
+                <ConfirmPopup
                   onAccept={async () => {
                     // toggle account status
-                    await accountService.toggleAccountStatus(nAccount?.accountId??"", !(nAccount?.active));
+                    await accountService.toggleAccountStatus(
+                      nAccount?.accountId ?? "",
+                      !nAccount?.active
+                    );
                     // refesh sub-account list
                     await accountService.refreshSubAccount();
                     // if ok modify account status state
-                    setAccount(accountStore.getState().subAccountMap?.get(nAccount?.accountId??""));
+                    setAccount(
+                      accountStore
+                        .getState()
+                        .subAccountMap?.get(nAccount?.accountId ?? "")
+                    );
                   }}
                   children={
-                    <div title={!!nAccount.active?"Disable Account": "Active Account"}>
+                    <div
+                      title={
+                        !!nAccount.active ? "Disable Account" : "Active Account"
+                      }
+                    >
                       <IconButton
                         Icon={Power}
                         IconWeight="regular"
                         onClick={() => {}}
-                        color={!!nAccount.active? "var(--danger-color)" : "var(--text-color)"}
+                        color={
+                          !!nAccount.active
+                            ? "var(--danger-color)"
+                            : "var(--text-color)"
+                        }
                       />
                     </div>
                   }
@@ -199,52 +238,64 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
             </div>
 
             <div className="mn-search-box">
-              <DropdownButton 
-              align="start"
-              items={totalPools
-                .filter(sp => {
-                  let res = !pools.some(p => p.poolId === sp.poolId);
-                  if (!!search) {
-                    res = !!sp.poolName?.toLowerCase().includes(search.toLowerCase());
-                  }
-                  return res;
-                })
-                .map(sp => {
-                  return {
-                    label:`${sp.poolName} - ${sp.poolId}`,
-                    onClick:() => {
-                      // add to pools
-                      setPools([...pools, sp]);
+              <DropdownButton
+                align="start"
+                items={totalPools
+                  .filter((sp) => {
+                    let res = !pools.some((p) => p.poolId === sp.poolId);
+                    if (!!search) {
+                      res = !!sp.poolName
+                        ?.toLowerCase()
+                        .includes(search.toLowerCase());
                     }
-                  }
-                })
-              }
-              children={<InputText
-                value={search}
-                stretch={false}
-                width={180}
-                onChange={(text) => {setSearch(text);}}
-                placeholder="Search for pool information"
-                Icon={MagnifyingGlass}
-              />}/>
+                    return res;
+                  })
+                  .map((sp) => {
+                    return {
+                      label: `${sp.poolName} - ${sp.poolId}`,
+                      onClick: () => {
+                        // add to pools
+                        setPools([...pools, sp]);
+                      },
+                    };
+                  })}
+                children={
+                  <InputText
+                    value={search}
+                    stretch={false}
+                    width={180}
+                    onChange={(text) => {
+                      setSearch(text);
+                    }}
+                    placeholder="Search for pool information"
+                    Icon={MagnifyingGlass}
+                  />
+                }
+              />
               <ConfirmPopup
                 onAccept={async () => {
                   let plcIds: string[] = [];
                   const selectedArr = Array.from(selected);
                   // first get pool policy, if policy exist then delete policy
                   for (const sl of selectedArr) {
-                    const plc = await poolPoliciesService.getPolicyBySubAccountId(nAccount?.accountId??"", sl);
+                    const plc =
+                      await poolPoliciesService.getPolicyBySubAccountId(
+                        nAccount?.accountId ?? "",
+                        sl
+                      );
                     if (!!plc) {
-                      plcIds.push(plc.policyId??"");
+                      plcIds.push(plc.policyId ?? "");
                     }
                   }
                   // then remove policies
                   if (!!plcIds && plcIds.length > 0) {
                     await poolPoliciesService.deletePolicy(plcIds);
                   }
-                  setPools(pools.filter(p => !selectedArr.includes(p.poolId??"")))
+                  setPools(
+                    pools.filter((p) => !selectedArr.includes(p.poolId ?? ""))
+                  );
                   setSelected(new Set());
-                }} 
+                }}
                 children={
                   <Button
                     label="Delete pool"
@@ -273,12 +324,20 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {(!pools || pools.length === 0) && <tr className="pool-row empty"><td colSpan={3}>No policies</td></tr>}
+                  {(!pools || pools.length === 0) && (
+                    <tr className="pool-row empty">
+                      <td colSpan={3}>No policies</td>
+                    </tr>
+                  )}
                   {pools.map((pool) => (
                     <tr
-                      key={pool.poolId}
-                      className={`pool-row ${selected.has(pool.poolId ?? "") ? "selected" : ""}`}
-                      onClick={() => {onPoolSelect(pool);}}
+                      // key={pool.poolId}
+                      className={`pool-row ${
+                        selected.has(pool.poolId ?? "") ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        onPoolSelect(pool);
+                      }}
                     >
                       <td>
                         <input

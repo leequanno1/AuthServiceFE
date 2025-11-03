@@ -3,13 +3,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import "./DropdownButton.css";
 
 export interface DropdownItem {
-  label: string;
-  onClick?: () => void;
-  disabled?: boolean;
-}
-
-export interface DropdownItem {
-  label: string;
+  label: string | React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
 }
@@ -68,12 +62,12 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
         >
           {items.map((item, index) => (
             <DropdownMenu.Item
-              key={index}
+              // key={index}
               onSelect={item.onClick}
               disabled={item.disabled}
               className="dropdown-item"
             >
-              {item.label}
+              <>{item.label}</>
             </DropdownMenu.Item>
           ))}
         </DropdownMenu.Content>

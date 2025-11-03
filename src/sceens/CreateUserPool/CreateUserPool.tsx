@@ -1,9 +1,15 @@
 import React from "react";
 import "./CreateUserPool.css";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
+import accountService from "../../services/account-service";
 
 const CreateUserPool: React.FC = () => {
   const location = useLocation();
+  const isRoot = accountService.isRoot();
+
+  if (!isRoot) {
+    return <Navigate to={"/console-home"} replace />;
+  }
 
   return (
     <div className="create-user-pool-container">

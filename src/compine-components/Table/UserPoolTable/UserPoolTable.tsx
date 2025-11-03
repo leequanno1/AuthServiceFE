@@ -175,7 +175,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
         {/* Table body */}
         <div className="pool-table-body">
           {/* Table rows */}
-
+          
           {userPools.map((pool) => (
             <div
               onClick={() => {
@@ -186,7 +186,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
               }}
             >
               <TableRow
-                key={pool.poolId}
+                // key={pool.poolId}
                 pool={pool}
                 poolPolicies={poolPolicies.get(pool.poolId ?? "")}
                 isRoot={isRoot}

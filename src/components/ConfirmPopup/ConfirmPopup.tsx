@@ -4,8 +4,9 @@ import "./ConfirmPopup.css";
 interface ConfirmPopupProps {
   title?: string;
   description?: string;
-  onAccept?: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
+  onAccept?: () => void;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -13,6 +14,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   description = "Are you sure you want to perform this action?",
   onAccept,
   children,
+  disabled = false,
 }) => {
   const [open, setOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -37,6 +39,10 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
     onAccept?.();
     setOpen(false);
   };
+
+  if (disabled) {
+    return <>{children}</>;
+  }
 
   return (
     <>

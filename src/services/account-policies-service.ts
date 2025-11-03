@@ -2,7 +2,6 @@ import { init_ACCOUNT_POLICIES } from "../constants/policies/account-policy";
 import { AccountPolicies } from "../entities/account-policies";
 import { Policy } from "../entities/policies";
 import { api } from "./api-service";
-import policyService from "./policy-service";
 
 export const accountPoliciesService = {
   getAccountPolicies: async (targetAccID: string) => {

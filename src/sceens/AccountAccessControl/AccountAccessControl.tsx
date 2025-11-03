@@ -8,16 +8,26 @@ import Account from "../../entities/account";
 import { UserPool } from "../../entities/user-pool";
 import userPoolService from "../../services/user-pool-service";
 import userPoolStore from "../../store/user-pool.store";
+import { AccountPolicies } from "../../entities/account-policies";
+import { accountPoliciesService } from "../../services/account-policies-service";
+import accountStore from "../../store/account.store";
+import accountService from "../../services/account-service";
 
 const AccountAccessControl = () => {
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [selectedPool, setSelectedPool] = useState<UserPool | null>(null);
   const [totalPools, setTotalPools] = useState<UserPool[]>([])
+  const [crrAccountPlc, setCrrAccountPlc] = useState<AccountPolicies | null>(null);
 
   useEffect(() => {
     const initAllAttachedPoolsValue = async () => {
       await userPoolService.refreshUserPool();
       setTotalPools(userPoolStore.getState().userPools);
+      if (!accountService.isRoot()) {
+        const tmpPlcs = await accountPoliciesService
+          .getAccountPolicies(accountStore.getState().account?.accountId??"");
+        setCrrAccountPlc(tmpPlcs);
+      }
     }
 
     initAllAttachedPoolsValue();
@@ -27,12 +37,14 @@ const AccountAccessControl = () => {
     <div className="aac-container">
       <div className="acc-header">
         <h1>Account Access Control</h1>
-        <LinkButton
-          to={"/account-control/create"}
-          label="+ Add new user"
-          type="tertiary"
-          borderRadius={3}
-        />
+        {(accountService.isRoot() || !!crrAccountPlc?.canCreate) && (
+          <LinkButton
+            to={"/account-control/create"}
+            label="+ Add new user"
+            type="tertiary"
+            borderRadius={3}
+          />
+        ) }
       </div>
       <div className="acc-body">
         <UserTable

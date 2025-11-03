@@ -53,7 +53,7 @@ const SubUserAndPoliciesInfo: React.FC = () => {
 
   return (
     <div className="outlet-content">
-      <UserTable customAccounts={lowerSubAccs}/>
+      <UserTable hideDelete hideRefresh hideOption customAccounts={lowerSubAccs}/>
       <Card
         title="User policies"
         optionButtons={

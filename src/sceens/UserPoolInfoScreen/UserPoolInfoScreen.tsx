@@ -15,6 +15,7 @@ const UserPoolInfoScreen: React.FC = () => {
   React.useEffect(() => {
     const initData = async () => {
       if (poolID) {
+        await userPoolService.refreshUserPool();
         let tempPool = userPoolStore.getState().userPoolsMap.get(poolID);
         if (tempPool) {
           setUserPool(tempPool);

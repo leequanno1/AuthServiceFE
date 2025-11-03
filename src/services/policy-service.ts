@@ -23,7 +23,7 @@ const policyService = {
       // get account policy
       const tempPlcs = init_ACCOUNT_POLICIES();
       const response = await api.get(
-        `/account-policy/get/${account?.accountId}`
+        `/account-policy/get-by-acc-id/${account?.accountId}`
       );
       const accPolicies = response.data.result as AccountPolicies;
       let policies: Policy[] = [];

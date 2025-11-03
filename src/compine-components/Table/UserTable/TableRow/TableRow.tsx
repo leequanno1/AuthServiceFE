@@ -44,7 +44,10 @@ const TableRow: React.FC<TableRowProps> = ({
   return (
     <div className="row-wraper">
       <div
-        onClick={() => {onClick(account);}}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClick(account);
+        }}
         className={`table-row ${isSubRow ? "sub-row" : ""}`}
         onDoubleClick={() => {
           setIsExpanded((prev) => !prev);
@@ -81,8 +84,9 @@ const TableRow: React.FC<TableRowProps> = ({
         {subAccounts.length > 0 && (
           subAccounts.map((subAcc) => (
             <TableRow
-              onClick={() => {onSubRowClick(subAcc)}}
-              key={subAcc.accountId}
+              onClick={() => {
+                onSubRowClick(subAcc)
+              }}
               isSubRow={true}
               account={subAcc}
               parentAcc={account}

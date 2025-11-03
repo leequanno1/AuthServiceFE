@@ -12,8 +12,11 @@ import { Policy } from "../../entities/policies";
 import policyService from "../../services/policy-service"
 import { api } from "../../services/api-service";
 import { getServerErrorCode } from "../../services/error-code-service";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { accountInfoContent, exportTextFile } from "../../services/file-export-service";
+import { accountPoliciesService } from "../../services/account-policies-service";
+import accountStore from "../../store/account.store";
+import accountService from "../../services/account-service";
 
 const CreateSubUser: React.FC = () => {
   const [username, setUsername] = React.useState<string>("");
@@ -24,14 +27,25 @@ const CreateSubUser: React.FC = () => {
   const [saveInfoAsText, setSaveInfoAsText] = React.useState<boolean>(false);
   const [policies, setPolicies] = React.useState<Policy[]>([]);
   const [selectedPolicies, setSelectedPolicies] = React.useState<Policy[]>([]);
+  const [redirect, setRedirect] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
   React.useEffect(() => {
     const setStaterPolicies = async () => {
-      setPolicies(await policyService.getStaterAccountPolicies())
+      const tmpPlcs = await accountPoliciesService
+        .getAccountPolicies(accountStore.getState().account?.accountId??"");
+      if (!!tmpPlcs.canCreate) {
+        setPolicies(await policyService.getStaterAccountPolicies());
+      } else {
+        setRedirect("/console-home");
+      }
     }
     setStaterPolicies();
   }, []);
+
+  if (!!redirect) {
+    return <Navigate to={redirect} replace />;
+  }
 
   return (
     <div className="create-sub-account-container">
@@ -169,6 +183,12 @@ const CreateSubUser: React.FC = () => {
             tyle="tertiary"
             borderRadius={3}
             onClick={async () => {
+              const tmpPlcs = await accountPoliciesService
+                .getAccountPolicies(accountStore.getState().account?.accountId??"");
+              if (!accountService.isRoot() && !tmpPlcs?.canCreate) {
+                // TODO: add toast Alert
+                return;
+              }
               if (!username) {
                 setErrorCode("CC1000");
                 return;

@@ -23,6 +23,7 @@ import HaveTokenNavigate from "./route-wrapper/HaveTokenNavidate/HaveTokenNaviga
 import NoTokenNavigate from "./route-wrapper/NoTokenNavigate/NoTokenNavigate";
 import LoginSubAccountForm from "./compine-components/Form/LoginSubAccountForm/LoginSubAccountForm";
 import NoAcctiveAccount from "./sceens/NoAcctiveAccount/NoAcctiveAccount";
+import UpdateUserPool from "./sceens/UpdateUserPool/UpdateUserPool";
 
 const AppRoute: React.FC = () => {
   return (
@@ -54,6 +55,7 @@ const AppRoute: React.FC = () => {
 
         <Route path="/pool-control" element={<NoTokenNavigate><Frame /></NoTokenNavigate>}>
           <Route index element={<UserPoolControl />} />
+          <Route path="update/:poolID" element={<UpdateUserPool />}/>
           <Route path="create" element={<CreateUserPool />}>
             <Route index element={<CreateFullFunctionPool/>} />
             <Route path="empty-function" element={<CreateEmptyPool/>} />

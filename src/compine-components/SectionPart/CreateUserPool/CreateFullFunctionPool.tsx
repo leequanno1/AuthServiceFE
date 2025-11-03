@@ -91,7 +91,6 @@ const CreateFullFunctionPool: React.FC = () => {
         <div className="name-tags-container">
           {selectedUserFields.map((field) => (
             <NameTag
-              key={field}
               name={field}
               onClick={() => {
                 setSelectedUserFields(
@@ -149,7 +148,6 @@ const CreateFullFunctionPool: React.FC = () => {
         <div className="name-tags-container">
           {selectedAuthFields.map((field) => (
             <NameTag
-              key={field}
               name={field}
               onClick={() =>
                 setSelectedAuthFields(
