@@ -1,4 +1,4 @@
-import Account from "../entities/account";
+import { User } from "../entities/user";
 import { UserPool } from "../entities/user-pool";
 import accountStore from "../store/account.store";
 import userPoolStore from "../store/user-pool.store";
@@ -37,7 +37,25 @@ const userPoolService = {
         } catch (error) {
             return [];
         }
-    }
+    },
+
+    getUserFields: async (poolID: string) => {
+        try {
+            const response = await api.get(`/user-pool/user-fields/${poolID}`)
+            return response.data.result as string[];
+        } catch (error) {
+            return [];
+        }
+    },
+
+    getUsers: async (poolID: string) => {
+        try {
+            const response = await api.get(`/user-pool/all-users/${poolID}`)
+            return response.data.result as User[];
+        } catch (error) {
+            return [];
+        }
+    },
 
 }
 

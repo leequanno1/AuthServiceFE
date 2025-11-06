@@ -1,184 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserData.css";
 import { User } from "../../../entities/user";
 import UserDataTable from "../../../components/UserDataTable/UserDataTable";
 import IconButton from "../../../components/IconButton/IconButton";
 import { ArrowClockwise, Trash } from "phosphor-react";
+import { useParams } from "react-router-dom";
+import userPoolService from "../../../services/user-pool-service";
 
 const UserData: React.FC = () => {
-  const [userDatas,setUserDatas] = useState<User[]>(
-    [
-    {
-      userId: "niga1",
-      username: "myniga1",
-      email: "emai@mail.commmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga2",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga3",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga4",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga5",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga6",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga7",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga8",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga9",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga10",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga11",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga12",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga13",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-    {
-      userId: "niga14",
-      username: "myniga1",
-      email: "emai@mail.com",
-      phoneNumber: "0123456789",
-      telCountryCode: "+84",
-      lastName: "exlastname",
-      firstName: "exfirstname",
-      isValidated: false,
-    },
-  ]
-  );
 
-  const columns: string[] = [
-    "userId",
-    "username",
-    "email",
-    "phoneNumber",
-    "telCountryCode",
-    "lastName",
-    "firstName",
-    "isValidated",
-    "backgroundImg",
-    "backgroundImg",
-    "backgroundImg",
-    "backgroundImg",
-    "backgroundImg",
-    "backgroundImg",
-  ];
+  const [userDatas,setUserDatas] = useState<User[]>([]);
+  const [columns, setCollums] = useState<string[]>([]);
+  const [counter, setCounter] = useState<number>(0);
+  const {poolID} = useParams();
 
   let selectedUser:User[] = [];
 
-  const setSeletedUser= (users:User[]) => {
+  const setSeletedUser = (users:User[]) => {
     selectedUser=users;
   }
+
+  useEffect(() => {
+    const getSataterData = async () => {
+      if (!!poolID) {
+        // get collum
+        const tmpCollums = await userPoolService.getUserFields(poolID);
+        setCollums(tmpCollums);
+        // get users
+        const tmpUsers = await userPoolService.getUsers(poolID);
+        setUserDatas(tmpUsers);
+      }
+      console.log("run ",counter);
+    }
+
+    getSataterData();
+  }, [poolID, counter])
 
   return (
     <div className="user-data-content">
       <h2>User Data</h2>
       <div className="button-container">
-        <IconButton Icon={ArrowClockwise} onClick={() => {}} IconSize={24} />
+        <IconButton Icon={ArrowClockwise} onClick={() => {setCounter(counter+1)}} IconSize={24} />
         <IconButton
           Icon={Trash}
           onClick={() => {

@@ -9,11 +9,14 @@ import { CSA_ERROR_MESSAGE } from "../../constants/error-message/create-sub-acco
 import { createPassword } from "../../services/password-service";
 import { isEmailFormat } from "../../services/email-service";
 import { Policy } from "../../entities/policies";
-import policyService from "../../services/policy-service"
+import policyService from "../../services/policy-service";
 import { api } from "../../services/api-service";
 import { getServerErrorCode } from "../../services/error-code-service";
 import { Navigate, useNavigate } from "react-router-dom";
-import { accountInfoContent, exportTextFile } from "../../services/file-export-service";
+import {
+  accountInfoContent,
+  exportTextFile,
+} from "../../services/file-export-service";
 import { accountPoliciesService } from "../../services/account-policies-service";
 import accountStore from "../../store/account.store";
 import accountService from "../../services/account-service";
@@ -32,14 +35,17 @@ const CreateSubUser: React.FC = () => {
 
   React.useEffect(() => {
     const setStaterPolicies = async () => {
-      const tmpPlcs = await accountPoliciesService
-        .getAccountPolicies(accountStore.getState().account?.accountId??"");
-      if (!!tmpPlcs.canCreate) {
-        setPolicies(await policyService.getStaterAccountPolicies());
-      } else {
-        setRedirect("/console-home");
+      if (!accountService.isRoot()) {
+        const tmpPlcs = await accountPoliciesService.getAccountPolicies(
+          accountStore.getState().account?.accountId ?? ""
+        );
+        if (!!tmpPlcs.canCreate) {
+          setPolicies(await policyService.getStaterAccountPolicies());
+        } else {
+          setRedirect("/console-home");
+        }
       }
-    }
+    };
     setStaterPolicies();
   }, []);
 
@@ -102,13 +108,13 @@ const CreateSubUser: React.FC = () => {
                     const isChecked = e.target.checked;
                     if (isChecked) {
                       // generate new pass
-                      setPassword(createPassword())
+                      setPassword(createPassword());
                       setSaveInfoAsText(true);
                     } else {
                       // clear password
-                      setPassword("")
+                      setPassword("");
                     }
-                    setAutoGenPassword(isChecked)
+                    setAutoGenPassword(isChecked);
                   }}
                 />{" "}
                 <label htmlFor="autoGeneratePass">Auto generate password</label>
@@ -174,7 +180,10 @@ const CreateSubUser: React.FC = () => {
                 placeholder="Search for account polocy"
               />
             </div>
-            <MiniPolicyTable datas={policies} onSelected={(plcs) => setSelectedPolicies(plcs)}/>
+            <MiniPolicyTable
+              datas={policies}
+              onSelected={(plcs) => setSelectedPolicies(plcs)}
+            />
           </div>
         </Card>
 
@@ -183,8 +192,9 @@ const CreateSubUser: React.FC = () => {
             tyle="tertiary"
             borderRadius={3}
             onClick={async () => {
-              const tmpPlcs = await accountPoliciesService
-                .getAccountPolicies(accountStore.getState().account?.accountId??"");
+              const tmpPlcs = await accountPoliciesService.getAccountPolicies(
+                accountStore.getState().account?.accountId ?? ""
+              );
               if (!accountService.isRoot() && !tmpPlcs?.canCreate) {
                 // TODO: add toast Alert
                 return;
@@ -213,12 +223,18 @@ const CreateSubUser: React.FC = () => {
                   username,
                   password,
                   email,
-                }
-                const response = await api.post("/account/create-subuser", body);
+                };
+                const response = await api.post(
+                  "/account/create-subuser",
+                  body
+                );
                 accountId = response.data.message;
                 // export data to text file
                 if (saveInfoAsText) {
-                  exportTextFile(`Account_info_${accountId}.txt`, accountInfoContent(username, password, email));
+                  exportTextFile(
+                    `Account_info_${accountId}.txt`,
+                    accountInfoContent(username, password, email)
+                  );
                 }
               } catch (error) {
                 setErrorCode(getServerErrorCode(error).toString());
@@ -227,14 +243,17 @@ const CreateSubUser: React.FC = () => {
               // add policies
               if (selectedPolicies) {
                 try {
-                  const body = policyService.toAccountPoliciesRqBody(selectedPolicies, accountId);
+                  const body = policyService.toAccountPoliciesRqBody(
+                    selectedPolicies,
+                    accountId
+                  );
                   await api.post("/account-policy/attach", body);
                 } catch (error) {
                   console.error(error);
                 }
               }
 
-              navigate(`/account-control/user/${accountId}`, {replace:true});
+              navigate(`/account-control/user/${accountId}`, { replace: true });
             }}
             label="Confirm created"
           />
