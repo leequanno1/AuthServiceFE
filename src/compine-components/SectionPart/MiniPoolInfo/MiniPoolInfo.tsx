@@ -28,7 +28,7 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
       title="Pool's infomation"
       optionButtons={
         <>
-          <IconButton onClick={() => {}} Icon={Pen} IconSize={24} />
+          <LinkIconButton to={`/pool-control/update/${userPool?.poolId}`} Icon={Pen} IconSize={24}/>
           <LinkIconButton
             to={
               userPool === null

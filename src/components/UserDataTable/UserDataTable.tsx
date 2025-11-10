@@ -45,10 +45,10 @@ const UserDataTable: React.FC<UserDataTableProps> = ({ columns, data, onRowSelec
               display: "inline-block",
               textAlign: "start",
               overflow: "hidden",
-              color: cellData?"var(--text-color)":"var(--danger-color)",
+              color: (cellData !== undefined && cellData !== null)?"var(--text-color)":"var(--danger-color)",
             }}
           >
-            {`${cellData?cellData:"null"}`}
+            {`${(cellData !== undefined && cellData !== null)?cellData:"null"}`}
           </div>
         );
       },
