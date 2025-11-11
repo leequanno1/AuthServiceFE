@@ -1,0 +1,9 @@
+.user-pool-info-screen-container .card-pool-content .verticle-line {
+    height: auto !important;
+}
+
+.qa-card-content .content-right .key-value {
+    max-width: 470px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -8,7 +8,8 @@ interface IconButtonProps {
     IconWeight?: "thin" | "light" | "regular" | "bold";
     onClick: () => void;
     disabled?: boolean;
-    color?: string
+    color?: string;
+    title?: string;
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ 
@@ -17,10 +18,12 @@ const IconButton: React.FC<IconButtonProps> = ({
     IconSize = 20, 
     disabled = false, 
     onClick = () => {},
-    color = "var(--text-color)"
+    color = "var(--text-color)",
+    title = "",
 }) => {
   return (
     <button
+      title={title}
       className="icon-button"
       onClick={onClick}
       disabled={disabled}

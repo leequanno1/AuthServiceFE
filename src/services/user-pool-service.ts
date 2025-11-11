@@ -57,6 +57,20 @@ const userPoolService = {
         }
     },
 
+    resetPoolKey: async (poolID: string) => {
+        try {
+            const response = await api.post(`/user-pool/reset-pool-key/${poolID}`)
+            return response.data.message as string;
+        } catch (error) {
+            return "";
+        }
+    },
+
+    deleteUsers: async (poolID: string, users : User[]) => {
+        const userIds = users.map(i => i.userId??"");
+        await api.post(`/user-pool/users/delete-many/${poolID}`, userIds);
+    }
+
 }
 
 export default userPoolService;

@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MiniPoolInfo.css";
 import Card from "../../../components/Card/Card";
 import IconButton from "../../../components/IconButton/IconButton";
 import LinkIconButton from "../../../components/LinkIconButton/LinkIconButton";
-import { ArrowSquareIn, Check, Copy, Eye, EyeSlash, Pen } from "phosphor-react";
+import {
+  ArrowClockwise,
+  ArrowSquareIn,
+  Check,
+  Copy,
+  Eye,
+  EyeSlash,
+  Pen,
+} from "phosphor-react";
 import NameTag from "../../../components/NameTag/NameTag";
 import { UserPool } from "../../../entities/user-pool";
 import { DateService } from "../../../services/date-service";
+import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
+import userPoolService from "../../../services/user-pool-service";
 
 interface MiniPoolInfoProps {
   userPool: UserPool | null;
@@ -14,6 +24,11 @@ interface MiniPoolInfoProps {
 
 const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
   const [isShowKey, setIsShowKey] = useState(false);
+  const [poolKey, setPoolKey] = useState<string>("");
+
+  useEffect(() => {
+    setPoolKey(userPool?.poolKey??"");
+  }, [userPool])
 
   const handleCopy = async (textToCopy: string) => {
     try {
@@ -28,7 +43,11 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
       title="Pool's infomation"
       optionButtons={
         <>
-          <LinkIconButton to={`/pool-control/update/${userPool?.poolId}`} Icon={Pen} IconSize={24}/>
+          <LinkIconButton
+            to={`/pool-control/update/${userPool?.poolId}`}
+            Icon={Pen}
+            IconSize={24}
+          />
           <LinkIconButton
             to={
               userPool === null
@@ -77,10 +96,10 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
                   <h3>SECURITY INFORMATION</h3>
                   <div>
                     <span>Pool key: </span>
-                    <span>
+                    <span className="key-value">
                       {isShowKey
-                        ? userPool?.poolKey
-                        : userPool?.poolKey
+                        ? poolKey
+                        : poolKey
                             ?.split("")
                             .map((item) => "•")
                             .join("")}
@@ -99,6 +118,21 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
                       Icon={Copy}
                       IconSize={20}
                     />
+                    <ConfirmPopup
+                      children={
+                        <IconButton
+                          onClick={() => {}}
+                          Icon={ArrowClockwise}
+                          IconSize={20}
+                          title="Reset Pool key"
+                          color="var(--danger-color)"
+                        />
+                      }
+                      onAccept={async () => {
+                        const newKey = await userPoolService.resetPoolKey(userPool?.poolId??"");
+                        setPoolKey(newKey);
+                      }}
+                    />
                   </div>
                   <div className="date-text">
                     <span>
@@ -108,6 +142,22 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({ userPool }) => {
                     {userPool.emailVerify && (
                       <Check color="var(--success-color)" size={20} />
                     )}{" "}
+                  </div>
+                  <div className="date-text">
+                    <span>
+                      Access Token expired:{" "}
+                      {!!userPool?.accessExpiredMinutes
+                        ? `${userPool.accessExpiredMinutes} minute(s)`
+                        : "None set"}
+                    </span>
+                  </div>
+                  <div className="date-text">
+                    <span>
+                      Refresh Token expired:{" "}
+                      {!!userPool?.refreshExpiredDays
+                        ? `${userPool.refreshExpiredDays} day(s)`
+                        : "None set"}
+                    </span>
                   </div>
                 </div>
               </>

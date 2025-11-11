@@ -72,12 +72,13 @@
 
 .content-left {
     gap: 10px;
-    flex: 1;
+    /* flex: 1; */
+    max-width: 500px;
 }
 
 .tag-names {
     display: flex;
-    width: 70%;
+    /* width: 70%; */
     gap: 5px;
     flex-wrap: wrap;
 }
