@@ -53,7 +53,7 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
 
-        <div className="row-column-2"><Link to={`/pool-control/pool/${pool.poolId}`} target="_blank" rel="noopener noreferrer">{pool.poolName}</Link></div>
+        <div className="row-column-2"><Link to={`/pool-control/pool/${pool.poolId}`} rel="noopener noreferrer">{pool.poolName}</Link></div>
 
         <div className="row-column-3">
           {accessLevel === 1 && <PoolAccessLabel accessLevel="view" />}

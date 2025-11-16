@@ -15,8 +15,9 @@ const TimeAreaChart: React.FC<TimeAreaChartProps> = ({
   xName, // Nhận prop xName
   yName, // Nhận prop yName
 }) => {
+
   const formattedData = useMemo(() => {
-    return data.map(item => [item.time, item.value]);
+    return data.map(item => [item.time, item.counter]);
   }, [data]);
 
   const options:EChartsOption = {

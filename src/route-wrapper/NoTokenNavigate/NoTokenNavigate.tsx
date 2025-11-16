@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import {
   getAccessTokenFromCookie,
   getRefreshTokenFromCookie,
@@ -12,7 +12,7 @@ const NoTokenNavigate: React.FC<{ children: JSX.Element }> = ({
   children,
 }) => {
   const [redirect, setRedirect] = useState<string | null>(null);
-
+  const location = useLocation();
   useEffect(() => {
     const checkToken = async () => {
       const accessToken = getAccessTokenFromCookie();
@@ -60,9 +60,8 @@ const NoTokenNavigate: React.FC<{ children: JSX.Element }> = ({
         setRedirect("/no-active");
       } 
     };
-
     checkToken();
-  }, []);
+  }, [location.pathname]);
 
   if (redirect) {
     return <Navigate to={redirect} replace />;

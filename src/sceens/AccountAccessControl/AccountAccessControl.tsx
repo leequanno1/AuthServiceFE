@@ -48,6 +48,7 @@ const AccountAccessControl = () => {
       </div>
       <div className="acc-body">
         <UserTable
+          hideOption
           onSelected={(acc) => {
             setSelectedAccount(acc);
             setSelectedPool(null);

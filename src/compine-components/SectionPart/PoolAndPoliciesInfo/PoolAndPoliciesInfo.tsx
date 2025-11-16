@@ -2,11 +2,10 @@ import React from "react";
 import "./PoolAndPoliciesInfo.css";
 import { useParams } from "react-router-dom";
 import Card from "../../../components/Card/Card";
-import { ArrowSquareIn, MagnifyingGlass } from "phosphor-react";
+import { MagnifyingGlass } from "phosphor-react";
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import MiniPolicyTable from "../../Table/MiniPolicyTable/MiniPolicyTable";
-import LinkIconButton from "../../../components/LinkIconButton/LinkIconButton";
 import { DateService } from "../../../services/date-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
@@ -63,13 +62,17 @@ const PoolAndPoliciesInfo: React.FC = () => {
 
   React.useEffect(() => {
     const initPoolPlcs = async () => {
-      if (!!lastSelectedPool) {
-        const poolPlc = await poolPoliciesService.getPolicyBySubAccountId(
-          accountId ?? "",
-          lastSelectedPool?.poolId ?? ""
-        );
-        setPoolPolicy(poolPlc);
-        setPlcs(poolPoliciesService.initPoolPolicyList(poolPlc));
+      try {
+        if (!!lastSelectedPool) {
+          const poolPlc = await poolPoliciesService.getPolicyBySubAccountId(
+            accountId ?? "",
+            lastSelectedPool?.poolId ?? ""
+          );
+          setPoolPolicy(poolPlc);
+          setPlcs(poolPoliciesService.initPoolPolicyList(poolPlc));
+        }
+      } catch (error) {
+        // TODO: Show toast
       }
     };
 
@@ -225,24 +228,23 @@ const PoolAndPoliciesInfo: React.FC = () => {
       />
       <Card
         title="Pool policies"
-        optionButtons={
-          <LinkIconButton to="" Icon={ArrowSquareIn} IconSize={24} />
-        }
         content={
           <div className="policy-card-content">
             {!!lastSelectedPool && (
               <>
                 <div className="session-sub-info">
-                  <strong>Pool name:</strong>{" "}
-                  <span>
-                    <span title={lastSelectedPool?.poolName}>
-                      {lastSelectedPool?.poolName}
-                    </span>{" "}
-                    -{" "}
-                    <span title={lastSelectedPool?.poolId}>
-                      {lastSelectedPool?.poolId}
+                  <div>
+                    <strong>Pool name:</strong>{" "}
+                    <span>
+                      <span title={lastSelectedPool?.poolName}>
+                        {lastSelectedPool?.poolName}
+                      </span>{" "}
+                      -{" "}
+                      <span title={lastSelectedPool?.poolId}>
+                        {lastSelectedPool?.poolId}
+                      </span>
                     </span>
-                  </span>
+                  </div>
                 </div>
 
                 <div className="mnpc-search-box">

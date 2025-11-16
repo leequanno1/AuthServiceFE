@@ -7,3 +7,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.update-mail-config-box h2 {
+    text-align: start;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.update-mail-config-box .input-text-wrapper {
+    margin-bottom: 10px;
+}
+
+.update-mail-config-box .btns-container {
+    width: 100%;
+    text-align: end;
+}
+
+.update-mail-config-box .btns-container > button {
+    margin-left: 10px;
+}

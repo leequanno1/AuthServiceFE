@@ -35,7 +35,6 @@ const Drawer: React.FC = () => {
             <div className="dw-name">Feature</div>
             {/* Menu Items */}
             <div className="dw-menu-items">
-                <Link className="nav head-nav" to={"/console-home"}><h3>Profile</h3></Link>
                 <Link className="nav head-nav" to={"/console-home"}><h3>Console Home</h3></Link>
                 <Link className="nav head-nav" to={"/account-control"}><h3>Account Control</h3></Link>
                 {(isRoot || !!accountPolicies?.canCreate) && <Link className="nav sub-nav" to={"/account-control/create"}>Create sub-account</Link>}

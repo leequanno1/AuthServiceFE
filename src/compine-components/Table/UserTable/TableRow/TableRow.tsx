@@ -63,7 +63,7 @@ const TableRow: React.FC<TableRowProps> = ({
           <div className="padding-left"></div>
         )}
 
-        <div className="row-column-2"><Link to={`/account-control/user/${account.accountId}`} target="_blank" rel="noopener noreferrer">{`${account.displayName}/${account.username}`}</Link></div>
+        <div className="row-column-2"><Link to={`/account-control/user/${account.accountId}`} rel="noopener noreferrer">{`${account.displayName}/${account.username}`}</Link></div>
 
         <div className="row-column-3">
           <span>{`by ${parentAcc?.username}--${account.createdAt ? DateService.formatDate(account.createdAt) : ""}`}</span>

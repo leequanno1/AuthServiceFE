@@ -9,41 +9,45 @@ import poolPoliciesService from "../../services/pool-policies-service";
 
 const UserPoolInfoScreen: React.FC = () => {
   const location = useLocation();
-  const {poolID} = useParams();
+  const { poolID } = useParams();
   const [userPool, setUserPool] = React.useState<UserPool | null>(null);
 
   React.useEffect(() => {
     const initData = async () => {
-      if (poolID) {
-        await userPoolService.refreshUserPool();
-        let tempPool = userPoolStore.getState().userPoolsMap.get(poolID);
-        if (tempPool) {
-          setUserPool(tempPool);
-        } else {
-          // refresh pools and policies
+      try {
+        if (poolID) {
           await userPoolService.refreshUserPool();
-          await poolPoliciesService.refreshPoolPolicies();
-          tempPool = userPoolStore.getState().userPoolsMap.get(poolID);
+          let tempPool = userPoolStore.getState().userPoolsMap.get(poolID);
           if (tempPool) {
             setUserPool(tempPool);
           } else {
-            // TODO: foward to bad request page
+            // refresh pools and policies
+            await userPoolService.refreshUserPool();
+            await poolPoliciesService.refreshPoolPolicies();
+            tempPool = userPoolStore.getState().userPoolsMap.get(poolID);
+            if (tempPool) {
+              setUserPool(tempPool);
+            } else {
+              // TODO: foward to bad request page
+            }
           }
+        } else {
+          // TODO: foward to bad request page
         }
-      } else {
-        // TODO: foward to bad request page
+      } catch (error) {
+        // TODO: show toast
       }
-    }
+    };
 
     initData();
   }, [poolID]);
 
   return (
     <div className="user-pool-info-screen-container">
-      <h1>Pool Name: Pool Name In Camelcase</h1>
+      <h1>Pool Name: {userPool?.poolName}</h1>
 
-      <div style={{width:"100%"}}>
-        <MiniPoolInfo userPool={userPool} />
+      <div style={{ width: "100%" }}>
+        <MiniPoolInfo showOpenFeature={false} userPool={userPool} />
       </div>
 
       <div className="renderable-container">

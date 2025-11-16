@@ -39,9 +39,12 @@
 }
 
 .session-sub-info {
-    text-align: start;
+    /* text-align: start; */
     margin-bottom: 10px;
     font-size: 17px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .nmpc-horizontal-line {

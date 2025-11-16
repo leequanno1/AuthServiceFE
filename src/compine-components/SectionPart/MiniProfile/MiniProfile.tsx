@@ -3,13 +3,11 @@ import "./MiniProfile.css";
 import Account from "../../../entities/account";
 import IconButton from "../../../components/IconButton/IconButton";
 import {
-  ArrowClockwise,
   ArrowCounterClockwise,
   ArrowSquareIn,
   Copy,
   MagnifyingGlass,
   Power,
-  Trash,
 } from "phosphor-react";
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
@@ -23,10 +21,7 @@ import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import poolPoliciesService from "../../../services/pool-policies-service";
 import accountService from "../../../services/account-service";
 import accountStore from "../../../store/account.store";
-import {
-  exportAccountInfo,
-  exportTextFile,
-} from "../../../services/file-export-service";
+import { exportAccountInfo } from "../../../services/file-export-service";
 
 interface MiniProfileProps {
   account: Account | null;
@@ -109,8 +104,10 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
       <div className="mini-profile-header">
         <h2 className="mn-pf-header-name">User's profile</h2>
         <LinkIconButton
+          title="Open profile in new tab"
           Icon={ArrowSquareIn}
           IconSize={20}
+          target="_blank"
           to={
             !!account
               ? `/account-control/user/${account.accountId}`
@@ -165,6 +162,8 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
               </div>
               <div className="acc-card-right">
                 <ConfirmPopup
+                  title="Confirm reset password."
+                  description="This account's password will be reseted and export imformation as text file. Do you want to confirm this action?"
                   onAccept={async () => {
                     const newPassword = createPassword();
                     await accountService.resetSubAccountPassword(
@@ -181,6 +180,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   children={
                     <div title="Reset password">
                       <IconButton
+                        title="Reset password"
                         Icon={ArrowCounterClockwise}
                         IconWeight="regular"
                         onClick={() => {}}
@@ -189,6 +189,8 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   }
                 />
                 <ConfirmPopup
+                  title={`${!!nAccount.active?"Disable": "Active"} this account.`}
+                  description={`User ${nAccount.username} will be ${!!nAccount.active?"disabled": "actived"}. Do you want to continues this action?`}
                   onAccept={async () => {
                     // toggle account status
                     await accountService.toggleAccountStatus(
@@ -205,22 +207,19 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                     );
                   }}
                   children={
-                    <div
+                    <IconButton
                       title={
                         !!nAccount.active ? "Disable Account" : "Active Account"
                       }
-                    >
-                      <IconButton
-                        Icon={Power}
-                        IconWeight="regular"
-                        onClick={() => {}}
-                        color={
-                          !!nAccount.active
-                            ? "var(--danger-color)"
-                            : "var(--text-color)"
-                        }
-                      />
-                    </div>
+                      Icon={Power}
+                      IconWeight="regular"
+                      onClick={() => {}}
+                      color={
+                        !!nAccount.active
+                          ? "var(--danger-color)"
+                          : "var(--text-color)"
+                      }
+                    />
                   }
                 />
               </div>
@@ -230,11 +229,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
 
             <div className="mn-pool-info-header">
               <h3>User pool information</h3>
-              <IconButton
-                Icon={ArrowClockwise}
-                IconSize={20}
-                onClick={() => {}}
-              />
+              
             </div>
 
             <div className="mn-search-box">
@@ -273,6 +268,8 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                 }
               />
               <ConfirmPopup
+                title={"Remove pool policy from this user."}
+                description={"All selected pool's policies will be deleted. Are you want to continues this action?"}
                 onAccept={async () => {
                   let plcIds: string[] = [];
                   const selectedArr = Array.from(selected);

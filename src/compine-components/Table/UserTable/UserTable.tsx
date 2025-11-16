@@ -38,6 +38,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const [crrAccountPlc, setCrrAccountPlc] = useState<AccountPolicies | null>(
     null
   );
+  const [counter, setCounter] = useState<number>(1);
   // Tính toán trạng thái của header
   const allSelected =
     selectedIds.length === accounts.length && accounts.length > 0;
@@ -54,23 +55,25 @@ const UserTable: React.FC<UserTableProps> = ({
 
   useEffect(() => {
     const initAcocuntDatas = async () => {
-      if (!accountService.isRoot()) {
-        const tmpPlc = await accountPoliciesService.getAccountPolicies(
-          accountStore.getState().account?.accountId ?? ""
-        );
-        setCrrAccountPlc(tmpPlc);
-      }
-      if (customAccounts === null) {
-        await accountService.refreshSubAccount();
-        const tempSubAccs = accountStore.getState().subAccounts;
-        setAccounts(tempSubAccs ?? []);
-      } else {
-        setAccounts(customAccounts);
-      }
+      try {
+        if (!accountService.isRoot()) {
+          const tmpPlc = await accountPoliciesService.getAccountPolicies(
+            accountStore.getState().account?.accountId ?? ""
+          );
+          setCrrAccountPlc(tmpPlc);
+        }
+        if (customAccounts === null) {
+          await accountService.refreshSubAccount();
+          const tempSubAccs = accountStore.getState().subAccounts;
+          setAccounts(tempSubAccs ?? []);
+        } else {
+          setAccounts(customAccounts);
+        }
+      } catch (error) {}
     };
 
     initAcocuntDatas();
-  }, [customAccounts]);
+  }, [customAccounts, counter]);
 
   // Toggle tất cả
   const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,11 +108,11 @@ const UserTable: React.FC<UserTableProps> = ({
                   );
                   setSelectedIds([]);
                 }}
-                children={<IconButton Icon={Trash} onClick={() => {}} />}
+                children={<IconButton title="Delete Sub-user(s)" Icon={Trash} onClick={() => {}} />}
               />
             )}
           {!hideRefresh && (
-            <IconButton Icon={ArrowClockwise} onClick={() => {}} />
+            <IconButton title="Refresh Sub-users" Icon={ArrowClockwise} onClick={() => {setCounter(counter+1)}} />
           )}
           {!hideOption && (
             <DropdownButton
@@ -123,6 +126,7 @@ const UserTable: React.FC<UserTableProps> = ({
               ]}
               children={
                 <IconButton
+                  title="Options"
                   Icon={DotsThreeOutlineVertical}
                   onClick={() => {}}
                 />

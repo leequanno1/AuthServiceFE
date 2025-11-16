@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./LoginSubAccountForm.css"
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../../components/Button/Button";
 import InputText from "../../../components/InputText/InputText";
 import accountService from "../../../services/account-service";
@@ -60,6 +60,9 @@ const LoginSubAccountForm: React.FC = () => {
       <span className="flex-1"></span>
       <span className="login-form-divider">
         Group ID: {rootID}
+      </span>
+      <span style={{marginTop:10}} className="login-form-divider">
+        <Link to={"/"}>Login with root account.</Link>
       </span>
     </div>
   );

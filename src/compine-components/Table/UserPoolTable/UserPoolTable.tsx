@@ -21,11 +21,13 @@ import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 
 interface UserPoolTableProps {
   tableName?: string;
+  hideOptions?: boolean;
   onRowClick?: (row: UserPool | null) => void;
 }
 
 const UserPoolTable: React.FC<UserPoolTableProps> = ({
   tableName = "User Pool Table",
+  hideOptions = false,
   onRowClick,
 }) => {
   const [userPools, setUserPools] = React.useState<UserPool[]>([]);
@@ -62,16 +64,20 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
 
   useEffect(() => {
     const initData = async () => {
-      await userPoolService.refreshUserPool();
-      setUserPools(userPoolStore.getState().userPools);
-      if (!isRoot) {
-        await poolPoliciesService.refreshPoolPolicies();
-        setPoolPolicies(
-          userPoolPoliciesStore.getState().userPoolPoliciesMapByPoolID
-        );
-      }
-      if (!rootAccount) {
-        await accountService.getRootDetails();
+      try {
+        await userPoolService.refreshUserPool();
+        setUserPools(userPoolStore.getState().userPools);
+        if (!isRoot) {
+          await poolPoliciesService.refreshPoolPolicies();
+          setPoolPolicies(
+            userPoolPoliciesStore.getState().userPoolPoliciesMapByPoolID
+          );
+        }
+        if (!rootAccount) {
+          await accountService.getRootDetails();
+        }
+      } catch (error) {
+        // TODO: show toast
       }
     };
 
@@ -127,6 +133,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
               }}
               children={
                 <IconButton
+                  title="Delete user pool(s)"
                   Icon={Trash}
                   onClick={() => {}}
                 />
@@ -134,24 +141,31 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
             />
           )}
           <IconButton
+            title="Refresh user pools"
             Icon={ArrowClockwise}
             onClick={() => {
               setCounter(counter + 1);
             }}
           />
-          <DropdownButton
-            items={[
-              {
-                label: "Go to feature",
-                onClick: () => {
-                  window.open("/pool-control", "_blank");
+          {!hideOptions && (
+            <DropdownButton
+              items={[
+                {
+                  label: "Go to feature",
+                  onClick: () => {
+                    window.open("/pool-control", "_blank");
+                  },
                 },
-              },
-            ]}
-            children={
-              <IconButton Icon={DotsThreeOutlineVertical} onClick={() => {}} />
-            }
-          />
+              ]}
+              children={
+                <IconButton
+                  title="Options"
+                  Icon={DotsThreeOutlineVertical}
+                  onClick={() => {}}
+                />
+              }
+            />
+          )}
         </div>
       </div>
 
@@ -175,7 +189,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
         {/* Table body */}
         <div className="pool-table-body">
           {/* Table rows */}
-          
+
           {userPools.map((pool) => (
             <div
               onClick={() => {

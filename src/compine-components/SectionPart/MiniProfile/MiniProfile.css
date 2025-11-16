@@ -72,6 +72,13 @@
     gap: 10px;
 }
 
+.acc-id-copy > span {
+    
+    text-align: start;
+    display: inline;
+
+}
+
 .acc-card-right {
     display: flex;
     flex-direction: column;

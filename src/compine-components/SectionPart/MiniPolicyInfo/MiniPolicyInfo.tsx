@@ -1,8 +1,5 @@
 import React from "react";
 import "./MiniPolicyInfo.css";
-import IconButton from "../../../components/IconButton/IconButton";
-import { ArrowSquareIn, MagnifyingGlass } from "phosphor-react";
-import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import MiniPolicyTable from "../../Table/MiniPolicyTable/MiniPolicyTable";
 import { Policy } from "../../../entities/policies";
@@ -21,52 +18,67 @@ interface MiniPolicyInfoProps {
 }
 
 const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
-  
-  const [accountPolicies,setAccountPolicies] = React.useState<Policy[]>([]);
+  const [accountPolicies, setAccountPolicies] = React.useState<Policy[]>([]);
   const [userPoolPolicies, setUserPoolPolicies] = React.useState<Policy[]>([]);
-  const [accountPolicy, setAccountPolicy] = React.useState<AccountPolicies | null>(null);
-  const [poolPolicy, setPoolPolicy] = React.useState<UserPoolPolicies | null>(null);
+  const [accountPolicy, setAccountPolicy] =
+    React.useState<AccountPolicies | null>(null);
+  const [poolPolicy, setPoolPolicy] = React.useState<UserPoolPolicies | null>(
+    null
+  );
   const [selectedAccPlc, setSelectedAccPlc] = React.useState<Policy[]>([]);
   const [selectedPoolPlc, setSelectedPoolPlc] = React.useState<Policy[]>([]);
 
-  const isAccountPlcDisable = (!!accountPolicy?.creatorId && accountPolicy?.creatorId !== accountStore.getState().account?.accountId);
-  const isPoolPlcDisable = (!!poolPolicy?.creatorId && poolPolicy?.creatorId !== accountStore.getState().account?.accountId);
+  const isAccountPlcDisable =
+    !!accountPolicy?.creatorId &&
+    accountPolicy?.creatorId !== accountStore.getState().account?.accountId;
+  const isPoolPlcDisable =
+    !!poolPolicy?.creatorId &&
+    poolPolicy?.creatorId !== accountStore.getState().account?.accountId;
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
     const initAccPolicies = async () => {
-      if (!account) {
-        setAccountPolicies([]);
-      } else {
-        // call api
-        console.log(account.username);
-        const policies = await accountPoliciesService.getAccountPolicies(account.accountId??"");
-        const plcList = await accountPoliciesService.initAccountPoliciesList(policies);
-        setAccountPolicy(policies);
-        setAccountPolicies(plcList);
+      try {
+        if (!account) {
+          setAccountPolicies([]);
+        } else {
+          // call api
+          console.log(account.username);
+          const policies = await accountPoliciesService.getAccountPolicies(
+            account.accountId ?? ""
+          );
+          const plcList = await accountPoliciesService.initAccountPoliciesList(
+            policies
+          );
+          setAccountPolicy(policies);
+          setAccountPolicies(plcList);
+        }
+
+        setUserPoolPolicies([]);
+      } catch (error) {
+        // TODO: show toast
       }
-      
-      setUserPoolPolicies([]);
-    }
+    };
 
     initAccPolicies();
-
-  },[account])
+  }, [account]);
 
   React.useEffect(() => {
     const initPoolPlicies = async () => {
       if (!pool) {
         setUserPoolPolicies([]);
       } else {
-        const policies = await poolPoliciesService.getPolicyBySubAccountId(account?.accountId??"", pool.poolId??"");
+        const policies = await poolPoliciesService.getPolicyBySubAccountId(
+          account?.accountId ?? "",
+          pool.poolId ?? ""
+        );
         const plcList = poolPoliciesService.initPoolPolicyList(policies);
         setPoolPolicy(policies);
         setUserPoolPolicies(plcList);
       }
-    }
-    
-    initPoolPlicies();
+    };
 
-  }, [account?.accountId, pool])
+    initPoolPlicies();
+  }, [account?.accountId, pool]);
 
   return (
     <div className="mn-policy-info-container">
@@ -76,27 +88,24 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
       </div>
 
       <div className="mini-pool-policy-body">
-
         {!!account && (
           <>
             <div className="session-sub-info">
-              <strong>Username:</strong> <span><span title={account.username}>{account.username}</span> - <span title={account.displayName}>{account.displayName}</span></span>
-            </div>
-
-            <div className="mnpc-search-box">
-              <InputText
-                value=""
-                stretch={false}
-                Icon={MagnifyingGlass}
-                IconSize={20}
-                width={180}
-                placeholder="Search for pool policy"
-                onChange={() => {}}
-              />
+              <div>
+                <strong>Username:</strong>{" "}
+                <span>
+                  <span title={account.username}>{account.username}</span> -{" "}
+                  <span title={account.displayName}>{account.displayName}</span>
+                </span>
+              </div>
               <ConfirmPopup
                 disabled={isAccountPlcDisable}
-                onAccept={ async () => {
-                  await accountPoliciesService.attachAccountPolices(account.accountId??"", selectedAccPlc, accountPolicy?.policyId);
+                onAccept={async () => {
+                  await accountPoliciesService.attachAccountPolices(
+                    account.accountId ?? "",
+                    selectedAccPlc,
+                    accountPolicy?.policyId
+                  );
                 }}
                 children={
                   <Button
@@ -109,7 +118,11 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
                 }
               />
             </div>
-            <MiniPolicyTable datas={accountPolicies} onSelected={(plcs) => setSelectedAccPlc(plcs)}/>
+
+            <MiniPolicyTable
+              datas={accountPolicies}
+              onSelected={(plcs) => setSelectedAccPlc(plcs)}
+            />
 
             <div className="nmpc-horizontal-line"></div>
           </>
@@ -118,24 +131,21 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
         {!!pool && (
           <>
             <div className="session-sub-info">
-              <strong>Pool name:</strong>{" "}
-              <span><span title={pool.poolName}>{pool.poolName}</span> - <span title={pool.poolId}>{pool.poolId}</span></span>
-            </div>
-
-            <div className="mnpc-search-box">
-              <InputText
-                stretch={false}
-                value=""
-                Icon={MagnifyingGlass}
-                IconSize={20}
-                width={180}
-                placeholder="Search for pool policy"
-                onChange={() => {}}
-              />
-              <ConfirmPopup 
+              <div>
+                <strong>Pool name:</strong>{" "}
+                <span>
+                  <span title={pool.poolName}>{pool.poolName}</span>
+                </span>
+              </div>
+              <ConfirmPopup
                 disabled={isPoolPlcDisable}
                 onAccept={async () => {
-                  await poolPoliciesService.attachUserPool(selectedPoolPlc, account?.accountId??"", pool.poolId??"",poolPolicy?.policyId);
+                  await poolPoliciesService.attachUserPool(
+                    selectedPoolPlc,
+                    account?.accountId ?? "",
+                    pool.poolId ?? "",
+                    poolPolicy?.policyId
+                  );
                 }}
                 children={
                   <Button
@@ -148,10 +158,13 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
                 }
               />
             </div>
-            <MiniPolicyTable datas={userPoolPolicies} onSelected={(plcs) => setSelectedPoolPlc(plcs)} />
+
+            <MiniPolicyTable
+              datas={userPoolPolicies}
+              onSelected={(plcs) => setSelectedPoolPlc(plcs)}
+            />
           </>
         )}
-
       </div>
     </div>
   );

@@ -31,10 +31,8 @@ const AccessableUsers: React.FC = () => {
     React.useState<Account | null>(null);
   const [subUserPoolPoolicies, setSubUserPoolPolicies] =
     React.useState<UserPoolPolicies | null>(null);
-  const [policyList, setPolicyList] = 
-    React.useState<Policy[]>([]);
-  const [userSearch, setUserSearch] = 
-    React.useState<string>("");
+  const [policyList, setPolicyList] = React.useState<Policy[]>([]);
+  const [userSearch, setUserSearch] = React.useState<string>("");
 
   const isRoot = accountService.isRoot();
   const currentAccount = accountStore.getState().account;
@@ -42,32 +40,38 @@ const AccessableUsers: React.FC = () => {
 
   React.useEffect(() => {
     const initData = async () => {
-      if (!isRoot) {
-        // load policy
-        await poolPoliciesService.refreshPoolPolicies();
-        const tempPolicies = userPoolPoliciesStore
-          .getState()
-          .userPoolPoliciesMapByPoolID.get(poolID ?? "");
-        if (tempPolicies) {
-          console.log(tempPolicies);
-          setPoolPolicies(tempPolicies);
+      try {
+        if (!isRoot) {
+          // load policy
+          await poolPoliciesService.refreshPoolPolicies();
+          const tempPolicies = userPoolPoliciesStore
+            .getState()
+            .userPoolPoliciesMapByPoolID.get(poolID ?? "");
+          if (tempPolicies) {
+            console.log(tempPolicies);
+            setPoolPolicies(tempPolicies);
+          }
         }
-      }
-      const attachedAccounts =
-        await accountService.getAttachedPoolPoliciesAccounts(
-          currentAccount?.accountId ?? "",
-          poolID ?? ""
+        const attachedAccounts =
+          await accountService.getAttachedPoolPoliciesAccounts(
+            currentAccount?.accountId ?? "",
+            poolID ?? ""
+          );
+        setUsers(attachedAccounts);
+        await accountService.refreshSubAccount();
+        setSubAccounts(
+          accountStore
+            .getState()
+            .subAccounts?.filter(
+              (item) =>
+                !attachedAccounts.some(
+                  (acc) => acc.accountId === item.accountId
+                )
+            ) ?? []
         );
-      setUsers(attachedAccounts);
-      await accountService.refreshSubAccount();
-      setSubAccounts(
-        accountStore
-          .getState()
-          .subAccounts?.filter(
-            (item) =>
-              !attachedAccounts.some((acc) => acc.accountId === item.accountId)
-          ) ?? []
-      );
+      } catch (error) {
+        // TODO: show toast
+      }
     };
 
     initData();
@@ -175,10 +179,13 @@ const AccessableUsers: React.FC = () => {
                   <DropdownButton
                     items={subAccounts
                       .filter((item) => {
-                        if (!userSearch){
+                        if (!userSearch) {
                           return true;
                         } else {
-                          return item.username?.includes(userSearch) || item.displayName?.includes(userSearch);
+                          return (
+                            item.username?.includes(userSearch) ||
+                            item.displayName?.includes(userSearch)
+                          );
                         }
                       })
                       .map((sa) => {
@@ -193,8 +200,7 @@ const AccessableUsers: React.FC = () => {
                             );
                           },
                         };
-                      })
-                    }
+                      })}
                     align="start"
                     children={
                       <InputText
@@ -202,7 +208,9 @@ const AccessableUsers: React.FC = () => {
                         Icon={MagnifyingGlass}
                         placeholder="Search by name or username"
                         value={userSearch}
-                        onChange={(value) => {setUserSearch(value)}}
+                        onChange={(value) => {
+                          setUserSearch(value);
+                        }}
                       />
                     }
                   />

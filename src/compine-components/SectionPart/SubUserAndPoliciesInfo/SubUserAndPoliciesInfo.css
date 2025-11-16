@@ -13,12 +13,7 @@
 
 .policy-card-content .name {
     display: flex;
-    justify-content: start;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
     font-size: 17px;
-}
-
-.policy-card-content .search-box {
-    display: flex;
-    gap: 20px;
 }

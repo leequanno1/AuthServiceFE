@@ -20,6 +20,7 @@ import {
 import { accountPoliciesService } from "../../services/account-policies-service";
 import accountStore from "../../store/account.store";
 import accountService from "../../services/account-service";
+import { init_ACCOUNT_POLICIES } from "../../constants/policies/account-policy";
 
 const CreateSubUser: React.FC = () => {
   const [username, setUsername] = React.useState<string>("");
@@ -44,6 +45,8 @@ const CreateSubUser: React.FC = () => {
         } else {
           setRedirect("/console-home");
         }
+      } else {
+        setPolicies(init_ACCOUNT_POLICIES());
       }
     };
     setStaterPolicies();
@@ -192,68 +195,77 @@ const CreateSubUser: React.FC = () => {
             tyle="tertiary"
             borderRadius={3}
             onClick={async () => {
-              const tmpPlcs = await accountPoliciesService.getAccountPolicies(
-                accountStore.getState().account?.accountId ?? ""
-              );
-              if (!accountService.isRoot() && !tmpPlcs?.canCreate) {
-                // TODO: add toast Alert
-                return;
-              }
-              if (!username) {
-                setErrorCode("CC1000");
-                return;
-              }
-              if (!password) {
-                setErrorCode("CC1001");
-                return;
-              }
-              if (!email) {
-                setErrorCode("CC1002");
-                return;
-              }
-              if (!isEmailFormat(email)) {
-                setErrorCode("CC1003");
-                return;
-              }
-              setErrorCode("");
-              // add user
-              let accountId = "";
               try {
-                const body = {
-                  username,
-                  password,
-                  email,
-                };
-                const response = await api.post(
-                  "/account/create-subuser",
-                  body
-                );
-                accountId = response.data.message;
-                // export data to text file
-                if (saveInfoAsText) {
-                  exportTextFile(
-                    `Account_info_${accountId}.txt`,
-                    accountInfoContent(username, password, email)
-                  );
+                if (!accountService.isRoot()) {
+                  const tmpPlcs =
+                    await accountPoliciesService.getAccountPolicies(
+                      accountStore.getState().account?.accountId ?? ""
+                    );
+                  if (!tmpPlcs?.canCreate) {
+                    // TODO: add toast Alert
+                    return;
+                  }
                 }
-              } catch (error) {
-                setErrorCode(getServerErrorCode(error).toString());
-                return;
-              }
-              // add policies
-              if (selectedPolicies) {
+                if (!username) {
+                  setErrorCode("CC1000");
+                  return;
+                }
+                if (!password) {
+                  setErrorCode("CC1001");
+                  return;
+                }
+                if (!email) {
+                  setErrorCode("CC1002");
+                  return;
+                }
+                if (!isEmailFormat(email)) {
+                  setErrorCode("CC1003");
+                  return;
+                }
+                setErrorCode("");
+                // add user
+                let accountId = "";
                 try {
-                  const body = policyService.toAccountPoliciesRqBody(
-                    selectedPolicies,
-                    accountId
+                  const body = {
+                    username,
+                    password,
+                    email,
+                  };
+                  const response = await api.post(
+                    "/account/create-subuser",
+                    body
                   );
-                  await api.post("/account-policy/attach", body);
+                  accountId = response.data.message;
+                  // export data to text file
+                  if (saveInfoAsText) {
+                    exportTextFile(
+                      `Account_info_${accountId}.txt`,
+                      accountInfoContent(username, password, email)
+                    );
+                  }
                 } catch (error) {
-                  console.error(error);
+                  setErrorCode(getServerErrorCode(error).toString());
+                  return;
                 }
-              }
+                // add policies
+                if (selectedPolicies) {
+                  try {
+                    const body = policyService.toAccountPoliciesRqBody(
+                      selectedPolicies,
+                      accountId
+                    );
+                    await api.post("/account-policy/attach", body);
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }
 
-              navigate(`/account-control/user/${accountId}`, { replace: true });
+                navigate(`/account-control/user/${accountId}`, {
+                  replace: true,
+                });
+              } catch (error) {
+                // TODO: show toast
+              }
             }}
             label="Confirm created"
           />
