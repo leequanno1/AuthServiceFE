@@ -5,6 +5,7 @@ import { ChartPoint } from "../../../entities/chart-point";
 import Card from "../../../components/Card/Card";
 import { api } from "../../../services/api-service";
 import { useParams } from "react-router-dom";
+import { toastService } from "../../../services/toast-service";
 
 const Monitoring: React.FC = () => {
   const [loginLogs, setLoginLogs] = useState<ChartPoint[]>([]);
@@ -64,79 +65,83 @@ const Monitoring: React.FC = () => {
       let tmpSignupFLog: ChartPoint[] = [];
       let tmpVerifyLog: ChartPoint[] = [];
       let tmpVeriftFLog: ChartPoint[] = [];
-      do {
-        tmpLoginLog = [
-          ...tmpLoginLog,
-          ...(await fetchChartDates(
-            "/user-pool/login-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
-        tmpLoginFLog = [
-          ...tmpLoginFLog,
-          ...(await fetchChartDates(
-            "/user-pool/login-fail-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
-        tmpSignupLog = [
-          ...tmpSignupLog,
-          ...(await fetchChartDates(
-            "/user-pool/signup-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
-        tmpSignupFLog = [
-          ...tmpSignupFLog,
-          ...(await fetchChartDates(
-            "/user-pool/signup-fail-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
-        tmpVerifyLog = [
-          ...tmpVerifyLog,
-          ...(await fetchChartDates(
-            "/user-pool/verify-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
-        tmpVeriftFLog = [
-          ...tmpVeriftFLog,
-          ...(await fetchChartDates(
-            "/user-pool/verify-fail-log",
-            poolID ?? "",
-            getMiliSeconds(timeFrom),
-            getMiliSeconds(timeTo)
-          )),
-        ];
+      try {
+        do {
+          tmpLoginLog = [
+            ...tmpLoginLog,
+            ...(await fetchChartDates(
+              "/user-pool/login-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
+          tmpLoginFLog = [
+            ...tmpLoginFLog,
+            ...(await fetchChartDates(
+              "/user-pool/login-fail-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
+          tmpSignupLog = [
+            ...tmpSignupLog,
+            ...(await fetchChartDates(
+              "/user-pool/signup-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
+          tmpSignupFLog = [
+            ...tmpSignupFLog,
+            ...(await fetchChartDates(
+              "/user-pool/signup-fail-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
+          tmpVerifyLog = [
+            ...tmpVerifyLog,
+            ...(await fetchChartDates(
+              "/user-pool/verify-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
+          tmpVeriftFLog = [
+            ...tmpVeriftFLog,
+            ...(await fetchChartDates(
+              "/user-pool/verify-fail-log",
+              poolID ?? "",
+              getMiliSeconds(timeFrom),
+              getMiliSeconds(timeTo)
+            )),
+          ];
 
-        setLoginLogs(tmpLoginLog);
-        setLoginFailLogs(tmpLoginFLog);
-        setSignupLogs(tmpSignupLog);
-        setSignupFailLogs(tmpSignupFLog);
-        setVerifyLogs(tmpVerifyLog);
-        setVerifyFailLogs(tmpVeriftFLog);
-        // sleep 30s
-        await sleep(30000);
-        timeTo = getNearedDate();
-        timeFrom = getDateBefore(timeTo, 30);
-        tmpLoginLog.pop();
-        tmpLoginFLog.pop();
-        tmpSignupLog.pop();
-        tmpSignupFLog.pop();
-        tmpVerifyLog.pop();
-        tmpVeriftFLog.pop();
-      } while (!isCancel);
+          setLoginLogs(tmpLoginLog);
+          setLoginFailLogs(tmpLoginFLog);
+          setSignupLogs(tmpSignupLog);
+          setSignupFailLogs(tmpSignupFLog);
+          setVerifyLogs(tmpVerifyLog);
+          setVerifyFailLogs(tmpVeriftFLog);
+          // sleep 30s
+          await sleep(30000);
+          timeTo = getNearedDate();
+          timeFrom = getDateBefore(timeTo, 30);
+          tmpLoginLog.pop();
+          tmpLoginFLog.pop();
+          tmpSignupLog.pop();
+          tmpSignupFLog.pop();
+          tmpVerifyLog.pop();
+          tmpVeriftFLog.pop();
+        } while (!isCancel);
+      } catch (error) {
+        toastService.error("An error occurred while loading log's data.");
+      }
     };
 
     handleLoadChartDatas();

@@ -17,6 +17,7 @@ import accountService from "../../../services/account-service";
 import userPoolStore from "../../../store/user-pool.store";
 import { Policy } from "../../../entities/policies";
 import { UserPoolPolicies } from "../../../entities/user-pool-policies";
+import { toastService } from "../../../services/toast-service";
 
 const PoolAndPoliciesInfo: React.FC = () => {
   const { accountId } = useParams();
@@ -40,13 +41,19 @@ const PoolAndPoliciesInfo: React.FC = () => {
   React.useEffect(() => {
     // init pools data
     const initPoolsData = async () => {
-      if (accountId) {
-        const tempPools = await userPoolService.getAllPoolByAccountID(
-          accountId ?? ""
+      try {
+        if (accountId) {
+          const tempPools = await userPoolService.getAllPoolByAccountID(
+            accountId ?? ""
+          );
+          setPools(tempPools ?? []);
+          await accountService.getRootDetails();
+          await userPoolService.refreshUserPool();
+        }
+      } catch (error) {
+        toastService.error(
+          "An error occurred while loading pool and policies's data."
         );
-        setPools(tempPools ?? []);
-        await accountService.getRootDetails();
-        await userPoolService.refreshUserPool();
       }
     };
 
@@ -72,7 +79,7 @@ const PoolAndPoliciesInfo: React.FC = () => {
           setPlcs(poolPoliciesService.initPoolPolicyList(poolPlc));
         }
       } catch (error) {
-        // TODO: Show toast
+        toastService.error("An error occurred while loading policies.");
       }
     };
 

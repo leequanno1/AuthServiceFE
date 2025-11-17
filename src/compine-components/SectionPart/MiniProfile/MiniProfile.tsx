@@ -22,6 +22,7 @@ import poolPoliciesService from "../../../services/pool-policies-service";
 import accountService from "../../../services/account-service";
 import accountStore from "../../../store/account.store";
 import { exportAccountInfo } from "../../../services/file-export-service";
+import { toastService } from "../../../services/toast-service";
 
 interface MiniProfileProps {
   account: Account | null;
@@ -48,27 +49,31 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
     // init pools data
     const initPoolsData = async () => {
       // handle get new account data
-      if (account?.accountId) {
-        let tmpAcc: Account | null | undefined = accountStore
-          .getState()
-          .subAccountMap?.get(account?.accountId ?? "");
-        if (!tmpAcc) {
-          await accountService.refreshSubAccount();
-          tmpAcc = accountStore
+      try {
+        if (account?.accountId) {
+          let tmpAcc: Account | null | undefined = accountStore
             .getState()
             .subAccountMap?.get(account?.accountId ?? "");
           if (!tmpAcc) {
-            tmpAcc = await accountService.getAccountByAccountId(
-              account?.accountId ?? ""
-            );
+            await accountService.refreshSubAccount();
+            tmpAcc = accountStore
+              .getState()
+              .subAccountMap?.get(account?.accountId ?? "");
+            if (!tmpAcc) {
+              tmpAcc = await accountService.getAccountByAccountId(
+                account?.accountId ?? ""
+              );
+            }
           }
+          setAccount(tmpAcc);
+          const tempPools = await userPoolService.getAllPoolByAccountID(
+            tmpAcc?.accountId ?? ""
+          );
+          setPools(tempPools ?? []);
+          await accountService.getRootDetails();
         }
-        setAccount(tmpAcc);
-        const tempPools = await userPoolService.getAllPoolByAccountID(
-          tmpAcc?.accountId ?? ""
-        );
-        setPools(tempPools ?? []);
-        await accountService.getRootDetails();
+      } catch (error) {
+        toastService.error("An error occurred while loading profile.");
       }
     };
 
@@ -189,8 +194,12 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                   }
                 />
                 <ConfirmPopup
-                  title={`${!!nAccount.active?"Disable": "Active"} this account.`}
-                  description={`User ${nAccount.username} will be ${!!nAccount.active?"disabled": "actived"}. Do you want to continues this action?`}
+                  title={`${
+                    !!nAccount.active ? "Disable" : "Active"
+                  } this account.`}
+                  description={`User ${nAccount.username} will be ${
+                    !!nAccount.active ? "disabled" : "actived"
+                  }. Do you want to continues this action?`}
                   onAccept={async () => {
                     // toggle account status
                     await accountService.toggleAccountStatus(
@@ -229,7 +238,6 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
 
             <div className="mn-pool-info-header">
               <h3>User pool information</h3>
-              
             </div>
 
             <div className="mn-search-box">
@@ -269,7 +277,9 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
               />
               <ConfirmPopup
                 title={"Remove pool policy from this user."}
-                description={"All selected pool's policies will be deleted. Are you want to continues this action?"}
+                description={
+                  "All selected pool's policies will be deleted. Are you want to continues this action?"
+                }
                 onAccept={async () => {
                   let plcIds: string[] = [];
                   const selectedArr = Array.from(selected);

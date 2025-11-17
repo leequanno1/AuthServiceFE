@@ -19,9 +19,9 @@ const SignUpForm: React.FC = () => {
   const [error, setError] = React.useState("");
   const [accountID, setAccountID] = React.useState("");
 
-  React.useEffect(() => {
-    // Logic to handle step changes can be added here
-  }, [step]);
+  // React.useEffect(() => {
+  //   // Logic to handle step changes can be added here
+  // }, [step]);
 
   const checkExistingAccount = async (username: string, email: string) => {
 

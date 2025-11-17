@@ -24,6 +24,7 @@ import NoTokenNavigate from "./route-wrapper/NoTokenNavigate/NoTokenNavigate";
 import LoginSubAccountForm from "./compine-components/Form/LoginSubAccountForm/LoginSubAccountForm";
 import NoAcctiveAccount from "./sceens/NoAcctiveAccount/NoAcctiveAccount";
 import UpdateUserPool from "./sceens/UpdateUserPool/UpdateUserPool";
+import NotFound from "./sceens/NotFound/NotFound";
 
 const AppRoute: React.FC = () => {
   return (
@@ -66,6 +67,8 @@ const AppRoute: React.FC = () => {
             <Route path="user-data" element={<UserData />} />
           </Route>
         </Route>
+
+        <Route path="/page-not-found" element={<NotFound/>}></Route>
       </Routes>
     </BrowserRouter>
   );

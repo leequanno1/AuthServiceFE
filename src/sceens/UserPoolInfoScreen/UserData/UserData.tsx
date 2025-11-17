@@ -7,6 +7,7 @@ import { ArrowClockwise, Trash } from "phosphor-react";
 import { useParams } from "react-router-dom";
 import userPoolService from "../../../services/user-pool-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
+import { toastService } from "../../../services/toast-service";
 
 const UserData: React.FC = () => {
   const [userDatas, setUserDatas] = useState<User[]>([]);
@@ -22,15 +23,18 @@ const UserData: React.FC = () => {
 
   useEffect(() => {
     const getSataterData = async () => {
-      if (!!poolID) {
-        // get collum
-        const tmpCollums = await userPoolService.getUserFields(poolID);
-        setCollums(tmpCollums);
-        // get users
-        const tmpUsers = await userPoolService.getUsers(poolID);
-        setUserDatas(tmpUsers);
+      try {
+        if (!!poolID) {
+          // get collum
+          const tmpCollums = await userPoolService.getUserFields(poolID);
+          setCollums(tmpCollums);
+          // get users
+          const tmpUsers = await userPoolService.getUsers(poolID);
+          setUserDatas(tmpUsers);
+        }
+      } catch (error) {
+        toastService.error("An error occurred while loading user's data.");
       }
-      console.log("run ", counter);
     };
 
     getSataterData();
@@ -51,7 +55,7 @@ const UserData: React.FC = () => {
           onAccept={async () => {
             let seletedCopy = [...selectedUser];
             try {
-              await userPoolService.deleteUsers(poolID??"", seletedCopy);
+              await userPoolService.deleteUsers(poolID ?? "", seletedCopy);
               const userDataCopy = userDatas.filter((item) => {
                 const res = seletedCopy.includes(item);
                 if (res) {
@@ -61,7 +65,7 @@ const UserData: React.FC = () => {
               });
               setUserDatas(userDataCopy);
             } catch (error) {
-              // TODO: show toast
+              toastService.error("An error occurred while deleting user(s).");
             }
           }}
           children={

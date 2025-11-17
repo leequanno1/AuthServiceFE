@@ -13,6 +13,7 @@ import { Policy } from "../../../entities/policies";
 import Account from "../../../entities/account";
 import accountService from "../../../services/account-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
+import { toastService } from "../../../services/toast-service";
 
 const SubUserAndPoliciesInfo: React.FC = () => {
   const { accountId } = useParams();
@@ -47,7 +48,7 @@ const SubUserAndPoliciesInfo: React.FC = () => {
         );
         setLowerSubAccs(tempLowerAccs);
       } catch (error) {
-        // TODO: show toast
+        toastService.error("An error occurred while loading policies.")
       }
     };
 

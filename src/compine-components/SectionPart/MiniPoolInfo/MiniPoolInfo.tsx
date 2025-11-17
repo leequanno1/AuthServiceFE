@@ -22,6 +22,7 @@ import CustomizablePopup from "../../../components/CustomizablePopup/Customizabl
 import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import { api } from "../../../services/api-service";
+import { toastService } from "../../../services/toast-service";
 
 interface MiniPoolInfoProps {
   userPool: UserPool | null;
@@ -222,7 +223,7 @@ const UpdateMailConfigBox: React.FC<{
         setSiteUrl(data.siteUrl ?? "");
         setSuportEmail(data.supportEmail ?? "");
       } catch (error) {
-        // TODO: Show Toast
+        toastService.error("An error occurred while loading mail config.")
       }
     };
 
@@ -239,7 +240,7 @@ const UpdateMailConfigBox: React.FC<{
       });
       onClose();
     } catch (error) {
-      // TODO: Show toast
+      toastService.error("An error occurred while update mail config.")
     }
   };
 

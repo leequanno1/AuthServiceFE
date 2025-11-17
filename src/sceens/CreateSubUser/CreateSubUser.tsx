@@ -21,6 +21,7 @@ import { accountPoliciesService } from "../../services/account-policies-service"
 import accountStore from "../../store/account.store";
 import accountService from "../../services/account-service";
 import { init_ACCOUNT_POLICIES } from "../../constants/policies/account-policy";
+import { toastService } from "../../services/toast-service";
 
 const CreateSubUser: React.FC = () => {
   const [username, setUsername] = React.useState<string>("");
@@ -202,7 +203,7 @@ const CreateSubUser: React.FC = () => {
                       accountStore.getState().account?.accountId ?? ""
                     );
                   if (!tmpPlcs?.canCreate) {
-                    // TODO: add toast Alert
+                    toastService.error("You do not have permissions to create a sub-account.")
                     return;
                   }
                 }
@@ -264,7 +265,7 @@ const CreateSubUser: React.FC = () => {
                   replace: true,
                 });
               } catch (error) {
-                // TODO: show toast
+                toastService.error("An error occurred while creating sub-account.");
               }
             }}
             label="Confirm created"

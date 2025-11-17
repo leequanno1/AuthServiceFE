@@ -21,6 +21,7 @@ import poolPoliciesService from "../../../services/pool-policies-service";
 import { Policy } from "../../../entities/policies";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import DropdownButton from "../../../components/DropdownButton/DropdownButton";
+import { toastService } from "../../../services/toast-service";
 
 const AccessableUsers: React.FC = () => {
   const { poolID } = useParams();
@@ -70,7 +71,7 @@ const AccessableUsers: React.FC = () => {
             ) ?? []
         );
       } catch (error) {
-        // TODO: show toast
+        toastService.error("An error occurred while loading user's data.");
       }
     };
 
@@ -79,14 +80,18 @@ const AccessableUsers: React.FC = () => {
 
   React.useEffect(() => {
     const initPolicyList = async () => {
-      if (currentSelectedSubAcc) {
-        // get subUserPoolPolicies
-        const tempUPPS = await poolPoliciesService.getPolicyBySubAccountId(
-          currentSelectedSubAcc.accountId ?? "",
-          poolID ?? ""
-        );
-        setSubUserPoolPolicies(tempUPPS);
-        setPolicyList(poolPoliciesService.initPoolPolicyList(tempUPPS));
+      try {
+        if (currentSelectedSubAcc) {
+          // get subUserPoolPolicies
+          const tempUPPS = await poolPoliciesService.getPolicyBySubAccountId(
+            currentSelectedSubAcc.accountId ?? "",
+            poolID ?? ""
+          );
+          setSubUserPoolPolicies(tempUPPS);
+          setPolicyList(poolPoliciesService.initPoolPolicyList(tempUPPS));
+        }
+      } catch (error) {
+        toastService.error("An error occurred while loading policies's data.");
       }
     };
     initPolicyList();

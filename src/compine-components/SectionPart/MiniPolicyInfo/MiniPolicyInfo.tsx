@@ -11,6 +11,7 @@ import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import { AccountPolicies } from "../../../entities/account-policies";
 import { UserPoolPolicies } from "../../../entities/user-pool-policies";
 import accountStore from "../../../store/account.store";
+import { toastService } from "../../../services/toast-service";
 
 interface MiniPolicyInfoProps {
   account: Account | null;
@@ -55,7 +56,7 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
 
         setUserPoolPolicies([]);
       } catch (error) {
-        // TODO: show toast
+        toastService.error("An error occurred while loading policies.");
       }
     };
 
@@ -64,16 +65,20 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
 
   React.useEffect(() => {
     const initPoolPlicies = async () => {
-      if (!pool) {
-        setUserPoolPolicies([]);
-      } else {
-        const policies = await poolPoliciesService.getPolicyBySubAccountId(
-          account?.accountId ?? "",
-          pool.poolId ?? ""
-        );
-        const plcList = poolPoliciesService.initPoolPolicyList(policies);
-        setPoolPolicy(policies);
-        setUserPoolPolicies(plcList);
+      try {
+        if (!pool) {
+          setUserPoolPolicies([]);
+        } else {
+          const policies = await poolPoliciesService.getPolicyBySubAccountId(
+            account?.accountId ?? "",
+            pool.poolId ?? ""
+          );
+          const plcList = poolPoliciesService.initPoolPolicyList(policies);
+          setPoolPolicy(policies);
+          setUserPoolPolicies(plcList);
+        }
+      } catch (error) {
+        toastService.error("An error occurred while loading policies.");
       }
     };
 

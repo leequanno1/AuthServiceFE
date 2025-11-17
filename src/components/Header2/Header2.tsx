@@ -249,7 +249,7 @@ const EditUserNameForm: React.FC<{
           borderRadius={7}
           label="Change"
           onClick={ async () => {
-            // TODO: add change display name future
+            
             if (newDName) {
               await accountService.updateDisplayName(newDName)
               onClose();

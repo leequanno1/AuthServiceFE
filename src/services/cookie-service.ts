@@ -1,5 +1,3 @@
-import Account from "../entities/account";
-
 export const readCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
   const parts = document.cookie.split(";").map((c) => c.trim());

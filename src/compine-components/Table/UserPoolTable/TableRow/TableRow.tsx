@@ -29,12 +29,12 @@ const TableRow: React.FC<TableRowProps> = ({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const accessLevel: number = policyService.getPoolAccessLevel(poolPolicies);
 
-  React.useEffect(() => {
-    if (isExpanded) {
-      console.log("load sub users");
-      // Giả lập tải dữ liệu
-    }
-  }, [isExpanded]);
+  // React.useEffect(() => {
+  //   if (isExpanded) {
+  //     console.log("load sub users");
+  //     // Giả lập tải dữ liệu
+  //   }
+  // }, [isExpanded]);
 
   return (
     <div className="row-wraper">

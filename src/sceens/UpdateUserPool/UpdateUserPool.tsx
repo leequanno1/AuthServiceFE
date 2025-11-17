@@ -47,23 +47,25 @@ const UpdateUserPool: React.FC = () => {
 
   useEffect(() => {
     const initStaterData = async () => {
-      await userPoolService.refreshUserPool();
-      // get pool from cache
-      const tmpPool = userPoolStore.getState().userPoolsMap.get(poolID ?? "");
+      try {
+        await userPoolService.refreshUserPool();
+        // get pool from cache
+        const tmpPool = userPoolStore.getState().userPoolsMap.get(poolID ?? "");
 
-      if (!tmpPool) {
-        // redirect no found
-        navigate("/console-home", { replace: true });
-        return;
-      }
+        if (!tmpPool) {
+          // redirect no found
+          navigate("/console-home", { replace: true });
+          return;
+        }
 
-      // setStaterPool(tmpPool);
-      setPoolName(tmpPool?.poolName ?? "");
-      setNeedEmailValidation(tmpPool?.emailVerify ?? false);
-      setAccessTokenExpiry(tmpPool?.accessExpiredMinutes ?? 2);
-      setRefreshTokenExpiry(tmpPool?.refreshExpiredDays ?? 7);
-      setSelectedUserFields(tmpPool?.userFields ?? []);
-      setSelectedAuthFields(tmpPool?.authorizeFields ?? []);
+        // setStaterPool(tmpPool);
+        setPoolName(tmpPool?.poolName ?? "");
+        setNeedEmailValidation(tmpPool?.emailVerify ?? false);
+        setAccessTokenExpiry(tmpPool?.accessExpiredMinutes ?? 2);
+        setRefreshTokenExpiry(tmpPool?.refreshExpiredDays ?? 7);
+        setSelectedUserFields(tmpPool?.userFields ?? []);
+        setSelectedAuthFields(tmpPool?.authorizeFields ?? []);
+      } catch (error) {}
     };
 
     initStaterData();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./UserInfoSceen.css";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import Card from "../../components/Card/Card";
 import IconButton from "../../components/IconButton/IconButton";
 import { DotsThreeVertical } from "phosphor-react";
@@ -11,6 +11,7 @@ import { DateService } from "../../services/date-service";
 const UserInfoSceen: React.FC = () => {
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { accountId } = useParams();
   const [subAccount, setSubAccount] = useState<Account|null>(null);
 
@@ -18,7 +19,7 @@ const UserInfoSceen: React.FC = () => {
     const initSubAcc = async () => {
       const account = await accountService.getAccountByAccountId(accountId??"");
       if (!account) {
-        //TODO: handle redirect not found
+        navigate("/page-not-found", {replace:true});
       } else {
         setSubAccount(account);
       }

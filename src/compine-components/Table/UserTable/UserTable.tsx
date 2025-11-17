@@ -14,6 +14,7 @@ import accountService from "../../../services/account-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
 import { AccountPolicies } from "../../../entities/account-policies";
 import { accountPoliciesService } from "../../../services/account-policies-service";
+import { toastService } from "../../../services/toast-service";
 
 interface UserTableProps {
   tableTitle?: string;
@@ -69,7 +70,9 @@ const UserTable: React.FC<UserTableProps> = ({
         } else {
           setAccounts(customAccounts);
         }
-      } catch (error) {}
+      } catch (error) {
+        toastService.error("An error occurred while loading account's data.");
+      }
     };
 
     initAcocuntDatas();
@@ -108,11 +111,23 @@ const UserTable: React.FC<UserTableProps> = ({
                   );
                   setSelectedIds([]);
                 }}
-                children={<IconButton title="Delete Sub-user(s)" Icon={Trash} onClick={() => {}} />}
+                children={
+                  <IconButton
+                    title="Delete Sub-user(s)"
+                    Icon={Trash}
+                    onClick={() => {}}
+                  />
+                }
               />
             )}
           {!hideRefresh && (
-            <IconButton title="Refresh Sub-users" Icon={ArrowClockwise} onClick={() => {setCounter(counter+1)}} />
+            <IconButton
+              title="Refresh Sub-users"
+              Icon={ArrowClockwise}
+              onClick={() => {
+                setCounter(counter + 1);
+              }}
+            />
           )}
           {!hideOption && (
             <DropdownButton

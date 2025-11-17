@@ -1,0 +1,120 @@
+.nf-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--background-alt);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: var(--web-font);
+}
+
+/* Floating glowing circles */
+.nf-orb {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: float 8s ease-in-out infinite;
+}
+
+.nf-orb1 {
+    background: var(--primary-color);
+    top: -80px;
+    right: -80px;
+}
+
+.nf-orb2 {
+    background: var(--accent-color);
+    bottom: -80px;
+    left: -60px;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(40px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Content */
+.nf-content {
+    z-index: 10;
+    text-align: center;
+    max-width: 520px;
+    padding: 40px;
+    background: var(--background-color);
+    border-radius: 20px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--divider-color);
+}
+
+/* --- FIX GLITCH 404 --- */
+.nf-glitch {
+    font-size: 110px;
+    font-weight: 800;
+    color: var(--primary-color);
+    position: relative;
+    margin-bottom: 10px;
+    display: inline-block;      /* giúp center chính xác */
+    text-align: center;         /* đảm bảo chữ 404 nằm đúng giữa */
+    animation: glitch 1.5s infinite;
+}
+
+/* before / after gần giống box shadow, lệch nhẹ 1px */
+.nf-glitch:before,
+.nf-glitch:after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.nf-glitch:before {
+    color: var(--accent-color);
+    transform: translate(-10px, -10px);    /* giảm offset */
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(1px, -1px); }
+    60% { transform: translate(-0.5px, 0.5px); }
+    100% { transform: translate(0); }
+}
+
+.nf-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 10px;
+}
+
+.nf-desc {
+    color: var(--muted-text);
+    margin: 14px 0 28px;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* Button */
+.nf-btn {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.nf-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}

@@ -1,14 +1,16 @@
 import React from "react";
 import "./UserPoolInfoScreen.css";
 import MiniPoolInfo from "../../compine-components/SectionPart/MiniPoolInfo/MiniPoolInfo";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserPool } from "../../entities/user-pool";
 import userPoolStore from "../../store/user-pool.store";
 import userPoolService from "../../services/user-pool-service";
 import poolPoliciesService from "../../services/pool-policies-service";
+import { toastService } from "../../services/toast-service";
 
 const UserPoolInfoScreen: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { poolID } = useParams();
   const [userPool, setUserPool] = React.useState<UserPool | null>(null);
 
@@ -28,14 +30,14 @@ const UserPoolInfoScreen: React.FC = () => {
             if (tempPool) {
               setUserPool(tempPool);
             } else {
-              // TODO: foward to bad request page
+              navigate("/page-not-found", {replace:true});
             }
           }
         } else {
-          // TODO: foward to bad request page
+          navigate("/page-not-found", {replace:true});
         }
       } catch (error) {
-        // TODO: show toast
+        toastService.error("An error occurred while loading user pool's data.")
       }
     };
 

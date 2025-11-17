@@ -18,6 +18,7 @@ import userPoolPoliciesStore from "../../../store/user-pool-policies.store";
 import accountStore from "../../../store/account.store";
 import { api } from "../../../services/api-service";
 import ConfirmPopup from "../../../components/ConfirmPopup/ConfirmPopup";
+import { toastService } from "../../../services/toast-service";
 
 interface UserPoolTableProps {
   tableName?: string;
@@ -77,7 +78,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
           await accountService.getRootDetails();
         }
       } catch (error) {
-        // TODO: show toast
+        toastService.error("An error occurred while loading table datas.")
       }
     };
 
@@ -104,7 +105,7 @@ const UserPoolTable: React.FC<UserPoolTableProps> = ({
         {/* Table name session */}
         <h2 className="pool-table-name">{tableName}</h2>
         <div className="action-container">
-          {/* TODO: add icon button here */}
+          
           {isRoot && (
             <ConfirmPopup
               onAccept={async () => {

@@ -12,26 +12,34 @@ import { AccountPolicies } from "../../entities/account-policies";
 import { accountPoliciesService } from "../../services/account-policies-service";
 import accountStore from "../../store/account.store";
 import accountService from "../../services/account-service";
+import { toastService } from "../../services/toast-service";
 
 const AccountAccessControl = () => {
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [selectedPool, setSelectedPool] = useState<UserPool | null>(null);
-  const [totalPools, setTotalPools] = useState<UserPool[]>([])
-  const [crrAccountPlc, setCrrAccountPlc] = useState<AccountPolicies | null>(null);
+  const [totalPools, setTotalPools] = useState<UserPool[]>([]);
+  const [crrAccountPlc, setCrrAccountPlc] = useState<AccountPolicies | null>(
+    null
+  );
 
   useEffect(() => {
     const initAllAttachedPoolsValue = async () => {
-      await userPoolService.refreshUserPool();
-      setTotalPools(userPoolStore.getState().userPools);
-      if (!accountService.isRoot()) {
-        const tmpPlcs = await accountPoliciesService
-          .getAccountPolicies(accountStore.getState().account?.accountId??"");
-        setCrrAccountPlc(tmpPlcs);
+      try {
+        await userPoolService.refreshUserPool();
+        setTotalPools(userPoolStore.getState().userPools);
+        if (!accountService.isRoot()) {
+          const tmpPlcs = await accountPoliciesService.getAccountPolicies(
+            accountStore.getState().account?.accountId ?? ""
+          );
+          setCrrAccountPlc(tmpPlcs);
+        }
+      } catch (error) {
+        toastService.error("An error occurred while loading account's data.");
       }
-    }
+    };
 
     initAllAttachedPoolsValue();
-  }, [])
+  }, []);
 
   return (
     <div className="aac-container">
@@ -44,7 +52,7 @@ const AccountAccessControl = () => {
             type="tertiary"
             borderRadius={3}
           />
-        ) }
+        )}
       </div>
       <div className="acc-body">
         <UserTable
@@ -62,10 +70,7 @@ const AccountAccessControl = () => {
             }}
             totalPools={totalPools}
           />
-          <MiniPolicyInfo 
-            account={selectedAccount} 
-            pool={selectedPool} 
-          />
+          <MiniPolicyInfo account={selectedAccount} pool={selectedPool} />
         </div>
       </div>
     </div>
