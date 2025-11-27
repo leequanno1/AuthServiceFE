@@ -25,6 +25,7 @@ import LoginSubAccountForm from "./compine-components/Form/LoginSubAccountForm/L
 import NoAcctiveAccount from "./sceens/NoAcctiveAccount/NoAcctiveAccount";
 import UpdateUserPool from "./sceens/UpdateUserPool/UpdateUserPool";
 import NotFound from "./sceens/NotFound/NotFound";
+import DocsPage from "./sceens/DocsPage/DocsPage";
 
 const AppRoute: React.FC = () => {
   return (
@@ -67,6 +68,8 @@ const AppRoute: React.FC = () => {
             <Route path="user-data" element={<UserData />} />
           </Route>
         </Route>
+
+        <Route path="/docs" element={<DocsPage/>}></Route>
 
         <Route path="/page-not-found" element={<NotFound/>}></Route>
       </Routes>

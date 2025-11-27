@@ -1,0 +1,932 @@
+﻿<div>
+<link rel="stylesheet" href="https://stackedit.io/style.css" />
+
+<div class="stackedit">
+  <div class="stackedit__html"><h1 id="authifysdk-documentations">AuthifySDK Documentations</h1>
+<div id="introduction"><h1 id="i.-introduction">I. Introduction</h1></div>
+<p>This library provides a unified and flexible authentication integration solution for Java applications. Designed to work seamlessly with most modern Java frameworks—including Spring, Struts 1 &amp; 2, Play Framework, and more—it helps developers quickly implement secure authentication flows with minimal configuration.</p>
+<p>The library supports three authentication methods:</p>
+<ul>
+<li>
+<p><strong>JWT-based authentication</strong></p>
+</li>
+<li>
+<p><strong>Session-based authentication</strong></p>
+</li>
+<li>
+<p><strong>OAuth2 / OpenID Connect (currently supporting Google as the identity provider)</strong></p>
+</li>
+</ul>
+<p>By combining simple configuration with a dedicated web-based management interface, the library centralizes user authentication data and streamlines the integration process. Whether you’re building a new system or enhancing an existing one, this library offers a consistent, extensible, and developer-friendly approach to authentication across Java ecosystems.</p>
+<div id="installation"><h1 id="ii.-installation">II. Installation</h1></div>
+<p>To begin using the library in your Java application, download the latest release from the official distribution site:</p>
+<p><strong>Download:</strong>  <a href="/AuthifySDK.jar">AuthifySDK.jar</a></p>
+<p>After downloading the JAR file, include it in your project’s classpath or dependency management system. The library is compatible with most Java build tools such as Maven, Gradle, and Ant.</p>
+<blockquote>
+<p><strong>Note:</strong> Maven Central / Gradle repository hosting will be provided in future versions.</p>
+</blockquote>
+<div id="configuration"><h1 id="iii.-configuration">III. Configuration</h1></div>
+<p>This library provides a flexible configuration system that allows developers to initialize and customize the authentication service according to their application needs. All authentication services are configured through the <code>AuthifyConfig</code> class and instantiated via one of the available <code>AuthifyService</code> implementations.</p>
+<h2 id="core-configuration-classes">Core Configuration Classes</h2>
+<h3 id="authifyconfig"><strong>AuthifyConfig</strong></h3>
+<p><code>AuthifyConfig</code> is the main configuration container used to initialize any authentication service.<br>
+It includes:</p>
+<ul>
+<li>
+<p><strong>PoolConfig poolConfig</strong> – The user pool configuration (required).</p>
+</li>
+<li>
+<p><strong>List oAuth2Configs</strong> – A list of optional OAuth2/OpenID Connect providers.</p>
+</li>
+</ul>
+<p>Configuration objects are created using the built-in builder:</p>
+<pre class=" language-java"><code class="prism  language-java">AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<h3 id="authifyservice-implementations"><strong>AuthifyService Implementations</strong></h3>
+<p>There are two authentication service implementations:</p>
+<ul>
+<li>
+<p><code>AuthifyJwtService</code> – For JWT-based authentication</p>
+</li>
+<li>
+<p><code>AuthifySessionService</code> – For session-based authentication</p>
+</li>
+</ul>
+<p>Both services receive an <code>AuthifyConfig</code> instance via their constructor:</p>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">new</span> <span class="token class-name">AuthifyJwtService</span><span class="token punctuation">(</span>AuthifyConfig config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">new</span> <span class="token class-name">AuthifySessionService</span><span class="token punctuation">(</span>AuthifyConfig config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<hr>
+<h2 id="configuration-in-spring-boot">Configuration in Spring Boot</h2>
+<p>Below are examples showing how to configure the library inside a Spring Boot application using <code>@Configuration</code> and <code>@Bean</code>.</p>
+<h3 id="jwt-authentication">1. JWT Authentication</h3>
+<pre class=" language-java"><code class="prism  language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ApplicationConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> AuthifyService <span class="token function">authifyService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AuthifyJwtService</span><span class="token punctuation">(</span>
+                AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h3 id="session-based-authentication">2. Session-Based Authentication</h3>
+<pre class=" language-java"><code class="prism  language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ApplicationConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> AuthifyService <span class="token function">authifyService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AuthifySessionService</span><span class="token punctuation">(</span>
+                AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h3 id="adding-oauth2--openid-connect-google">3. Adding OAuth2 / OpenID Connect (Google)</h3>
+<p>OAuth2 can be added to either JWT or Session-based authentication by supplying one or more <code>OAuth2Config</code> objects.</p>
+<h4 id="example-with-jwt">Example with JWT</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> AuthifyService <span class="token function">authifyService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AuthifyJwtService</span><span class="token punctuation">(</span>
+            AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">addOauth2Config</span><span class="token punctuation">(</span>OAuth2Config<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span>OAuth2Type<span class="token punctuation">.</span>GOOGLE<span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">clientId</span><span class="token punctuation">(</span><span class="token string">"client-id"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">clientSecret</span><span class="token punctuation">(</span><span class="token string">"client-secret"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">redirectUri</span><span class="token punctuation">(</span><span class="token string">"redirect-uri"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">javascriptRedirectUri</span><span class="token punctuation">(</span><span class="token string">"front-end-callback-url"</span><span class="token punctuation">)</span> <span class="token comment">// optional</span>
+                            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h4 id="example-with-session-based-authentication">Example with Session-Based Authentication</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> AuthifyService <span class="token function">authifyService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AuthifySessionService</span><span class="token punctuation">(</span>
+            AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">addOauth2Config</span><span class="token punctuation">(</span>OAuth2Config<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span>OAuth2Type<span class="token punctuation">.</span>GOOGLE<span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">clientId</span><span class="token punctuation">(</span><span class="token string">"client-id"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">clientSecret</span><span class="token punctuation">(</span><span class="token string">"client-secret"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">redirectUri</span><span class="token punctuation">(</span><span class="token string">"redirect-uri"</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">javascriptRedirectUri</span><span class="token punctuation">(</span><span class="token string">"front-end-callback-url"</span><span class="token punctuation">)</span> <span class="token comment">// optional</span>
+                            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="usage-with-other-java-frameworks">Usage With Other Java Frameworks</h2>
+<p>For frameworks such as <strong>Struts 1</strong>, <strong>Struts 2</strong>, <strong>Play Framework</strong>, or custom Java applications, the initialization process remains the same:</p>
+<ol>
+<li>
+<p>Build an <code>AuthifyConfig</code> object.</p>
+</li>
+<li>
+<p>Instantiate either <code>AuthifyJwtService</code> or <code>AuthifySessionService</code> using the configuration.</p>
+</li>
+<li>
+<p>Inject or reference the service inside your authentication logic.</p>
+</li>
+</ol>
+<p>Example (generic):</p>
+<pre class=" language-java"><code class="prism  language-java">AuthifyService service <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AuthifyJwtService</span><span class="token punctuation">(</span>
+    AuthifyConfig<span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">poolConfig</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PoolConfig</span><span class="token punctuation">(</span><span class="token string">"your-user-pool-key"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<h3 id="note-on-jakarta-vs.-javax-servlet-environments"><strong>Note on Jakarta vs. Javax Servlet Environments</strong></h3>
+<p>Some Java frameworks still use the legacy <code>javax.servlet</code> package instead of the newer <code>jakarta.servlet</code> namespace.<br>
+If your system is using <strong>javax</strong> (e.g., older versions of Spring, Struts, Play, or custom servlet containers), you can switch to the alternative service interface:</p>
+<blockquote>
+<p>Use <strong><code>authify.sdk.services.javax.AuthifyService</code></strong><br>
+instead of  <strong><code>authify.sdk.services.jakarta.AuthifyService</code></strong></p>
+</blockquote>
+<p>Both variants provide identical functionality; the only difference is the underlying servlet API they support.</p>
+<div id="methods"><h1 id="iv.-methods">IV. Methods</h1></div>
+<p>The <code>AuthifyService</code> interface defines all authentication-related operations available in the Authify SDK. Depending on whether your application uses <strong>JWT</strong> or <strong>Session-Based</strong> authentication, the underlying behavior may differ, but the method signatures and usage remain identical.</p>
+<p>Every method may throw <code>AuthifyResponseException</code> when the server returns a non-200 status or when validation fails.</p>
+<p>Below is the complete list of supported operations.</p>
+<hr>
+<h2 id="verifytokenhttpservletrequest-request">1. <code>verifyToken(HttpServletRequest request)</code></h2>
+<p>Verifies the access token extracted from the incoming HTTP request.<br>
+For JWT mode, the token is parsed and validated.<br>
+For Session mode, the session ID is checked.</p>
+<h3 id="parameters"><strong>Parameters</strong></h3>
+<ul>
+<li><code>request</code> — HTTP request containing token/session ID in headers or cookies.</li>
+</ul>
+<h3 id="returns"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code> — status 200 if valid, otherwise error.</li>
+</ul>
+<h3 id="throws"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when token/session is invalid or expired.</li>
+</ul>
+<hr>
+<h2 id="resendactiveaccountcodehttpservletrequest-request-httpservletresponse-response">2. <code>resendActiveAccountCode(HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Resends a new account activation code to the registered email.<br>
+A new <code>NEED_ACTIVE_ID</code> cookie will be added to the response.</p>
+<h3 id="parameters-1"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>request</code> — contains <code>NEED_ACTIVE_ID</code>.</p>
+</li>
+<li>
+<p><code>response</code> — used to set a new <code>NEED_ACTIVE_ID</code> cookie.</p>
+</li>
+</ul>
+<h3 id="returns-1"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-1"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when request is invalid or resend fails.</li>
+</ul>
+<hr>
+<h2 id="resendresetcodehttpservletrequest-request-httpservletresponse-response">3. <code>resendResetCode(HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Resends the password-reset OTP code.<br>
+A new <code>NEED_RESET_ID</code> cookie will be added to the response.</p>
+<h3 id="parameters-2"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>request</code> — contains <code>NEED_RESET_ID</code>.</p>
+</li>
+<li>
+<p><code>response</code> — used to set new cookie.</p>
+</li>
+</ul>
+<h3 id="returns-2"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-2"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> on failure.</li>
+</ul>
+<hr>
+<h2 id="refreshtokenhttpservletrequest-request-httpservletresponse-response">4. <code>refreshToken(HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Issues a new <strong>access token</strong> using the refresh token.</p>
+<h3 id="parameters-3"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>request</code> — contains the refresh token (header/cookie).</p>
+</li>
+<li>
+<p><code>response</code> — may be used to update token headers/cookies.</p>
+</li>
+</ul>
+<h3 id="returns-3"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — new access token.</li>
+</ul>
+<h3 id="throws-3"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when refresh token is missing, expired or invalid.</li>
+</ul>
+<hr>
+<h2 id="signupatfnmauthreqbody-body-httpservletresponse-response">5. <code>signUp(ATFNMAuthReqBody body, HttpServletResponse response)</code></h2>
+<p>Creates a new user account.<br>
+You do <strong>not</strong> need to fill all fields of <code>ATFNMAuthReqBody</code>; only authorization-related fields are required.</p>
+<h3 id="parameters-4"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>body</code> — user registration info (username, email, password, phone, etc.)</p>
+</li>
+<li>
+<p><code>response</code> — used to set cookies related to activation flow.</p>
+</li>
+</ul>
+<h3 id="returns-4"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-4"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when signup fails.</li>
+</ul>
+<hr>
+<h2 id="loginatfnmauthreqbody-body-httpservletresponse-response">6. <code>login(ATFNMAuthReqBody body, HttpServletResponse response)</code></h2>
+<p>Authenticates a user using the provided credentials.</p>
+<h3 id="parameters-5"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>body</code> — must contain username + password.</p>
+</li>
+<li>
+<p><code>response</code> — used to set authentication cookies for session-based mode.</p>
+</li>
+</ul>
+<h3 id="returns-5"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — access token (JWT) or session ID (session mode).</li>
+</ul>
+<h3 id="throws-5"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> on incorrect credentials or login failure.</li>
+</ul>
+<hr>
+<h2 id="changepasswordstring-oldpassword-string-newpassword-httpservletrequest-request">7. <code>changePassword(String oldPassword, String newPassword, HttpServletRequest request)</code></h2>
+<p>Changes the user’s password.</p>
+<h3 id="parameters-6"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>oldPassword</code></p>
+</li>
+<li>
+<p><code>newPassword</code></p>
+</li>
+<li>
+<p><code>request</code> — used to extract current access token.</p>
+</li>
+</ul>
+<h3 id="returns-6"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-6"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when authentication fails or password is incorrect.</li>
+</ul>
+<hr>
+<h2 id="activesignupuserstring-activecode-httpservletrequest-request-httpservletresponse-response">8. <code>activeSignUpUser(String activeCode, HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Confirms a new user’s account using the activation code sent by email.</p>
+<h3 id="parameters-7"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>activeCode</code> — activation OTP.</p>
+</li>
+<li>
+<p><code>request</code> — contains activation session/cookie.</p>
+</li>
+<li>
+<p><code>response</code> — sets updated cookie if needed.</p>
+</li>
+</ul>
+<h3 id="returns-7"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-7"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> when code is invalid or expired.</li>
+</ul>
+<hr>
+<h2 id="getuserinfohttpservletrequest-request">9. <code>getUserInfo(HttpServletRequest request)</code></h2>
+<p>Retrieves user information using the access token provided in the request.</p>
+<h3 id="parameters-8"><strong>Parameters</strong></h3>
+<ul>
+<li><code>request</code> — contains access token/session ID.</li>
+</ul>
+<h3 id="returns-8"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyUserEntity</code> — user profile.</li>
+</ul>
+<h3 id="throws-8"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> if the token is invalid or the user cannot be found.</li>
+</ul>
+<hr>
+<h2 id="updateuserauthifyuserentity-userdata-httpservletrequest-request">10. <code>updateUser(AuthifyUserEntity userData, HttpServletRequest request)</code></h2>
+<p>Updates the user’s profile.<br>
+Only <strong>non-null</strong> fields are updated.<br>
+Username and password <strong>cannot</strong> be updated with this method.</p>
+<h3 id="parameters-9"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>userData</code> — profile data to update.</p>
+</li>
+<li>
+<p><code>request</code> — used to extract authentication token.</p>
+</li>
+</ul>
+<h3 id="returns-9"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyUserEntity</code> — updated user profile.</li>
+</ul>
+<h3 id="throws-9"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code> (e.g., email already exists).</li>
+</ul>
+<hr>
+<h2 id="resetpasswordstep1string-username-httpservletresponse-response">11. <code>resetPasswordStep1(String username, HttpServletResponse response)</code></h2>
+<p>Initiates the password reset process.</p>
+<h3 id="parameters-10"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>username</code></p>
+</li>
+<li>
+<p><code>response</code> — used to set <code>NEED_RESET_ID</code> cookie.</p>
+</li>
+</ul>
+<h3 id="returns-10"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-10"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code></li>
+</ul>
+<hr>
+<h2 id="resetpasswordstep2string-code-httpservletrequest-request-httpservletresponse-response">12. <code>resetPasswordStep2(String code, HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Validates the OTP code for password reset.</p>
+<h3 id="parameters-11"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>code</code> — OTP</p>
+</li>
+<li>
+<p><code>request</code> — contains reset ID</p>
+</li>
+<li>
+<p><code>response</code> — sets a new cookie for step 3</p>
+</li>
+</ul>
+<h3 id="returns-11"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-11"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code></li>
+</ul>
+<hr>
+<h2 id="resetpasswordstep3string-newpassword-httpservletrequest-request-httpservletresponse-response">13. <code>resetPasswordStep3(String newPassword, HttpServletRequest request, HttpServletResponse response)</code></h2>
+<p>Completes password reset by setting the new password.</p>
+<h3 id="parameters-12"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>newPassword</code></p>
+</li>
+<li>
+<p><code>request</code> — contains reset ID</p>
+</li>
+<li>
+<p><code>response</code> — updates cookie/metadata</p>
+</li>
+</ul>
+<h3 id="returns-12"><strong>Returns</strong></h3>
+<ul>
+<li><code>AuthifyResponse</code></li>
+</ul>
+<h3 id="throws-12"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code></li>
+</ul>
+<hr>
+<h2 id="logouthttpservletresponse-response">14. <code>logout(HttpServletResponse response)</code></h2>
+<p>Invalidates the current access token or session.<br>
+The server will set an expired/null token in the response.</p>
+<h3 id="parameters-13"><strong>Parameters</strong></h3>
+<ul>
+<li><code>response</code></li>
+</ul>
+<h3 id="returns-13"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — status message.</li>
+</ul>
+<hr>
+<div id="oauth2"><h1 id="v.-oauth2-methods">V. OAuth2 Methods</h1></div>
+<p>These methods are available when OAuth2/OpenID Connect is configured (e.g., Google).</p>
+<hr>
+<h2 id="getoauth2loginuristring-oauthtype">15. <code>getOAuth2LoginURI(String oAuthType)</code></h2>
+<p>Generates the login URL for the OAuth2 provider.</p>
+<h3 id="parameters-14"><strong>Parameters</strong></h3>
+<ul>
+<li><code>oAuthType</code> — provider name (e.g., <code>"GOOGLE"</code>)</li>
+</ul>
+<h3 id="returns-14"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — redirect URI for frontend.</li>
+</ul>
+<hr>
+<h2 id="getoauth2tokenstring-oauthtype-string-code-httpservletresponse-response">16. <code>getOAuth2Token(String oAuthType, String code, HttpServletResponse response)</code></h2>
+<p>Exchanges the OAuth2 authorization code for an <strong>access token</strong>.</p>
+<h3 id="parameters-15"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>oAuthType</code></p>
+</li>
+<li>
+<p><code>code</code> — authorization code returned by provider</p>
+</li>
+<li>
+<p><code>response</code> — used to set cookies</p>
+</li>
+</ul>
+<h3 id="returns-15"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — access token</li>
+</ul>
+<h3 id="throws-13"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code>.</li>
+</ul>
+<hr>
+<h2 id="getoauth2sessionidstring-oauthtype-string-code-httpservletresponse-response">17. <code>getOAuth2SessionId(String oAuthType, String code, HttpServletResponse response)</code></h2>
+<p>Same as <code>getOAuth2Token</code>, but returns a <strong>session ID</strong> instead of a JWT (for session-based implementations).</p>
+<h3 id="parameters-16"><strong>Parameters</strong></h3>
+<ul>
+<li>
+<p><code>oAuthType</code></p>
+</li>
+<li>
+<p><code>code</code> — authorization code returned by provider</p>
+</li>
+<li>
+<p><code>response</code> — used to set cookies</p>
+</li>
+</ul>
+<h3 id="returns-16"><strong>Returns</strong></h3>
+<ul>
+<li><code>String</code> — session ID</li>
+</ul>
+<h3 id="throws-14"><strong>Throws</strong></h3>
+<ul>
+<li><code>AuthifyResponseException</code>.</li>
+</ul>
+<p>Tuyệt vời. Dựa trên thông tin này, tôi có thể viết phần <strong>Error Handling</strong> cho tài liệu docs của bạn như sau, chuẩn technical documentation, rõ ràng và dễ hiểu cho developer:</p>
+<hr>
+<div id="errorHandling"><h1 id="vi.-error-handling">VI. Error Handling</h1></div>
+<p>The Authify SDK uses a unified exception mechanism to handle errors returned by the authentication server.<br>
+All methods in <code>AuthifyService</code> that can fail throw <strong><code>AuthifyResponseException</code></strong> whenever the server response status code is <strong>not 200</strong>.</p>
+<hr>
+<h2 id="authifyresponseexception"><code>AuthifyResponseException</code></h2>
+<p><code>AuthifyResponseException</code> extends <code>java.lang.Exception</code> and contains additional information about the failure.</p>
+<h3 id="fields"><strong>Fields</strong></h3>
+
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>statusCode</code></td>
+<td><code>Integer</code></td>
+<td>HTTP-like status code returned by the server (e.g., 400, 401, 403, 500).</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td><code>Integer</code></td>
+<td>Internal SDK or server error code.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>String</code></td>
+<td>Error message describing the cause of the failure. (Inherited from <code>Exception</code>)</td>
+</tr>
+</tbody>
+</table><h3 id="constructor"><strong>Constructor</strong></h3>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">public</span> <span class="token function">AuthifyResponseException</span><span class="token punctuation">(</span>AuthifyResponse result<span class="token punctuation">)</span>
+
+</code></pre>
+<ul>
+<li>
+<p>Initializes the exception using an <code>AuthifyResponse</code> object.</p>
+</li>
+<li>
+<p>Automatically sets <code>statusCode</code> and <code>code</code> fields from the response.</p>
+</li>
+</ul>
+<h3 id="getters"><strong>Getters</strong></h3>
+<pre class=" language-java"><code class="prism  language-java">Integer <span class="token function">getStatusCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+Integer <span class="token function">getCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+</code></pre>
+<h2 id="handle-exceptions">Handle Exceptions</h2>
+<p>When calling any <code>AuthifyService</code> method that interacts with the server, you should catch <code>AuthifyResponseException</code> to handle errors gracefully.</p>
+<h3 id="example-login">Example: Login</h3>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">try</span> <span class="token punctuation">{</span>
+    String accessToken <span class="token operator">=</span> authifyService<span class="token punctuation">.</span><span class="token function">login</span><span class="token punctuation">(</span>body<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// login successful</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AuthifyResponseException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Login failed!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Status Code: "</span> <span class="token operator">+</span> ex<span class="token punctuation">.</span><span class="token function">getStatusCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Error Code: "</span> <span class="token operator">+</span> ex<span class="token punctuation">.</span><span class="token function">getCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Message: "</span> <span class="token operator">+</span> ex<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Message</th>
+<th>Status Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4000</td>
+<td>Pool key is missing</td>
+<td>400</td>
+<td>Configuration missing required pool key.</td>
+</tr>
+<tr>
+<td>4001</td>
+<td>Pool key is invalid</td>
+<td>400</td>
+<td>Provided pool key is invalid.</td>
+</tr>
+<tr>
+<td>4002</td>
+<td>Username existed in pool</td>
+<td>400</td>
+<td>Username already exists in the user pool.</td>
+</tr>
+<tr>
+<td>4003</td>
+<td>Email existed in pool</td>
+<td>400</td>
+<td>Email already exists in the user pool.</td>
+</tr>
+<tr>
+<td>4004</td>
+<td>Security. Wrong username</td>
+<td>400</td>
+<td>Security check failed: wrong username.</td>
+</tr>
+<tr>
+<td>4005</td>
+<td>Security. Wrong password</td>
+<td>400</td>
+<td>Security check failed: wrong password.</td>
+</tr>
+<tr>
+<td>4006</td>
+<td>Security. Wrong optional</td>
+<td>400</td>
+<td>Security check failed: wrong optional parameter.</td>
+</tr>
+<tr>
+<td>4007</td>
+<td>Missing username</td>
+<td>400</td>
+<td>Required username field is missing.</td>
+</tr>
+<tr>
+<td>4008</td>
+<td>Missing password</td>
+<td>400</td>
+<td>Required password field is missing.</td>
+</tr>
+<tr>
+<td>4009</td>
+<td>Missing optional</td>
+<td>400</td>
+<td>Required optional field is missing.</td>
+</tr>
+<tr>
+<td>4010</td>
+<td>No Authorization header</td>
+<td>401</td>
+<td>Missing Authorization header in request.</td>
+</tr>
+<tr>
+<td>4010</td>
+<td>Invalid Authorization header</td>
+<td>401</td>
+<td>Authorization header is invalid.</td>
+</tr>
+<tr>
+<td>4011</td>
+<td>No refresh token</td>
+<td>401</td>
+<td>Refresh token is missing in request.</td>
+</tr>
+<tr>
+<td>4012</td>
+<td>Invalid refresh token</td>
+<td>401</td>
+<td>Refresh token is invalid or expired.</td>
+</tr>
+<tr>
+<td>4013</td>
+<td>Access token expired</td>
+<td>401</td>
+<td>Access token has expired.</td>
+</tr>
+<tr>
+<td>4014</td>
+<td>Refresh token expired</td>
+<td>401</td>
+<td>Refresh token has expired.</td>
+</tr>
+<tr>
+<td>4015</td>
+<td>Missing key</td>
+<td>400</td>
+<td>Required key parameter is missing.</td>
+</tr>
+<tr>
+<td>4016</td>
+<td>Code no match</td>
+<td>400</td>
+<td>OTP or validation code does not match.</td>
+</tr>
+<tr>
+<td>4017</td>
+<td>Missing email</td>
+<td>400</td>
+<td>Required email field is missing.</td>
+</tr>
+<tr>
+<td>4018</td>
+<td>Expired code</td>
+<td>400</td>
+<td>OTP or validation code has expired.</td>
+</tr>
+<tr>
+<td>4019</td>
+<td>Expired code</td>
+<td>401</td>
+<td>Session ID is invalid or expired.</td>
+</tr>
+</tbody>
+</table><blockquote>
+<p><strong>Note:</strong> Always catch <code>AuthifyResponseException</code> to prevent unhandled exceptions and to provide meaningful feedback to users.</p>
+</blockquote>
+<p>Dưới đây là phần <strong>Authentication Flows</strong> cho tài liệu của bạn, được viết chi tiết với <strong>step-by-step</strong> và giải thích rõ ràng từng luồng cho <strong>JWT, Session-Based, OAuth2 (Google)</strong>. Phần này giúp developer dễ hình dung cách SDK hoạt động trong thực tế.</p>
+<hr>
+<p>Hoàn toàn được! Dưới đây là phiên bản <strong>Authentication Flows</strong> với <strong>Mermaid diagrams</strong>, phù hợp để chèn trực tiếp vào docs markdown hoặc tài liệu hỗ trợ Mermaid. Tôi đã chuyển các sequence diagram ASCII cũ sang Mermaid sequence diagram:</p>
+<hr>
+<div id="flow"><h1 id="vii.-authentication-flows">VII. Authentication Flows</h1></div>
+<p>The Authify SDK supports three authentication methods:</p>
+<ol>
+<li>
+<p><strong>JWT Authentication</strong></p>
+</li>
+<li>
+<p><strong>Session-Based Authentication</strong></p>
+</li>
+<li>
+<p><strong>OAuth2 / OpenID Connect (currently Google)</strong></p>
+</li>
+</ol>
+<hr>
+<h2 id="jwt-authentication-flow">1. JWT Authentication Flow</h2>
+<p>JWT (JSON Web Token) authentication is stateless and commonly used for REST APIs.</p>
+<h3 id="flow-steps"><strong>Flow Steps</strong></h3>
+<ol>
+<li>
+<p><strong>Login</strong></p>
+<ul>
+<li>
+<p><code>authifyService.login(body, response)</code> with username/password.</p>
+</li>
+<li>
+<p>Returns a JWT access token (and optionally a refresh token).</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Access Protected Resources</strong></p>
+<ul>
+<li>
+<p>Include the access token in HTTP headers:</p>
+<pre class=" language-http"><code class="prism  language-http"><span class="token header-name keyword">Authorization:</span> Bearer &lt;access-token&gt;
+
+</code></pre>
+</li>
+<li>
+<p>Verify the token with <code>authifyService.verifyToken(request)</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Refresh Token</strong></p>
+<ul>
+<li>Call <code>authifyService.refreshToken(request, response)</code> when the token expires.</li>
+</ul>
+</li>
+<li>
+<p><strong>Logout</strong></p>
+<ul>
+<li>Call <code>authifyService.logout(response)</code> to invalidate the token.</li>
+</ul>
+</li>
+</ol>
+<h3 id="diagram"><strong>Diagram</strong></h3>
+<pre class=" language-mermaid"><svg id="mermaid-svg-7mHZUWHFDzId9DiR" width="100%" xmlns="http://www.w3.org/2000/svg" height="559" style="max-width: 567px;" viewBox="-50 -10 567 559"><style>#mermaid-svg-7mHZUWHFDzId9DiR{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#000000;}#mermaid-svg-7mHZUWHFDzId9DiR .error-icon{fill:#552222;}#mermaid-svg-7mHZUWHFDzId9DiR .error-text{fill:#552222;stroke:#552222;}#mermaid-svg-7mHZUWHFDzId9DiR .edge-thickness-normal{stroke-width:2px;}#mermaid-svg-7mHZUWHFDzId9DiR .edge-thickness-thick{stroke-width:3.5px;}#mermaid-svg-7mHZUWHFDzId9DiR .edge-pattern-solid{stroke-dasharray:0;}#mermaid-svg-7mHZUWHFDzId9DiR .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-svg-7mHZUWHFDzId9DiR .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-svg-7mHZUWHFDzId9DiR .marker{fill:#666;stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR .marker.cross{stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-svg-7mHZUWHFDzId9DiR .actor{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-7mHZUWHFDzId9DiR text.actor > tspan{fill:#333;stroke:none;}#mermaid-svg-7mHZUWHFDzId9DiR .actor-line{stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-svg-7mHZUWHFDzId9DiR .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-svg-7mHZUWHFDzId9DiR #arrowhead path{fill:#333;stroke:#333;}#mermaid-svg-7mHZUWHFDzId9DiR .sequenceNumber{fill:white;}#mermaid-svg-7mHZUWHFDzId9DiR #sequencenumber{fill:#333;}#mermaid-svg-7mHZUWHFDzId9DiR #crosshead path{fill:#333;stroke:#333;}#mermaid-svg-7mHZUWHFDzId9DiR .messageText{fill:#333;stroke:#333;}#mermaid-svg-7mHZUWHFDzId9DiR .labelBox{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-7mHZUWHFDzId9DiR .labelText,#mermaid-svg-7mHZUWHFDzId9DiR .labelText > tspan{fill:#333;stroke:none;}#mermaid-svg-7mHZUWHFDzId9DiR .loopText,#mermaid-svg-7mHZUWHFDzId9DiR .loopText > tspan{fill:#333;stroke:none;}#mermaid-svg-7mHZUWHFDzId9DiR .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(0,0%,83%);fill:hsl(0,0%,83%);}#mermaid-svg-7mHZUWHFDzId9DiR .note{stroke:hsl(60,100%,23.3333333333%);fill:#ffa;}#mermaid-svg-7mHZUWHFDzId9DiR .noteText,#mermaid-svg-7mHZUWHFDzId9DiR .noteText > tspan{fill:#333;stroke:none;}#mermaid-svg-7mHZUWHFDzId9DiR .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-svg-7mHZUWHFDzId9DiR:root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#mermaid-svg-7mHZUWHFDzId9DiR sequence{fill:apa;}</style><g></g><g><line id="actor21" x1="75" y1="5" x2="75" y2="548" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="0" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><line id="actor22" x1="392" y1="5" x2="392" y2="548" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="317" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="392" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="392" dy="0">Server</tspan></text></g><defs><marker id="arrowhead" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs><defs><marker id="crosshead" markerWidth="15" markerHeight="8" orient="auto" refX="16" refY="4"><path fill="black" stroke="#000000" stroke-width="1px" d="M 9,2 V 6 L16,4 Z" style="stroke-dasharray: 0, 0;"></path><path fill="none" stroke="#000000" stroke-width="1px" d="M 0,1 L 6,7 M 6,1 L 0,7" style="stroke-dasharray: 0, 0;"></path></marker></defs><defs><marker id="filled-head" refX="18" refY="7" markerWidth="20" markerHeight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"></path></marker></defs><defs><marker id="sequencenumber" refX="15" refY="15" markerWidth="60" markerHeight="40" orient="auto"><circle cx="15" cy="15" r="6"></circle></marker></defs><text x="234" y="80" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">login(body, response)</text><line x1="75" y1="111" x2="392" y2="111" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="234" y="126" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">accessToken</text><line x1="392" y1="157" x2="75" y2="157" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="234" y="172" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">request with Authorization header</text><line x1="75" y1="203" x2="392" y2="203" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="392" y="218" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">verifyToken(request)</text><path d="M 392,249 C 452,239 452,279 392,269" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></path><text x="234" y="294" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">valid / error</text><line x1="392" y1="325" x2="75" y2="325" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="234" y="340" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">refreshToken(request, response)</text><line x1="75" y1="371" x2="392" y2="371" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="234" y="386" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">new accessToken</text><line x1="392" y1="417" x2="75" y2="417" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="234" y="432" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">logout(response)</text><line x1="75" y1="463" x2="392" y2="463" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><g><rect x="0" y="483" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="515.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><rect x="317" y="483" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="392" y="515.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="392" dy="0">Server</tspan></text></g></svg></pre>
+<hr>
+<h2 id="session-based-authentication-flow">2. Session-Based Authentication Flow</h2>
+<p>Session-based authentication relies on server-side session storage and cookies.</p>
+<h3 id="flow-steps-1"><strong>Flow Steps</strong></h3>
+<ol>
+<li>
+<p><strong>Login</strong></p>
+<ul>
+<li>
+<p>Call <code>authifyService.login(body, response)</code>.</p>
+</li>
+<li>
+<p>Server generates a <strong>session ID</strong> and sets it in a cookie.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Access Protected Resources</strong></p>
+<ul>
+<li>
+<p>Session ID sent automatically via cookies.</p>
+</li>
+<li>
+<p>Server validates session using <code>authifyService.verifyToken(request)</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Logout</strong></p>
+<ul>
+<li>Call <code>authifyService.logout(response)</code> to clear the session cookie.</li>
+</ul>
+</li>
+</ol>
+<h3 id="diagram-1"><strong>Diagram</strong></h3>
+<pre class=" language-mermaid"><svg id="mermaid-svg-mVnnf0G7oO81Nc3b" width="100%" xmlns="http://www.w3.org/2000/svg" height="513" style="max-width: 472px;" viewBox="-50 -10 472 513"><style>#mermaid-svg-mVnnf0G7oO81Nc3b{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#000000;}#mermaid-svg-mVnnf0G7oO81Nc3b .error-icon{fill:#552222;}#mermaid-svg-mVnnf0G7oO81Nc3b .error-text{fill:#552222;stroke:#552222;}#mermaid-svg-mVnnf0G7oO81Nc3b .edge-thickness-normal{stroke-width:2px;}#mermaid-svg-mVnnf0G7oO81Nc3b .edge-thickness-thick{stroke-width:3.5px;}#mermaid-svg-mVnnf0G7oO81Nc3b .edge-pattern-solid{stroke-dasharray:0;}#mermaid-svg-mVnnf0G7oO81Nc3b .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-svg-mVnnf0G7oO81Nc3b .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-svg-mVnnf0G7oO81Nc3b .marker{fill:#666;stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b .marker.cross{stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-svg-mVnnf0G7oO81Nc3b .actor{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-mVnnf0G7oO81Nc3b text.actor > tspan{fill:#333;stroke:none;}#mermaid-svg-mVnnf0G7oO81Nc3b .actor-line{stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b #arrowhead path{fill:#333;stroke:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b .sequenceNumber{fill:white;}#mermaid-svg-mVnnf0G7oO81Nc3b #sequencenumber{fill:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b #crosshead path{fill:#333;stroke:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b .messageText{fill:#333;stroke:#333;}#mermaid-svg-mVnnf0G7oO81Nc3b .labelBox{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-mVnnf0G7oO81Nc3b .labelText,#mermaid-svg-mVnnf0G7oO81Nc3b .labelText > tspan{fill:#333;stroke:none;}#mermaid-svg-mVnnf0G7oO81Nc3b .loopText,#mermaid-svg-mVnnf0G7oO81Nc3b .loopText > tspan{fill:#333;stroke:none;}#mermaid-svg-mVnnf0G7oO81Nc3b .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(0,0%,83%);fill:hsl(0,0%,83%);}#mermaid-svg-mVnnf0G7oO81Nc3b .note{stroke:hsl(60,100%,23.3333333333%);fill:#ffa;}#mermaid-svg-mVnnf0G7oO81Nc3b .noteText,#mermaid-svg-mVnnf0G7oO81Nc3b .noteText > tspan{fill:#333;stroke:none;}#mermaid-svg-mVnnf0G7oO81Nc3b .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-svg-mVnnf0G7oO81Nc3b:root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#mermaid-svg-mVnnf0G7oO81Nc3b sequence{fill:apa;}</style><g></g><g><line id="actor23" x1="75" y1="5" x2="75" y2="502" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="0" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><line id="actor24" x1="297" y1="5" x2="297" y2="502" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="222" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="297" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="297" dy="0">Server</tspan></text></g><defs><marker id="arrowhead" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs><defs><marker id="crosshead" markerWidth="15" markerHeight="8" orient="auto" refX="16" refY="4"><path fill="black" stroke="#000000" stroke-width="1px" d="M 9,2 V 6 L16,4 Z" style="stroke-dasharray: 0, 0;"></path><path fill="none" stroke="#000000" stroke-width="1px" d="M 0,1 L 6,7 M 6,1 L 0,7" style="stroke-dasharray: 0, 0;"></path></marker></defs><defs><marker id="filled-head" refX="18" refY="7" markerWidth="20" markerHeight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"></path></marker></defs><defs><marker id="sequencenumber" refX="15" refY="15" markerWidth="60" markerHeight="40" orient="auto"><circle cx="15" cy="15" r="6"></circle></marker></defs><text x="186" y="80" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">login(body, response)</text><line x1="75" y1="111" x2="297" y2="111" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="186" y="126" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">Set-Cookie: SID</text><line x1="297" y1="157" x2="75" y2="157" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="186" y="172" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">request with SID</text><line x1="75" y1="203" x2="297" y2="203" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="297" y="218" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">verifyToken(request)</text><path d="M 297,249 C 357,239 357,279 297,269" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></path><text x="186" y="294" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">valid / error</text><line x1="297" y1="325" x2="75" y2="325" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="186" y="340" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">logout(response)</text><line x1="75" y1="371" x2="297" y2="371" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="186" y="386" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">Clear-Cookie</text><line x1="297" y1="417" x2="75" y2="417" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><g><rect x="0" y="437" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="469.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><rect x="222" y="437" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="297" y="469.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="297" dy="0">Server</tspan></text></g></svg></pre>
+<hr>
+<h2 id="oauth2--openid-connect-google-flow">3. OAuth2 / OpenID Connect (Google) Flow</h2>
+<p>OAuth2 allows login via third-party identity providers.</p>
+<h3 id="flow-steps-2"><strong>Flow Steps</strong></h3>
+<ol>
+<li>
+<p><strong>Redirect to OAuth2 Provider</strong></p>
+<ul>
+<li>
+<p>Generate login URL: <code>authifyService.getOAuth2LoginURI("GOOGLE")</code></p>
+</li>
+<li>
+<p>Redirect user to Google login page.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Authorization Code</strong></p>
+<ul>
+<li>
+<p>User logs in on Google.</p>
+</li>
+<li>
+<p>Google redirects back with an <strong>authorization code</strong>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Exchange Code</strong></p>
+<ul>
+<li>
+<p>Call:</p>
+<pre class=" language-java"><code class="prism  language-java">authifyService<span class="token punctuation">.</span><span class="token function">getOAuth2Token</span><span class="token punctuation">(</span><span class="token string">"GOOGLE"</span><span class="token punctuation">,</span> code<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// JWT</span>
+
+</code></pre>
+<p>or</p>
+<pre class=" language-java"><code class="prism  language-java">authifyService<span class="token punctuation">.</span><span class="token function">getOAuth2SessionId</span><span class="token punctuation">(</span><span class="token string">"GOOGLE"</span><span class="token punctuation">,</span> code<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Session</span>
+
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Access Protected Resources</strong></p>
+<ul>
+<li>Use JWT in headers or session cookie.</li>
+</ul>
+</li>
+<li>
+<p><strong>Logout</strong></p>
+<ul>
+<li>Call <code>authifyService.logout(response)</code>.</li>
+</ul>
+</li>
+</ol>
+<h3 id="mermaid-diagram"><strong>Mermaid Diagram</strong></h3>
+<pre class=" language-mermaid"><svg id="mermaid-svg-NAEjPmAp17vdgUDD" width="100%" xmlns="http://www.w3.org/2000/svg" height="483" style="max-width: 917px;" viewBox="-50 -10 917 483"><style>#mermaid-svg-NAEjPmAp17vdgUDD{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#000000;}#mermaid-svg-NAEjPmAp17vdgUDD .error-icon{fill:#552222;}#mermaid-svg-NAEjPmAp17vdgUDD .error-text{fill:#552222;stroke:#552222;}#mermaid-svg-NAEjPmAp17vdgUDD .edge-thickness-normal{stroke-width:2px;}#mermaid-svg-NAEjPmAp17vdgUDD .edge-thickness-thick{stroke-width:3.5px;}#mermaid-svg-NAEjPmAp17vdgUDD .edge-pattern-solid{stroke-dasharray:0;}#mermaid-svg-NAEjPmAp17vdgUDD .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-svg-NAEjPmAp17vdgUDD .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-svg-NAEjPmAp17vdgUDD .marker{fill:#666;stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD .marker.cross{stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-svg-NAEjPmAp17vdgUDD .actor{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-NAEjPmAp17vdgUDD text.actor > tspan{fill:#333;stroke:none;}#mermaid-svg-NAEjPmAp17vdgUDD .actor-line{stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-svg-NAEjPmAp17vdgUDD .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-svg-NAEjPmAp17vdgUDD #arrowhead path{fill:#333;stroke:#333;}#mermaid-svg-NAEjPmAp17vdgUDD .sequenceNumber{fill:white;}#mermaid-svg-NAEjPmAp17vdgUDD #sequencenumber{fill:#333;}#mermaid-svg-NAEjPmAp17vdgUDD #crosshead path{fill:#333;stroke:#333;}#mermaid-svg-NAEjPmAp17vdgUDD .messageText{fill:#333;stroke:#333;}#mermaid-svg-NAEjPmAp17vdgUDD .labelBox{stroke:hsl(0,0%,83%);fill:#eee;}#mermaid-svg-NAEjPmAp17vdgUDD .labelText,#mermaid-svg-NAEjPmAp17vdgUDD .labelText > tspan{fill:#333;stroke:none;}#mermaid-svg-NAEjPmAp17vdgUDD .loopText,#mermaid-svg-NAEjPmAp17vdgUDD .loopText > tspan{fill:#333;stroke:none;}#mermaid-svg-NAEjPmAp17vdgUDD .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(0,0%,83%);fill:hsl(0,0%,83%);}#mermaid-svg-NAEjPmAp17vdgUDD .note{stroke:hsl(60,100%,23.3333333333%);fill:#ffa;}#mermaid-svg-NAEjPmAp17vdgUDD .noteText,#mermaid-svg-NAEjPmAp17vdgUDD .noteText > tspan{fill:#333;stroke:none;}#mermaid-svg-NAEjPmAp17vdgUDD .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-svg-NAEjPmAp17vdgUDD:root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#mermaid-svg-NAEjPmAp17vdgUDD sequence{fill:apa;}</style><g></g><g><line id="actor25" x1="75" y1="5" x2="75" y2="472" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="0" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><line id="actor26" x1="542" y1="5" x2="542" y2="472" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="467" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="542" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="542" dy="0">AuthifySDK</tspan></text></g><g><line id="actor27" x1="742" y1="5" x2="742" y2="472" class="actor-line" stroke-width="0.5px" stroke="#999"></line><rect x="667" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="742" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="742" dy="0">Google</tspan></text></g><defs><marker id="arrowhead" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs><defs><marker id="crosshead" markerWidth="15" markerHeight="8" orient="auto" refX="16" refY="4"><path fill="black" stroke="#000000" stroke-width="1px" d="M 9,2 V 6 L16,4 Z" style="stroke-dasharray: 0, 0;"></path><path fill="none" stroke="#000000" stroke-width="1px" d="M 0,1 L 6,7 M 6,1 L 0,7" style="stroke-dasharray: 0, 0;"></path></marker></defs><defs><marker id="filled-head" refX="18" refY="7" markerWidth="20" markerHeight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"></path></marker></defs><defs><marker id="sequencenumber" refX="15" refY="15" markerWidth="60" markerHeight="40" orient="auto"><circle cx="15" cy="15" r="6"></circle></marker></defs><text x="309" y="80" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">getOAuth2LoginURI("GOOGLE")</text><line x1="75" y1="111" x2="542" y2="111" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="309" y="126" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">Redirect URL</text><line x1="542" y1="157" x2="75" y2="157" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="409" y="172" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">Redirect to Google login</text><line x1="75" y1="203" x2="742" y2="203" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="409" y="218" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">Authorization code</text><line x1="742" y1="249" x2="75" y2="249" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="309" y="264" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">getOAuth2Token()/getOAuth2SessionId(code, response)</text><line x1="75" y1="295" x2="542" y2="295" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="309" y="310" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">accessToken / session ID</text><line x1="542" y1="341" x2="75" y2="341" class="messageLine1" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"></line><text x="309" y="356" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif; font-size: 16px; font-weight: 400;">request with accessToken / session</text><line x1="75" y1="387" x2="542" y2="387" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><g><rect x="0" y="407" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="439.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="75" dy="0">Client</tspan></text></g><g><rect x="467" y="407" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="542" y="439.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="542" dy="0">AuthifySDK</tspan></text></g><g><rect x="667" y="407" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="742" y="439.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 14px; font-weight: 400; font-family: Open-Sans, &quot;sans-serif&quot;;"><tspan x="742" dy="0">Google</tspan></text></g></svg></pre>
+<hr>
+<h3 id="best-practices-for-authentication-flows"><strong>Best Practices for Authentication Flows</strong></h3>
+<ul>
+<li>
+<p>Always verify tokens or session IDs before granting access.</p>
+</li>
+<li>
+<p>Store JWTs securely in HttpOnly cookies or secure client storage.</p>
+</li>
+<li>
+<p>Use HTTPS to protect tokens and cookies.</p>
+</li>
+<li>
+<p>Handle token expiration gracefully using refresh tokens or re-login flows.</p>
+</li>
+<li>
+<p>OAuth2 redirect URIs must be secure to prevent token leaks.</p>
+<p>Hiểu rồi! Nếu bạn muốn kết thúc phần docs, phần <strong>Conclusion / Final Notes</strong> nên tóm gọn lại các thông tin quan trọng, nhắc developer về các lưu ý, và cung cấp link tham khảo hoặc thông tin hỗ trợ. Dưới đây là một phiên bản phù hợp cho tài liệu SDK của bạn:</p>
+</li>
+</ul>
+<hr>
+<div id="conclusion"><h1 id="viii.-conclusion">VIII. Conclusion</h1></div>
+<p>The Authify SDK provides a flexible and easy-to-integrate authentication solution for Java-based applications. It supports <strong>JWT</strong>, <strong>Session-Based</strong>, and <strong>OAuth2 / OpenID Connect (Google)</strong> authentication methods, allowing developers to secure their web applications efficiently.</p>
+<h3 id="key-takeaways">Key Takeaways</h3>
+<ul>
+<li>
+<p><strong>Easy Configuration:</strong> Simple <code>AuthifyConfig</code> setup with support for user pools and OAuth2 providers.</p>
+</li>
+<li>
+<p><strong>Unified Error Handling:</strong> All server response errors are thrown as <code>AuthifyResponseException</code>, with detailed <code>statusCode</code> and <code>code</code> for precise handling.</p>
+</li>
+<li>
+<p><strong>Flexible Integration:</strong> Works with most Java frameworks including Spring, Struts 1-2, and Play.</p>
+</li>
+<li>
+<p><strong>Secure Token Management:</strong> Supports access tokens, refresh tokens, and session IDs with proper cookie handling.</p>
+</li>
+<li>
+<p><strong>Extensible:</strong> Future OAuth2 providers can be added easily via <code>OAuth2Config</code>.</p>
+</li>
+</ul>
+<h3 id="recommended-practices">Recommended Practices</h3>
+<ul>
+<li>
+<p>Always verify tokens or session IDs before granting access.</p>
+</li>
+<li>
+<p>Handle <code>AuthifyResponseException</code> properly to give meaningful feedback.</p>
+</li>
+<li>
+<p>Use HTTPS and secure cookie flags to protect sensitive information.</p>
+</li>
+<li>
+<p>Keep user data up-to-date using <code>updateUser</code> while respecting immutable fields like username and password.</p>
+</li>
+</ul>
+<p>For more details, examples, and advanced configuration, refer to the sections above.</p>
+<blockquote>
+<p>Thank you for choosing Authify SDK – secure your Java application with confidence!</p>
+</blockquote>
+</div>
+</div>
+</div>

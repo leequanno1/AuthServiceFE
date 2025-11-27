@@ -1,0 +1,48 @@
+.docs-container {
+  display: flex;
+  gap: 2rem; /* khoảng cách giữa sidebar và main content */
+  position: relative; /* để sticky của sidebar tính theo container này */
+  background-color: #f9f9f9;
+}
+
+.docs-sidebar {
+  flex: 0 0 250px; /* chiều rộng cố định cho sidebar */
+  position: sticky;
+  top: 0; /* dính vào top của container */
+  align-self: flex-start; /* đảm bảo sticky hoạt động đúng */
+  padding: 1rem;
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+  height: fit-content; /* tránh chiếm toàn bộ chiều cao */
+}
+
+.sidebar-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+  color: #0070f3;
+  transition: color 0.2s;
+}
+
+.sidebar-nav a:hover {
+  color: #0051a3;
+}
+
+.docs-content {
+  flex: 1; /* chiếm phần còn lại */
+  padding: 1rem;
+  background-color: #fff;
+}

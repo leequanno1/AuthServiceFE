@@ -65,6 +65,9 @@ const Drawer: React.FC = () => {
             Create new pool
           </Link>
         )}
+        <Link className="nav head-nav" to={"/docs"} target="_blank">
+          <h3>SDK Documentation</h3>
+        </Link>
       </div>
     </nav>
   );
