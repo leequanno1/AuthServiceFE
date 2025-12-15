@@ -346,7 +346,7 @@ const MiniProfile: React.FC<MiniProfileProps> = ({
                         onPoolSelect(pool);
                       }}
                     >
-                      <td>
+                      <td style={{textAlign:"center"}}>
                         <input
                           type="checkbox"
                           checked={selected.has(pool.poolId ?? "")}

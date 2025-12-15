@@ -212,7 +212,7 @@ const PoolAndPoliciesInfo: React.FC = () => {
                         setLastSelectedPool(pool);
                       }}
                     >
-                      <td>
+                      <td style={{textAlign: "center"}}>
                         <input
                           type="checkbox"
                           checked={selected.has(pool.poolId ?? "")}

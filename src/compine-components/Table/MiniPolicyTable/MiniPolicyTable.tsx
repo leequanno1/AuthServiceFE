@@ -48,7 +48,7 @@ const MiniPolicyTable: React.FC<MiniPolicyTableProps> = ({ datas, onSelected }) 
 
                         return (
                             <tr>
-                                <td>
+                                <td className="checkbox-col">
                                     <input
                                         type="checkbox"
                                         checked={checked}

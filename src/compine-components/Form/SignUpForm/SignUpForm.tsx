@@ -196,7 +196,7 @@ const SignUpForm: React.FC = () => {
             />
           </div>
           <span className="flex-1"></span>
-          <small className="error global">Error</small>
+          <small className="error global">{error}</small>
           <span className="flex-1"></span>
           <span className="form-consider">
             Already have an account? <Link to="/login">Login</Link>

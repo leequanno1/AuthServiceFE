@@ -30,4 +30,5 @@
     display: flex;
     gap: 10px;
     padding-bottom: 10px;
+    max-height: 79vh;
 }

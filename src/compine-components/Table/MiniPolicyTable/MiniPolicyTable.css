@@ -39,3 +39,7 @@
 .mini-policy-table tbody tr {
     background: var(--background-color);
 }
+
+.checkbox-col {
+    text-align: center;
+}

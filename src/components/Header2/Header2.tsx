@@ -14,6 +14,7 @@ import ConfirmPopup from "../ConfirmPopup/ConfirmPopup";
 import InputText from "../InputText/InputText";
 import Button from "../Button/Button";
 import { getServerErrorCode } from "../../services/error-code-service";
+import { toastService } from "../../services/toast-service";
 
 const Header2: React.FC = () => {
   accountService.getAccountDetails();
@@ -189,6 +190,7 @@ const ChangePasswordForm : React.FC<{
 
             try {
               await accountService.changePassword(oldPassword, newPassword);
+              toastService.toast("Password changed successfully");
               onClose();
             } catch (error) {
               setErrorCode(getServerErrorCode(error));

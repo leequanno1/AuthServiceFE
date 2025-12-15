@@ -36,7 +36,7 @@ const LoginForm: React.FC = () => {
       <h2>Welcome Back</h2>
       <h3>Please login to your account</h3>
       <span className="spacer-10"></span>
-      <InputText type="text" lable="Email Address/Username" placeholder="you@example.com" value={username} onChange={setUsername}/>
+      <InputText type="text" lable="Username" placeholder="you@example.com" value={username} onChange={setUsername}/>
       <span className="spacer-10"></span>
       <InputText type="password" lable="Password" placeholder="••••••••" value={password} onChange={setPassword}/>
       <span className="spacer-10"></span>
