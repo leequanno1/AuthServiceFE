@@ -142,6 +142,13 @@ const Monitoring: React.FC = () => {
             )),
           ];
 
+          tmpLoginLog.shift();
+          tmpLoginFLog.shift();
+          tmpSignupLog.shift();
+          tmpSignupFLog.shift();
+          tmpVerifyLog.shift();
+          tmpVeriftFLog.shift();
+
           setLoginLogs(tmpLoginLog);
           setLoginFailLogs(tmpLoginFLog);
           setSignupLogs(tmpSignupLog);
@@ -152,12 +159,12 @@ const Monitoring: React.FC = () => {
           await sleep(30000);
           timeTo = getNearedDate();
           timeFrom = getDateBefore(timeTo, 30);
-          tmpLoginLog.pop();
-          tmpLoginFLog.pop();
-          tmpSignupLog.pop();
-          tmpSignupFLog.pop();
-          tmpVerifyLog.pop();
-          tmpVeriftFLog.pop();
+          // tmpLoginLog.pop();
+          // tmpLoginFLog.pop();
+          // tmpSignupLog.pop();
+          // tmpSignupFLog.pop();
+          // tmpVerifyLog.pop();
+          // tmpVeriftFLog.pop();
         } while (!isCancel);
       } catch (error) {
         toastService.error("An error occurred while loading log's data.");
