@@ -6,6 +6,10 @@ import Card from "../../../components/Card/Card";
 import { api } from "../../../services/api-service";
 import { useParams } from "react-router-dom";
 import { toastService } from "../../../services/toast-service";
+import { UserPoolPolicies } from "../../../entities/user-pool-policies";
+import poolPoliciesService from "../../../services/pool-policies-service";
+import userPoolPoliciesStore from "../../../store/user-pool-policies.store";
+import accountService from "../../../services/account-service";
 
 const Monitoring: React.FC = () => {
   const [loginLogs, setLoginLogs] = useState<ChartPoint[]>([]);
@@ -14,7 +18,10 @@ const Monitoring: React.FC = () => {
   const [signupFailLogs, setSignupFailLogs] = useState<ChartPoint[]>([]);
   const [verifyLogs, setVerifyLogs] = useState<ChartPoint[]>([]);
   const [verifyFailLogs, setVerifyFailLogs] = useState<ChartPoint[]>([]);
+  const [poolPolicies, setPoolPolicies] =
+    React.useState<UserPoolPolicies | null>(null);
   const { poolID } = useParams();
+  const isRoot = accountService.isRoot();
 
   const getMiliSeconds = (date: Date) => {
     return date.getTime();
@@ -57,6 +64,19 @@ const Monitoring: React.FC = () => {
   useEffect(() => {
     let isCancel = false;
     const handleLoadChartDatas = async () => {
+      // load pool policies
+      if (!isRoot) {
+        await poolPoliciesService.refreshPoolPolicies();
+        const tempPolicies = userPoolPoliciesStore
+          .getState()
+          .userPoolPoliciesMapByPoolID.get(poolID ?? "");
+        if (tempPolicies && !!tempPolicies.canManage) {
+          setPoolPolicies(tempPolicies);
+        } else {
+          return;
+        }
+      }
+
       let timeTo = getNearedDate();
       let timeFrom = getDateBefore(timeTo, 3600);
       let tmpLoginLog: ChartPoint[] = [];
@@ -153,49 +173,58 @@ const Monitoring: React.FC = () => {
 
   return (
     <div className="monitoring-container-content">
-      <h2>Total Stored Records: 30000 record(s)</h2>
+      {(!isRoot && (!poolPolicies || !poolPolicies.canManage)) && (
+        <div style={{ minHeight: "200px" }}>
+          <h3 className="pd-20 mt-20 plc-alert">
+            This account have no authority to manage this user pool data.
+          </h3>
+        </div>
+      )}
+      {(isRoot || (poolPolicies && !!poolPolicies.canManage)) && (
+        <div className="chart-container">
+          <Card
+            title="Login Traffic"
+            content={
+              <TimeAreaChart data={loginLogs} xName="Time" yName="Call" />
+            }
+          />
 
-      <div className="chart-container">
-        <Card
-          title="Login Traffic"
-          content={<TimeAreaChart data={loginLogs} xName="Time" yName="Call" />}
-        />
+          <Card
+            title="Failed Login Call Rate"
+            content={
+              <TimeAreaChart data={loginFailLogs} xName="Time" yName="Call" />
+            }
+          />
 
-        <Card
-          title="Failed Login Call Rate"
-          content={
-            <TimeAreaChart data={loginFailLogs} xName="Time" yName="Call" />
-          }
-        />
+          <Card
+            title="Sign Up Traffic"
+            content={
+              <TimeAreaChart data={signupLogs} xName="Time" yName="Call" />
+            }
+          />
 
-        <Card
-          title="Sign Up Traffic"
-          content={
-            <TimeAreaChart data={signupLogs} xName="Time" yName="Call" />
-          }
-        />
+          <Card
+            title="Sign Up Fail Traffic"
+            content={
+              <TimeAreaChart data={signupFailLogs} xName="Time" yName="Call" />
+            }
+          />
 
-        <Card
-          title="Sign Up Fail Traffic"
-          content={
-            <TimeAreaChart data={signupFailLogs} xName="Time" yName="Call" />
-          }
-        />
+          <Card
+            title="Token Call Rate"
+            content={
+              <TimeAreaChart data={verifyLogs} xName="Time" yName="Call" />
+            }
+          />
 
-        <Card
-          title="Token Call Rate"
-          content={
-            <TimeAreaChart data={verifyLogs} xName="Time" yName="Call" />
-          }
-        />
-
-        <Card
-          title="Invalid Token Call Rate"
-          content={
-            <TimeAreaChart data={verifyFailLogs} xName="Time" yName="Call" />
-          }
-        />
-      </div>
+          <Card
+            title="Invalid Token Call Rate"
+            content={
+              <TimeAreaChart data={verifyFailLogs} xName="Time" yName="Call" />
+            }
+          />
+        </div>
+      )}
     </div>
   );
 };

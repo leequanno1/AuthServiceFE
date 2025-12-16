@@ -49,12 +49,8 @@ const userPoolService = {
     },
 
     getUsers: async (poolID: string) => {
-        try {
-            const response = await api.get(`/user-pool/all-users/${poolID}`)
-            return response.data.result as User[];
-        } catch (error) {
-            return [];
-        }
+        const response = await api.get(`/user-pool/all-users/${poolID}`)
+        return response.data.result as User[];
     },
 
     resetPoolKey: async (poolID: string) => {

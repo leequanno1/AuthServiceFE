@@ -57,6 +57,36 @@
     flex: 1;
 }
 
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.pd-10 {
+    padding: 10px;
+}
+
+.pd-20 {
+    padding: 20px;
+}
+
+.plc-alert {
+  color: var(--danger-color);
+  font-weight: 600;
+  font-size: 18px;
+}
+
 .error.global {
     color: var(--danger-color);
     font-size: 16px;

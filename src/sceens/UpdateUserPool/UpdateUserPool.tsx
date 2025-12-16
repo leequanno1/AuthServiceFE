@@ -11,6 +11,9 @@ import { getServerErrorCode } from "../../services/error-code-service";
 import { api } from "../../services/api-service";
 import userPoolService from "../../services/user-pool-service";
 import userPoolStore from "../../store/user-pool.store";
+import accountService from "../../services/account-service";
+import poolPoliciesService from "../../services/pool-policies-service";
+import userPoolPoliciesStore from "../../store/user-pool-policies.store";
 
 const UpdateUserPool: React.FC = () => {
   const navigate = useNavigate();
@@ -48,6 +51,18 @@ const UpdateUserPool: React.FC = () => {
   useEffect(() => {
     const initStaterData = async () => {
       try {
+        // check permission
+        if (!accountService.isRoot()) {
+          await poolPoliciesService.refreshPoolPolicies();
+          const tempPolicies = userPoolPoliciesStore
+            .getState()
+            .userPoolPoliciesMapByPoolID.get(poolID ?? "");
+          if (!tempPolicies || !tempPolicies?.canEdit) {
+            navigate("/console-home", { replace: true });
+            return;
+          }
+        }
+
         await userPoolService.refreshUserPool();
         // get pool from cache
         const tmpPool = userPoolStore.getState().userPoolsMap.get(poolID ?? "");

@@ -23,6 +23,9 @@ import InputText from "../../../components/InputText/InputText";
 import Button from "../../../components/Button/Button";
 import { api } from "../../../services/api-service";
 import { toastService } from "../../../services/toast-service";
+import poolPoliciesService from "../../../services/pool-policies-service";
+import userPoolPoliciesStore from "../../../store/user-pool-policies.store";
+import accountService from "../../../services/account-service";
 
 interface MiniPoolInfoProps {
   userPool: UserPool | null;
@@ -37,9 +40,40 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({
 }) => {
   const [isShowKey, setIsShowKey] = useState(false);
   const [poolKey, setPoolKey] = useState<string>("");
+  const [canView, setCanView] = useState<boolean>(false);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
 
   useEffect(() => {
-    setPoolKey(userPool?.poolKey ?? "");
+    // get pool policys to check permission
+    const handleInitPoolInfo = async () => {
+      if (accountService.isRoot()) {
+        setCanView(true);
+        setCanEdit(true);
+        setPoolKey(userPool?.poolKey ?? "");
+        return;
+      }
+
+      await poolPoliciesService.refreshPoolPolicies();
+      const tempPolicies = userPoolPoliciesStore
+        .getState()
+        .userPoolPoliciesMapByPoolID.get(userPool?.poolId ?? "");
+      if (tempPolicies) {
+        // can edit
+        setCanEdit(!!tempPolicies.canEdit);
+        // can view
+        if (tempPolicies.canView) {
+          setCanView(true);
+          setPoolKey(userPool?.poolKey ?? "");
+        } else {
+          setCanView(false);
+        }
+      } else {
+        setCanView(false);
+        setCanEdit(false);
+      }
+    };
+
+    handleInitPoolInfo();
   }, [userPool]);
 
   const handleCopy = async (textToCopy: string) => {
@@ -50,18 +84,27 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({
     }
   };
 
+  console.log("isRoot:", accountService.isRoot());
+  console.log("canEdit:", canEdit);
+  console.log("canView:", canView);
+
   return (
     <Card
       title="Pool's infomation"
       optionButtons={
         <>
-          <LinkIconButton
-            title="Update user pool"
-            to={`/pool-control/update/${userPool?.poolId}`}
-            Icon={Pen}
-            IconSize={24}
-          />
-          {!!showEditEmailConfig && (
+          {(accountService.isRoot() ||
+            (!accountService.isRoot() && canEdit)) && (
+            <LinkIconButton
+              title="Update user pool"
+              to={`/pool-control/update/${userPool?.poolId}`}
+              Icon={Pen}
+              IconSize={24}
+            />
+          )}
+
+          {!!showEditEmailConfig && (accountService.isRoot() ||
+            (!accountService.isRoot() && canEdit)) && (
             <CustomizablePopup
               content={<UpdateMailConfigBox poolId={userPool?.poolId ?? ""} />}
               children={
@@ -91,7 +134,14 @@ const MiniPoolInfo: React.FC<MiniPoolInfoProps> = ({
       content={
         <div className="card-scroll-able">
           <div className="card-pool-content">
-            {userPool !== null && (
+            {userPool !== null &&!canView && (
+              <div style={{ minHeight: "100px" }}>
+                <h4 className="pd-10 mt-10 plc-alert">
+                  You don't have permission to view this pool data.
+                </h4>
+              </div>
+            )}
+            {canView && userPool !== null && (
               <>
                 <div className="content-left">
                   <h3>POOL NAME: {userPool?.poolName}</h3>
@@ -223,7 +273,7 @@ const UpdateMailConfigBox: React.FC<{
         setSiteUrl(data.siteUrl ?? "");
         setSuportEmail(data.supportEmail ?? "");
       } catch (error) {
-        toastService.error("An error occurred while loading mail config.")
+        toastService.error("An error occurred while loading mail config.");
       }
     };
 
@@ -240,7 +290,7 @@ const UpdateMailConfigBox: React.FC<{
       });
       onClose();
     } catch (error) {
-      toastService.error("An error occurred while update mail config.")
+      toastService.error("An error occurred while update mail config.");
     }
   };
 
@@ -277,7 +327,9 @@ const UpdateMailConfigBox: React.FC<{
         <Button
           tyle="primary"
           label="Save"
-          onClick={() => {configUpdate(onClose)}}
+          onClick={() => {
+            configUpdate(onClose);
+          }}
           borderRadius={3}
         />
       </div>

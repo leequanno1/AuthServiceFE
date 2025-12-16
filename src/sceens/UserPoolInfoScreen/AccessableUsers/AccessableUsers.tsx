@@ -157,211 +157,229 @@ const AccessableUsers: React.FC = () => {
 
   return (
     <div className="accessable-mng-container">
-      <div className="amc-wrapper">
-        <Card
-          title="Accessible users"
-          optionButtons={
-            <>
-              <IconButton
-                onClick={() => {
-                  console.log(getCheckedUsers());
-                }}
-                Icon={ArrowClockwise}
-                IconSize={24}
-              />
-              <IconButton
-                onClick={() => {}}
-                Icon={DotsThreeVertical}
-                IconWeight="bold"
-                IconSize={24}
-              />
-            </>
-          }
-          content={
-            <div className="au-content">
-              {(isRoot || (poolPolicies && poolPolicies.canManage)) && (
-                <div className="search-container">
-                  <DropdownButton
-                    items={subAccounts
-                      .filter((item) => {
-                        if (!userSearch) {
-                          return true;
-                        } else {
-                          return (
-                            item.username?.includes(userSearch) ||
-                            item.displayName?.includes(userSearch)
-                          );
-                        }
-                      })
-                      .map((sa) => {
-                        return {
-                          label: `${sa.displayName}/${sa.username} ..... by ${
-                            currentAccount?.username
-                          }--${DateService.formatDate(sa.createdAt)}`,
-                          onClick: () => {
-                            setUsers([...users, sa]);
-                            setSubAccounts(
-                              subAccounts.filter((sacc) => sacc !== sa)
-                            );
-                          },
-                        };
-                      })}
-                    align="start"
-                    children={
-                      <InputText
-                        stretch={false}
-                        Icon={MagnifyingGlass}
-                        placeholder="Search by name or username"
-                        value={userSearch}
-                        onChange={(value) => {
-                          setUserSearch(value);
-                        }}
-                      />
-                    }
-                  />
-                  <ConfirmPopup
-                    onAccept={async () => {
-                      const tempsSubUsers = getCheckedUsers();
-                      console.log(tempsSubUsers);
-                      // get policies ID
-                      let policyIDs: string[] = [];
-                      for (let tsu of tempsSubUsers) {
-                        const tempPolicy =
-                          await poolPoliciesService.getPolicyBySubAccountId(
-                            tsu.accountId ?? "",
-                            poolID ?? ""
-                          );
-                        if (tempPolicy) {
-                          policyIDs.push(tempPolicy?.policyId ?? "");
-                        }
-                      }
-                      // delete policies
-                      await poolPoliciesService.deletePolicy(policyIDs);
-                      console.log(tempsSubUsers);
-                      setUsers(
-                        users.filter(
-                          (us) =>
-                            !tempsSubUsers.some(
-                              (tmpSU) => tmpSU.accountId === us.accountId
-                            )
-                        )
-                      );
-                      setSubAccounts([...subAccounts, ...tempsSubUsers]);
-                      setSubUserPoolPolicies(null);
-                      setCurrentSelectedSubAcc(null);
-                    }}
-                    children={
-                      <Button
-                        label="Delete user"
-                        borderRadius={3}
-                        tyle="secondary"
-                        onClick={() => {}}
-                      />
-                    }
-                  />
-                </div>
-              )}
+      { !isRoot && (!poolPolicies || !poolPolicies.canManage) && (
+        <div>
+          <h2 className="pd-20 mt-20 plc-alert">
+            This account have no authority to manage this user pool data.
+          </h2>
+        </div>
+      )}
 
-              <div className="user-table">
-                <table
-                  className="au-table"
-                  style={{ width: "100%", borderCollapse: "collapse" }}
-                >
-                  <thead>
-                    <tr>
-                      <th style={{ width: 40, textAlign: "center" }}>
-                        <input
-                          type="checkbox"
-                          className="master-checkbox"
-                          onChange={handleToggleAll}
-                          aria-label="Select all users"
-                        />
-                      </th>
-                      <th style={{ textAlign: "left" }}>Name/Displayname</th>
-                      <th style={{ textAlign: "left" }}>Created by/Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((u) => (
-                      <tr
-                        className="au-row"
-                        onClick={() => setCurrentSelectedSubAcc(u)}
-                        // key={u.accountId}
-                      >
-                        <td style={{ textAlign: "center" }}>
-                          <input
-                            type="checkbox"
-                            className="user-row-checkbox"
-                            data-userid={u.accountId}
-                            onChange={handleRowToggle}
-                            aria-label={`Select user ${u.username}`}
-                          />
-                        </td>
-                        <td>
-                          {u.displayName}/{u.username}
-                        </td>
-                        <td>
-                          <i>by {currentAccount?.username}</i> --{" "}
-                          {DateService.formatDate(u.createdAt ?? new Date())}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          }
-        />
-        <Card
-          title="Pool policies"
-          content={
-            <div className="policy-content">
-              {currentSelectedSubAcc && (
+      {(isRoot || (!!poolPolicies && !!poolPolicies.canManage)) && (
+        <>
+          <div className="amc-wrapper">
+            <Card
+              title="Accessible users"
+              optionButtons={
                 <>
-                  <div className="user-name">
-                    <strong>
-                      User name: {currentSelectedSubAcc.displayName}/
-                      {currentSelectedSubAcc.username}
-                    </strong>
-                  </div>
-                  <div className="search-container">
-                    <InputText
-                      stretch={false}
-                      onChange={() => {}}
-                      value=""
-                      Icon={MagnifyingGlass}
-                      placeholder="Search for pool policy"
-                    />
-                    <ConfirmPopup
-                      onAccept={async () => {
-                        // attatch policy
-                        await poolPoliciesService.attachUserPool(
-                          policyList,
-                          currentSelectedSubAcc.accountId ?? "",
-                          poolID ?? "",
-                          subUserPoolPoolicies?.policyId
-                        );
-                      }}
-                      children={
-                        <Button
-                          label="Save"
-                          borderRadius={3}
-                          tyle="primary"
-                          onClick={() => {}}
-                        />
-                      }
-                    />
-                  </div>
-                  <MiniPolicyTable
-                    datas={policyList}
-                    onSelected={(plcl) => setPolicyList(plcl)}
+                  <IconButton
+                    onClick={() => {
+                      console.log(getCheckedUsers());
+                    }}
+                    Icon={ArrowClockwise}
+                    IconSize={24}
+                  />
+                  <IconButton
+                    onClick={() => {}}
+                    Icon={DotsThreeVertical}
+                    IconWeight="bold"
+                    IconSize={24}
                   />
                 </>
-              )}
-            </div>
-          }
-        />
-      </div>
+              }
+              content={
+                <div className="au-content">
+                  {(isRoot || (poolPolicies && poolPolicies.canManage)) && (
+                    <div className="search-container">
+                      <DropdownButton
+                        items={subAccounts
+                          .filter((item) => {
+                            if (!userSearch) {
+                              return true;
+                            } else {
+                              return (
+                                item.username?.includes(userSearch) ||
+                                item.displayName?.includes(userSearch)
+                              );
+                            }
+                          })
+                          .map((sa) => {
+                            return {
+                              label: `${sa.displayName}/${
+                                sa.username
+                              } ..... by ${
+                                currentAccount?.username
+                              }--${DateService.formatDate(sa.createdAt)}`,
+                              onClick: () => {
+                                setUsers([...users, sa]);
+                                setSubAccounts(
+                                  subAccounts.filter((sacc) => sacc !== sa)
+                                );
+                              },
+                            };
+                          })}
+                        align="start"
+                        children={
+                          <InputText
+                            stretch={false}
+                            Icon={MagnifyingGlass}
+                            placeholder="Search by name or username"
+                            value={userSearch}
+                            onChange={(value) => {
+                              setUserSearch(value);
+                            }}
+                          />
+                        }
+                      />
+                      <ConfirmPopup
+                        onAccept={async () => {
+                          const tempsSubUsers = getCheckedUsers();
+                          console.log(tempsSubUsers);
+                          // get policies ID
+                          let policyIDs: string[] = [];
+                          for (let tsu of tempsSubUsers) {
+                            const tempPolicy =
+                              await poolPoliciesService.getPolicyBySubAccountId(
+                                tsu.accountId ?? "",
+                                poolID ?? ""
+                              );
+                            if (tempPolicy) {
+                              policyIDs.push(tempPolicy?.policyId ?? "");
+                            }
+                          }
+                          // delete policies
+                          await poolPoliciesService.deletePolicy(policyIDs);
+                          console.log(tempsSubUsers);
+                          setUsers(
+                            users.filter(
+                              (us) =>
+                                !tempsSubUsers.some(
+                                  (tmpSU) => tmpSU.accountId === us.accountId
+                                )
+                            )
+                          );
+                          setSubAccounts([...subAccounts, ...tempsSubUsers]);
+                          setSubUserPoolPolicies(null);
+                          setCurrentSelectedSubAcc(null);
+                        }}
+                        children={
+                          <Button
+                            label="Delete user"
+                            borderRadius={3}
+                            tyle="secondary"
+                            onClick={() => {}}
+                          />
+                        }
+                      />
+                    </div>
+                  )}
+
+                  <div className="user-table">
+                    <table
+                      className="au-table"
+                      style={{ width: "100%", borderCollapse: "collapse" }}
+                    >
+                      <thead>
+                        <tr>
+                          <th style={{ width: 40, textAlign: "center" }}>
+                            <input
+                              type="checkbox"
+                              className="master-checkbox"
+                              onChange={handleToggleAll}
+                              aria-label="Select all users"
+                            />
+                          </th>
+                          <th style={{ textAlign: "left" }}>
+                            Name/Displayname
+                          </th>
+                          <th style={{ textAlign: "left" }}>Created by/Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users.map((u) => (
+                          <tr
+                            className="au-row"
+                            onClick={() => setCurrentSelectedSubAcc(u)}
+                            // key={u.accountId}
+                          >
+                            <td style={{ textAlign: "center" }}>
+                              <input
+                                type="checkbox"
+                                className="user-row-checkbox"
+                                data-userid={u.accountId}
+                                onChange={handleRowToggle}
+                                aria-label={`Select user ${u.username}`}
+                              />
+                            </td>
+                            <td>
+                              {u.displayName}/{u.username}
+                            </td>
+                            <td>
+                              <i>by {currentAccount?.username}</i> --{" "}
+                              {DateService.formatDate(
+                                u.createdAt ?? new Date()
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+            />
+            <Card
+              title="Pool policies"
+              content={
+                <div className="policy-content">
+                  {currentSelectedSubAcc && (
+                    <>
+                      <div className="user-name">
+                        <strong>
+                          User name: {currentSelectedSubAcc.displayName}/
+                          {currentSelectedSubAcc.username}
+                        </strong>
+                      </div>
+                      <div className="search-container">
+                        <InputText
+                          stretch={false}
+                          onChange={() => {}}
+                          value=""
+                          Icon={MagnifyingGlass}
+                          placeholder="Search for pool policy"
+                        />
+                        <ConfirmPopup
+                          onAccept={async () => {
+                            // attatch policy
+                            await poolPoliciesService.attachUserPool(
+                              policyList,
+                              currentSelectedSubAcc.accountId ?? "",
+                              poolID ?? "",
+                              subUserPoolPoolicies?.policyId
+                            );
+                          }}
+                          children={
+                            <Button
+                              label="Save"
+                              borderRadius={3}
+                              tyle="primary"
+                              onClick={() => {}}
+                            />
+                          }
+                        />
+                      </div>
+                      <MiniPolicyTable
+                        datas={policyList}
+                        onSelected={(plcl) => setPolicyList(plcl)}
+                      />
+                    </>
+                  )}
+                </div>
+              }
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

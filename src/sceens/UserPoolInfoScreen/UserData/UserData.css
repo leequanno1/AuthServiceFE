@@ -1,5 +1,6 @@
 .user-data-content {
     padding: 10px;
+    min-height: 220px;
 }
 
 .user-data-content h2 {
