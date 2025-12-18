@@ -34,6 +34,7 @@ const AccessableUsers: React.FC = () => {
     React.useState<UserPoolPolicies | null>(null);
   const [policyList, setPolicyList] = React.useState<Policy[]>([]);
   const [userSearch, setUserSearch] = React.useState<string>("");
+  const [counter, setCouter] = React.useState<number>(0);
 
   const isRoot = accountService.isRoot();
   const currentAccount = accountStore.getState().account;
@@ -95,7 +96,7 @@ const AccessableUsers: React.FC = () => {
       }
     };
     initPolicyList();
-  }, [currentSelectedSubAcc, poolID]);
+  }, [currentSelectedSubAcc, poolID, counter]);
 
   function handleToggleAll(e: React.ChangeEvent<HTMLInputElement>) {
     const container = (e.currentTarget as HTMLElement).closest(
@@ -357,6 +358,7 @@ const AccessableUsers: React.FC = () => {
                               poolID ?? "",
                               subUserPoolPoolicies?.policyId
                             );
+                            setCouter(counter+1);
                           }}
                           children={
                             <Button

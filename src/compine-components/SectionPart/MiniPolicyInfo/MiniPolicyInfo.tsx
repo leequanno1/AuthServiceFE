@@ -28,6 +28,7 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
   );
   const [selectedAccPlc, setSelectedAccPlc] = React.useState<Policy[]>([]);
   const [selectedPoolPlc, setSelectedPoolPlc] = React.useState<Policy[]>([]);
+  const [couter, setCouter] = React.useState<number>(0);
 
   const isAccountPlcDisable =
     !!accountPolicy?.creatorId &&
@@ -83,7 +84,7 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
     };
 
     initPoolPlicies();
-  }, [account?.accountId, pool]);
+  }, [account?.accountId, pool, couter]);
 
   return (
     <div className="mn-policy-info-container">
@@ -151,6 +152,7 @@ const MiniPolicyInfo: React.FC<MiniPolicyInfoProps> = ({ account, pool }) => {
                     pool.poolId ?? "",
                     poolPolicy?.policyId
                   );
+                  setCouter(couter+1);
                 }}
                 children={
                   <Button
